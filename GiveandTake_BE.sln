@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34916.146
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GiveandTake_Repo", "GiveandTake_Repo\GiveandTake_Repo.csproj", "{CABB6CCA-2C81-4E36-B410-5BFA2C3A775C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GiveandTake_API", "GiveandTake_API\GiveandTake_API.csproj", "{4D3103FE-F55B-48D8-8B1C-FA781E002515}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CABB6CCA-2C81-4E36-B410-5BFA2C3A775C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CABB6CCA-2C81-4E36-B410-5BFA2C3A775C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CABB6CCA-2C81-4E36-B410-5BFA2C3A775C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CABB6CCA-2C81-4E36-B410-5BFA2C3A775C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D3103FE-F55B-48D8-8B1C-FA781E002515}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D3103FE-F55B-48D8-8B1C-FA781E002515}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D3103FE-F55B-48D8-8B1C-FA781E002515}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D3103FE-F55B-48D8-8B1C-FA781E002515}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1476C848-813A-461E-91F0-0BB9C9543EC0}
+	EndGlobalSection
+EndGlobal
