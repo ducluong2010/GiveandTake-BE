@@ -55,8 +55,6 @@ public partial class GiveandtakeContext : DbContext
 
             entity.HasIndex(e => e.RoleId, "RoleId");
 
-            entity.HasIndex(e => e.TransactionId, "TransactionId");
-
             entity.Property(e => e.Address).HasColumnType("text");
             entity.Property(e => e.AvatarUrl).HasColumnType("text");
             entity.Property(e => e.Email).HasMaxLength(100);
@@ -68,10 +66,6 @@ public partial class GiveandtakeContext : DbContext
             entity.HasOne(d => d.Role).WithMany(p => p.Accounts)
                 .HasForeignKey(d => d.RoleId)
                 .HasConstraintName("Accounts_ibfk_1");
-
-            entity.HasOne(d => d.Transaction).WithMany(p => p.Accounts)
-                .HasForeignKey(d => d.TransactionId)
-                .HasConstraintName("Accounts_ibfk_2");
         });
 
         modelBuilder.Entity<Category>(entity =>
@@ -220,6 +214,7 @@ public partial class GiveandtakeContext : DbContext
         {
             entity.HasKey(e => e.TransactionId).HasName("PRIMARY");
 
+            entity.Property(e => e.AccountId).HasMaxLength(50);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");

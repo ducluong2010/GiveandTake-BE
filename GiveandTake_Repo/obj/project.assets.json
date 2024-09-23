@@ -3050,11 +3050,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\GiveandTake_BE\\GiveandTake_Repo\\GiveandTake_Repo.csproj",
+      "projectUniqueName": "D:\\GiveandTake-BE\\GiveandTake_Repo\\GiveandTake_Repo.csproj",
       "projectName": "GiveandTake_Repo",
-      "projectPath": "D:\\GiveandTake_BE\\GiveandTake_Repo\\GiveandTake_Repo.csproj",
+      "projectPath": "D:\\GiveandTake-BE\\GiveandTake_Repo\\GiveandTake_Repo.csproj",
       "packagesPath": "C:\\Users\\luong\\.nuget\\packages\\",
-      "outputPath": "D:\\GiveandTake_BE\\GiveandTake_Repo\\obj\\",
+      "outputPath": "D:\\GiveandTake-BE\\GiveandTake_Repo\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
