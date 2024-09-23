@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GiveandTake_Repo")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+97b9294c3053578f78106cc53c9b613afa0c4a42")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6908a0560b098efde4ad9d2dbf4308340b21fcd5")]
 [assembly: System.Reflection.AssemblyProductAttribute("GiveandTake_Repo")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GiveandTake_Repo")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
