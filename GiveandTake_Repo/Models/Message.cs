@@ -13,7 +13,7 @@ public partial class Message
 
     public DateTime? SendAt { get; set; }
 
-    public ulong? IsRead { get; set; }
+    public bool? IsRead { get; set; }
 
     public virtual Account? Account { get; set; }
 }

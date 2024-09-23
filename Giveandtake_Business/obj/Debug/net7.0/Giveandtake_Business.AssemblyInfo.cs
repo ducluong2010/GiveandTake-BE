@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Giveandtake_Business")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6908a0560b098efde4ad9d2dbf4308340b21fcd5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+38fb5a10e0090b9f0bd1c081122b5c912475c77a")]
 [assembly: System.Reflection.AssemblyProductAttribute("Giveandtake_Business")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Giveandtake_Business")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

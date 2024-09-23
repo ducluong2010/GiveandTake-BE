@@ -26,7 +26,7 @@ namespace GiveandTake_Repo.DTOs.Account
 
         public string? AvatarUrl { get; set; }
 
-        public ulong? IsActive { get; set; }
+        public bool? IsActive { get; set; }
     }
 
     public class AccountDTO
@@ -47,6 +47,6 @@ namespace GiveandTake_Repo.DTOs.Account
 
         public string? AvatarUrl { get; set; }
 
-        public ulong? IsActive { get; set; }
+        public bool? IsActive { get; set; }
     }
 }

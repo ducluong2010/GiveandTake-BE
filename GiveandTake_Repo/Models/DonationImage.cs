@@ -11,7 +11,7 @@ public partial class DonationImage
 
     public string? Url { get; set; }
 
-    public ulong? IsThumbnail { get; set; }
+    public bool? IsThumbnail { get; set; }
 
     public virtual Donation? Donation { get; set; }
 }
