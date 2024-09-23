@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Giveandtake_Services")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+97b9294c3053578f78106cc53c9b613afa0c4a42")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+38fb5a10e0090b9f0bd1c081122b5c912475c77a")]
 [assembly: System.Reflection.AssemblyProductAttribute("Giveandtake_Services")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Giveandtake_Services")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

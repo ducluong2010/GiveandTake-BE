@@ -7,11 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GiveandTake_Repo\GiveandTake_Repo.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Utils\" />
+    <ProjectReference Include="..\GiveandTake_Repo\GiveandTake_Repo.csproj" />
   </ItemGroup>
 
 </Project>

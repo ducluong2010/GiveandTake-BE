@@ -23,7 +23,7 @@ public partial class Account
 
     public string? AvatarUrl { get; set; }
 
-    public ulong? IsActive { get; set; }
+    public bool? IsActive { get; set; }
 
     public virtual ICollection<Donation> Donations { get; set; } = new List<Donation>();
 

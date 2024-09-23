@@ -1,10 +1,19 @@
+using GiveandTake_API.Extensions;
+using System.Text.Json.Serialization;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 
-builder.Services.AddControllers();
+});
 
+builder.Services.AddServices(builder.Configuration);
+builder.Services.AddJwtValidation(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddConfigSwagger();
 
 builder.Services.AddCors(o =>
 {
@@ -17,8 +26,7 @@ builder.Services.AddCors(o =>
             .AllowCredentials();
     });
 });
-builder.Services.AddSwaggerGen(
-    c => c.EnableAnnotations());
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
