@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\GiveandTake-BE\\GiveandTake_Repo\\GiveandTake_Repo.csproj": {}
+    "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_Repo\\GiveandTake_Repo.csproj": {}
   },
   "projects": {
-    "D:\\GiveandTake-BE\\GiveandTake_Repo\\GiveandTake_Repo.csproj": {
+    "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_Repo\\GiveandTake_Repo.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\GiveandTake-BE\\GiveandTake_Repo\\GiveandTake_Repo.csproj",
+        "projectUniqueName": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_Repo\\GiveandTake_Repo.csproj",
         "projectName": "GiveandTake_Repo",
-        "projectPath": "D:\\GiveandTake-BE\\GiveandTake_Repo\\GiveandTake_Repo.csproj",
-        "packagesPath": "C:\\Users\\luong\\.nuget\\packages\\",
-        "outputPath": "D:\\GiveandTake-BE\\GiveandTake_Repo\\obj\\",
+        "projectPath": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_Repo\\GiveandTake_Repo.csproj",
+        "packagesPath": "C:\\Users\\Huynh Nguyen\\.nuget\\packages\\",
+        "outputPath": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_Repo\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\luong\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Huynh Nguyen\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -50,6 +46,14 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[7.0.20, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[7.0.20, )"
@@ -70,6 +74,14 @@
               "target": "Package",
               "version": "[7.0.20, )"
             },
+            "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
               "version": "[7.0.0, )"
@@ -86,26 +98,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[7.0.19, 7.0.19]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[7.0.19, 7.0.19]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[7.0.19, 7.0.19]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
         }
       }
     }
