@@ -19,8 +19,6 @@ public partial class Account
 
     public string? Address { get; set; }
 
-    public int? TransactionId { get; set; }
-
     public int? Point { get; set; }
 
     public string? AvatarUrl { get; set; }
@@ -38,6 +36,4 @@ public partial class Account
     public virtual ICollection<Reward> Rewards { get; set; } = new List<Reward>();
 
     public virtual UserRole? Role { get; set; }
-
-    public virtual Transaction? Transaction { get; set; }
 }

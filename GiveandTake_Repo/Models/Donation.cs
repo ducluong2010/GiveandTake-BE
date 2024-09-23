@@ -13,8 +13,6 @@ public partial class Donation
 
     public string? Name { get; set; }
 
-    public int? QuantityInStock { get; set; }
-
     public string? Description { get; set; }
 
     public int? Point { get; set; }
