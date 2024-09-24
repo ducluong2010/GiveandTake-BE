@@ -2,6 +2,8 @@
 using Giveandtake_Business;
 using GiveandTake_Repo.DTOs.Category;
 using Giveandtake_Services.Implements;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -16,6 +18,7 @@ namespace GiveandTake_API.Controllers
         {
             _categoryService = new CategoryService();
         }
+
 
         [HttpGet(ApiEndPointConstant.Category.CategoriesEndPoint)]
         [SwaggerOperation(Summary = "Get all Categories")]
@@ -39,6 +42,7 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "1")]
         [HttpPut(ApiEndPointConstant.Category.CategoryEndPoint)]
         [SwaggerOperation(Summary = "Update Category")]
         public async Task<IActionResult> UpdateCategoryInfo(int id, CategoryDTO category)
@@ -50,6 +54,7 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "1")]
         [HttpDelete(ApiEndPointConstant.Category.CategoryEndPoint)]
         [SwaggerOperation(Summary = "Delete Category")]
         public async Task<IActionResult> DeleteCategory(int id)
@@ -61,6 +66,7 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "1")]
         [HttpPost(ApiEndPointConstant.Category.CategoriesEndPoint)]
         [SwaggerOperation(Summary = "Create a new Category")]
         public async Task<IActionResult> CreateCategory(CategoryDTO category)
