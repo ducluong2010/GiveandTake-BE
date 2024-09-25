@@ -25,5 +25,12 @@
             public const string CategoriesEndPoint = ApiEndpoint + "/categories";
             public const string CategoryEndPoint = CategoriesEndPoint + "/{id}";
         }
+
+        public class Reward
+        {
+            public const string RewardsEndPoint = ApiEndpoint + "/rewards";
+            public const string RewardEndPoint = RewardsEndPoint + "/{id}";
+            public const string RewardStatusEndPoint = RewardsEndPoint + "/{id}/status";
+        }
     }
 }
