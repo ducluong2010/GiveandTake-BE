@@ -35,8 +35,7 @@ namespace Giveandtake_Business.Utils
                     new Claim("FullName", account.FullName),
                     new Claim("Email", account.Email),
                     new Claim("Password", account.Password),
-                    new Claim("Address", account.Address),
-                    new Claim("Phone", account.Phone),
+                    new Claim(ClaimTypes.Role, account.RoleId.ToString(), ClaimValueTypes.Integer32),
                 };
 
             // Add expiredTime of token

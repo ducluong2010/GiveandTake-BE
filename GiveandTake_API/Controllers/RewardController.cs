@@ -1,6 +1,8 @@
 ﻿using GiveandTake_API.Constants;
 using GiveandTake_Repo.DTOs.Reward;
 using Giveandtake_Services.Implements;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -37,6 +39,7 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "2")]
         [HttpPost(ApiEndPointConstant.Reward.RewardsEndPoint)]
         [SwaggerOperation(Summary = "Create a new Reward")]
         public async Task<IActionResult> CreateReward(RewardDTO rewardDTO)
@@ -48,6 +51,7 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "2")]
         [HttpPut(ApiEndPointConstant.Reward.RewardEndPoint)]
         [SwaggerOperation(Summary = "Update Reward")]
         public async Task<IActionResult> UpdateRewardInfo(int id, RewardDTO reward)
@@ -59,6 +63,7 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "2")]
         [HttpDelete(ApiEndPointConstant.Reward.RewardEndPoint)]
         [SwaggerOperation(Summary = "Delete Reward")]
         public async Task<IActionResult> DeleteReward(int id)
@@ -70,6 +75,7 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "2")]
         [HttpPut(ApiEndPointConstant.Reward.RewardStatusEndPoint)]
         [SwaggerOperation(Summary = "Change Reward Status")]
         public async Task<IActionResult> ChangeRewardStatus(int id, string status)

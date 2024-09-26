@@ -19,7 +19,6 @@ namespace GiveandTake_API.Controllers
             _categoryService = new CategoryService();
         }
 
-
         [HttpGet(ApiEndPointConstant.Category.CategoriesEndPoint)]
         [SwaggerOperation(Summary = "Get all Categories")]
         public async Task<IActionResult> GetAllCategories()

@@ -3,44 +3,12 @@
   "WorkspaceRootPath": "D:\\Capstone Project\\GiveandTake-BE\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2E99F58-AFB8-46BC-96BF-C1C1A2CE6E46}|Giveandtake_Business\\Giveandtake_Business.csproj|d:\\capstone project\\giveandtake-be\\giveandtake_business\\rewardbusiness.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2E99F58-AFB8-46BC-96BF-C1C1A2CE6E46}|Giveandtake_Business\\Giveandtake_Business.csproj|solutionrelative:giveandtake_business\\rewardbusiness.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|d:\\capstone project\\giveandtake-be\\giveandtake_api\\extensions\\dependencyextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|solutionrelative:giveandtake_api\\extensions\\dependencyextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|d:\\capstone project\\giveandtake-be\\giveandtake_api\\controllers\\categorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|solutionrelative:giveandtake_api\\controllers\\categorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|d:\\capstone project\\giveandtake-be\\giveandtake_api\\controllers\\rewardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|solutionrelative:giveandtake_api\\controllers\\rewardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|d:\\capstone project\\giveandtake-be\\giveandtake_api\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|solutionrelative:giveandtake_api\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|d:\\capstone project\\giveandtake-be\\giveandtake_api\\constants\\apiendpointconstant.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|solutionrelative:giveandtake_api\\constants\\apiendpointconstant.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CABB6CCA-2C81-4E36-B410-5BFA2C3A775C}|GiveandTake_Repo\\GiveandTake_Repo.csproj|d:\\capstone project\\giveandtake-be\\giveandtake_repo\\repository\\implements\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CABB6CCA-2C81-4E36-B410-5BFA2C3A775C}|GiveandTake_Repo\\GiveandTake_Repo.csproj|solutionrelative:giveandtake_repo\\repository\\implements\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2E99F58-AFB8-46BC-96BF-C1C1A2CE6E46}|Giveandtake_Business\\Giveandtake_Business.csproj|d:\\capstone project\\giveandtake-be\\giveandtake_business\\categorybusiness.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2E99F58-AFB8-46BC-96BF-C1C1A2CE6E46}|Giveandtake_Business\\Giveandtake_Business.csproj|solutionrelative:giveandtake_business\\categorybusiness.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{760996F4-2774-47DF-93FD-4CA2985FC187}|Giveandtake_Services\\Giveandtake_Services.csproj|d:\\capstone project\\giveandtake-be\\giveandtake_services\\implements\\rewardservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{760996F4-2774-47DF-93FD-4CA2985FC187}|Giveandtake_Services\\Giveandtake_Services.csproj|solutionrelative:giveandtake_services\\implements\\rewardservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{760996F4-2774-47DF-93FD-4CA2985FC187}|Giveandtake_Services\\Giveandtake_Services.csproj|d:\\capstone project\\giveandtake-be\\giveandtake_services\\interfaces\\irewardservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{760996F4-2774-47DF-93FD-4CA2985FC187}|Giveandtake_Services\\Giveandtake_Services.csproj|solutionrelative:giveandtake_services\\interfaces\\irewardservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|d:\\capstone project\\giveandtake-be\\giveandtake_api\\controllers\\categorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|solutionrelative:giveandtake_api\\controllers\\categorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -50,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 20,
+          "SelectedChildIndex": 17,
           "Children": [
             {
               "$type": "Bookmark",
@@ -118,132 +86,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "CategoryController.cs",
               "DocumentMoniker": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\Controllers\\CategoryController.cs",
               "RelativeDocumentMoniker": "GiveandTake_API\\Controllers\\CategoryController.cs",
               "ToolTip": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\Controllers\\CategoryController.cs",
               "RelativeToolTip": "GiveandTake_API\\Controllers\\CategoryController.cs",
-              "ViewState": "AQIAACEAAAAAAAAAAAAYwCwAAAAAAAAA",
+              "ViewState": "AQIAABYAAAAAAAAAAAAgwCsAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-25T01:10:10.698Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "UnitOfWork.cs",
-              "DocumentMoniker": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_Repo\\Repository\\Implements\\UnitOfWork.cs",
-              "RelativeDocumentMoniker": "GiveandTake_Repo\\Repository\\Implements\\UnitOfWork.cs",
-              "ToolTip": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_Repo\\Repository\\Implements\\UnitOfWork.cs",
-              "RelativeToolTip": "GiveandTake_Repo\\Repository\\Implements\\UnitOfWork.cs",
-              "ViewState": "AQIAACIAAAAAAAAAAAA5wAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-25T01:07:41.637Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ApiEndPointConstant.cs",
-              "DocumentMoniker": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\Constants\\ApiEndPointConstant.cs",
-              "RelativeDocumentMoniker": "GiveandTake_API\\Constants\\ApiEndPointConstant.cs",
-              "ToolTip": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\Constants\\ApiEndPointConstant.cs",
-              "RelativeToolTip": "GiveandTake_API\\Constants\\ApiEndPointConstant.cs",
-              "ViewState": "AQIAABYAAAAAAAAAAAA2wCAAAABYAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-25T00:51:30.732Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "DependencyExtension.cs",
-              "DocumentMoniker": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\Extensions\\DependencyExtension.cs",
-              "RelativeDocumentMoniker": "GiveandTake_API\\Extensions\\DependencyExtension.cs",
-              "ToolTip": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\Extensions\\DependencyExtension.cs",
-              "RelativeToolTip": "GiveandTake_API\\Extensions\\DependencyExtension.cs",
-              "ViewState": "AQIAABUAAAAAAAAAAAAYwAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-25T00:51:15.181Z",
+              "WhenOpened": "2024-09-26T13:14:01.028Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "RewardBusiness.cs",
-              "DocumentMoniker": "D:\\Capstone Project\\GiveandTake-BE\\Giveandtake_Business\\RewardBusiness.cs",
-              "RelativeDocumentMoniker": "Giveandtake_Business\\RewardBusiness.cs",
-              "ToolTip": "D:\\Capstone Project\\GiveandTake-BE\\Giveandtake_Business\\RewardBusiness.cs",
-              "RelativeToolTip": "Giveandtake_Business\\RewardBusiness.cs",
-              "ViewState": "AQIAALMAAAAAAAAAAAAAAKYAAABgAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-25T00:25:17.41Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "AccountController.cs",
-              "DocumentMoniker": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\Controllers\\AccountController.cs",
-              "RelativeDocumentMoniker": "GiveandTake_API\\Controllers\\AccountController.cs",
-              "ToolTip": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\Controllers\\AccountController.cs",
-              "RelativeToolTip": "GiveandTake_API\\Controllers\\AccountController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAFcAAAAJAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-25T00:36:43.492Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
               "Title": "RewardController.cs",
               "DocumentMoniker": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\Controllers\\RewardController.cs",
               "RelativeDocumentMoniker": "GiveandTake_API\\Controllers\\RewardController.cs",
               "ToolTip": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\Controllers\\RewardController.cs",
               "RelativeToolTip": "GiveandTake_API\\Controllers\\RewardController.cs",
-              "ViewState": "AQIAABgAAAAAAAAAAAAYwFEAAAAIAAAA",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAE8AAAA8AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-25T00:36:13.025Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "RewardService.cs",
-              "DocumentMoniker": "D:\\Capstone Project\\GiveandTake-BE\\Giveandtake_Services\\Implements\\RewardService.cs",
-              "RelativeDocumentMoniker": "Giveandtake_Services\\Implements\\RewardService.cs",
-              "ToolTip": "D:\\Capstone Project\\GiveandTake-BE\\Giveandtake_Services\\Implements\\RewardService.cs",
-              "RelativeToolTip": "Giveandtake_Services\\Implements\\RewardService.cs",
-              "ViewState": "AQIAAB0AAAAAAAAAAADgvyQAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-25T00:28:21.907Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "CategoryBusiness.cs",
-              "DocumentMoniker": "D:\\Capstone Project\\GiveandTake-BE\\Giveandtake_Business\\CategoryBusiness.cs",
-              "RelativeDocumentMoniker": "Giveandtake_Business\\CategoryBusiness.cs",
-              "ToolTip": "D:\\Capstone Project\\GiveandTake-BE\\Giveandtake_Business\\CategoryBusiness.cs",
-              "RelativeToolTip": "Giveandtake_Business\\CategoryBusiness.cs",
-              "ViewState": "AQIAAEYAAAAAAAAAAAAkwAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-25T00:25:28.625Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "IRewardService.cs",
-              "DocumentMoniker": "D:\\Capstone Project\\GiveandTake-BE\\Giveandtake_Services\\Interfaces\\IRewardService.cs",
-              "RelativeDocumentMoniker": "Giveandtake_Services\\Interfaces\\IRewardService.cs",
-              "ToolTip": "D:\\Capstone Project\\GiveandTake-BE\\Giveandtake_Services\\Interfaces\\IRewardService.cs",
-              "RelativeToolTip": "Giveandtake_Services\\Interfaces\\IRewardService.cs",
-              "ViewState": "AQIAAAkAAAAAAAAAAAAAABAAAAA2AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-25T00:19:20.634Z",
+              "WhenOpened": "2024-09-26T13:11:09.321Z",
               "EditorCaption": ""
             }
           ]

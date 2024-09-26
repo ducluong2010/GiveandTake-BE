@@ -270,6 +270,21 @@ namespace Giveandtake_Business
             return new GiveandtakeResult("Banned");
         }
 
+        // Method to unban an account
+        public async Task<IGiveandtakeResult> UnbanAccount(int accountId)
+        {
+            Account account = await _unitOfWork.GetRepository<Account>()
+            .SingleOrDefaultAsync(predicate: a => a.AccountId == accountId);
+            if (account == null) return new GiveandtakeResult();
+            else
+            {
+                account.IsActive = true;
+
+                _unitOfWork.GetRepository<Account>().UpdateAsync(account);
+                await _unitOfWork.CommitAsync();
+            }
+            return new GiveandtakeResult("Unbanned");
+        }
 
 
         // Method to change password for the current logged-in account

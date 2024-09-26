@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GiveandTake_API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5d771d565a657dcb2e732527dc79e24fc89272cb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b01026c00a29fa6e8770af9137fd5063b666e32e")]
 [assembly: System.Reflection.AssemblyProductAttribute("GiveandTake_API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GiveandTake_API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
