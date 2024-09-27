@@ -1,6 +1,8 @@
 ﻿using GiveandTake_Repo.DTOs.Reward;
 using GiveandTake_Repo.Models;
 using GiveandTake_Repo.Repository.Implements;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -59,6 +61,7 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(reward);
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "2")]
         // Update reward information
         public async Task<IGiveandtakeResult> UpdateReward(int id, RewardDTO rewardInfo)
         {
@@ -97,6 +100,7 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(1, "Reward updated successfully");
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "2")]
         // Add new reward
         public async Task<IGiveandtakeResult> CreateReward(RewardDTO rewardInfo)
         {
@@ -145,6 +149,7 @@ namespace Giveandtake_Business
             return result;
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "2")]
         // Delete reward
         public async Task<IGiveandtakeResult> DeleteReward(int id)
         {
@@ -159,13 +164,15 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(1, "Reward deleted successfully");
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "2")]
         // Change reward status
         public async Task<IGiveandtakeResult> ChangeRewardStatus(int id, string newStatus)
         {
-            if (newStatus.ToLower() != "Inactive" && newStatus.ToLower() != "Active")
+            if (newStatus.ToLower() != "inactive" && newStatus.ToLower() != "active")
             {
                 return new GiveandtakeResult(-4, "Invalid status");
             }
+
 
             Reward reward = await _unitOfWork.GetRepository<Reward>()
                 .SingleOrDefaultAsync(predicate: c => c.RewardId == id);
