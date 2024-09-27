@@ -32,5 +32,11 @@
             public const string RewardEndPoint = RewardsEndPoint + "/{id}";
             public const string RewardStatusEndPoint = RewardsEndPoint + "/{id}/status";
         }
+        public class Donation
+        {
+            public const string DonationsEndPoint = ApiEndpoint + "/donations";
+            public const string DonationEndPoint = DonationsEndPoint + "/{id}";
+            public const string DonationStatusEndPoint = DonationsEndPoint + "/{id}/status";
+        }
     }
 }
