@@ -1,4 +1,5 @@
-﻿using GiveandTake_Repo.DTOs.Donation;
+﻿using GiveandTake_Repo.DTOs.Account;
+using GiveandTake_Repo.DTOs.Donation;
 using GiveandTake_Repo.Models;
 using GiveandTake_Repo.Repository.Implements;
 using System;
@@ -18,11 +19,14 @@ namespace Giveandtake_Business
         }
 
         // Get all donations
-        public async Task<IGiveandtakeResult> GetAllDonations()
+        public async Task<IGiveandtakeResult> GetAllDonations(int page = 1, int pageSize = 8)
         {
-            var donationList = await _unitOfWork.GetRepository<Donation>()
-                .GetListAsync();
-            var result = donationList.Select(d => new DonationDTO
+            var repository = _unitOfWork.GetRepository<Donation>();
+
+            // Get all active donations based on Status
+            var allDonations = await repository.GetListAsync(
+            predicate: d => d.Status == "1", // Kiểm tra Status là kiểu string
+            selector: d => new DonationDTO
             {
                 DonationId = d.DonationId,
                 AccountId = d.AccountId,
@@ -37,8 +41,48 @@ namespace Giveandtake_Business
                 Status = d.Status,
                 DonationImages = d.DonationImages.Select(di => di.Url).ToList()
             });
-            return new GiveandtakeResult(result);
+
+
+            // Đếm tổng số donations
+            int totalItems = allDonations.Count;
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            // Điều chỉnh trang nếu nó vượt quá tổng số trang
+            if (page > totalPages) page = totalPages;
+
+            // Nếu không có donations nào, trả về danh sách trống
+            if (totalItems == 0)
+            {
+                return new GiveandtakeResult(new PaginatedResult<DonationDTO>
+                {
+                    Items = new List<DonationDTO>(),
+                    TotalItems = totalItems,
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalPages = totalPages
+                });
+            }
+
+            // Thực hiện phân trang
+            var paginatedDonations = allDonations
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // Tạo kết quả phân trang
+            var paginatedResult = new PaginatedResult<DonationDTO>
+            {
+                Items = paginatedDonations, // Danh sách donations đã phân trang
+                TotalItems = totalItems,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
+
+            return new GiveandtakeResult(paginatedResult);
         }
+
+
 
         // Get donation by id
         public async Task<IGiveandtakeResult> GetDonationById(int donationId)

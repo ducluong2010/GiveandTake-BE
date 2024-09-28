@@ -11,7 +11,7 @@ namespace Giveandtake_Services.Interfaces
     public interface IDonationService
     {
         Task<IGiveandtakeResult> GetDonationById(int id);
-        Task<IGiveandtakeResult> GetAllDonations();
+        Task<IGiveandtakeResult> GetAllDonations(int page = 1, int pageSize = 8);
         Task<IGiveandtakeResult> UpdateDonation(int id, CreateUpdateDonationDTO donationInfo);
         Task<IGiveandtakeResult> CreateDonation(CreateUpdateDonationDTO donationInfo);
         Task<IGiveandtakeResult> DeleteDonation(int id);

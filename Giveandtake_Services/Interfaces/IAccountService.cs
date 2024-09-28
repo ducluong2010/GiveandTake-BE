@@ -14,7 +14,7 @@ namespace Giveandtake_Services.Interfaces
 
         Task<IGiveandtakeResult> Login(string email, string password);
 
-        Task<IGiveandtakeResult> GetAllAccount();
+        Task<IGiveandtakeResult> GetAllAccount(int page = 1, int pageSize = 8);
 
         Task<IGiveandtakeResult> GetAccountInfo(int accountId);
 

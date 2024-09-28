@@ -100,25 +100,66 @@ namespace Giveandtake_Business
 
         #region Account
         // Method to get all active accounts
-        public async Task<IGiveandtakeResult> GetAllAccount()
+        public async Task<IGiveandtakeResult> GetAllAccount(int page = 1, int pageSize = 8)
         {
-            var accList = await _unitOfWork.GetRepository<Account>()
-                .GetListAsync(predicate: a => (bool)a.IsActive,
-                              selector: a => new GetAccountDTO
-                              {
-                                  AccountId = a.AccountId,
-                                  Address = a.Address,
-                                  AvatarUrl = a.AvatarUrl,
-                                  IsActive = a.IsActive,
-                                  Email = a.Email,
-                                  FullName = a.FullName,
-                                  Password = a.Password,
-                                  Phone = a.Phone,
-                                  Point = a.Point,
-                                  RoleId = a.RoleId
-                              });
-            return new GiveandtakeResult(accList);
+            var repository = _unitOfWork.GetRepository<Account>();
+
+            
+            var allAccounts = await repository.GetListAsync(
+                predicate: a => (bool)a.IsActive,
+                selector: a => new GetAccountDTO
+                {
+                    AccountId = a.AccountId,
+                    Address = a.Address,
+                    AvatarUrl = a.AvatarUrl,
+                    IsActive = a.IsActive,
+                    Email = a.Email,
+                    FullName = a.FullName,
+                    Password = a.Password,
+                    Phone = a.Phone,
+                    Point = a.Point,
+                    RoleId = a.RoleId
+                }
+            );
+
+            
+            int totalItems = allAccounts.Count;
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            
+            if (page > totalPages) page = totalPages;
+
+            
+            if (totalItems == 0 || totalPages == 0)
+            {
+                return new GiveandtakeResult(new PaginatedResult<GetAccountDTO>
+                {
+                    Items = new List<GetAccountDTO>(),
+                    TotalItems = totalItems,
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalPages = totalPages
+                });
+            }
+
+            var paginatedAccounts = allAccounts
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList(); 
+
+            var paginatedResult = new PaginatedResult<GetAccountDTO>
+            {
+                Items = paginatedAccounts, 
+                TotalItems = totalItems,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
+
+            return new GiveandtakeResult(paginatedResult);
         }
+
+
 
         // Method to get account information by account ID
         public async Task<IGiveandtakeResult> GetAccountInfo(int accountId)
@@ -312,5 +353,13 @@ namespace Giveandtake_Business
             return result;
         }
         #endregion
+    }
+    public class PaginatedResult<T>
+    {
+        public List<T> Items { get; set; }
+        public int TotalItems { get; set; }
+        public int Page { get; set; }
+        public int PageSize { get; set; }
+        public int TotalPages { get; set; }
     }
 }

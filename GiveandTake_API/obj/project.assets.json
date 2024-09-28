@@ -4046,19 +4046,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Huynh Nguyen\\.nuget\\packages\\": {}
+    "C:\\Users\\luong\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\GiveandTake_API.csproj",
+      "projectUniqueName": "D:\\Capstone Project\\GiveandTake_API\\GiveandTake_API.csproj",
       "projectName": "GiveandTake_API",
-      "projectPath": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\GiveandTake_API.csproj",
-      "packagesPath": "C:\\Users\\Huynh Nguyen\\.nuget\\packages\\",
-      "outputPath": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\obj\\",
+      "projectPath": "D:\\Capstone Project\\GiveandTake_API\\GiveandTake_API.csproj",
+      "packagesPath": "C:\\Users\\luong\\.nuget\\packages\\",
+      "outputPath": "D:\\Capstone Project\\GiveandTake_API\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\Huynh Nguyen\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\luong\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -4073,8 +4078,8 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "D:\\Capstone Project\\GiveandTake-BE\\Giveandtake_Services\\Giveandtake_Services.csproj": {
-              "projectPath": "D:\\Capstone Project\\GiveandTake-BE\\Giveandtake_Services\\Giveandtake_Services.csproj"
+            "D:\\Capstone Project\\Giveandtake_Services\\Giveandtake_Services.csproj": {
+              "projectPath": "D:\\Capstone Project\\Giveandtake_Services\\Giveandtake_Services.csproj"
             }
           }
         }
@@ -4138,6 +4143,24 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[7.0.19, 7.0.19]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[7.0.19, 7.0.19]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[7.0.19, 7.0.19]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[7.0.19, 7.0.19]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -4146,7 +4169,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300\\RuntimeIdentifierGraph.json"
       }
     }
   }

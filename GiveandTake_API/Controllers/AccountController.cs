@@ -17,10 +17,10 @@ namespace GiveandTake_API.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.Account.AccountsEndpoint)]
-        [SwaggerOperation(Summary = "Get all Accounts")]
-        public async Task<IActionResult> GetAllAccounts()
+        [SwaggerOperation(Summary = "Get all Accounts with pagination")]
+        public async Task<IActionResult> GetAllAccount([FromQuery] int page = 1, [FromQuery] int pageSize = 8)
         {
-            var response = await _accountService.GetAllAccount();
+            var response = await _accountService.GetAllAccount(page, pageSize);
             if (response.Status >= 0)
                 return Ok(response.Data);
             else
