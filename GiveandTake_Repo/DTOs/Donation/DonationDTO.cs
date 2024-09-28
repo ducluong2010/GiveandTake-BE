@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GiveandTake_Repo.DTOs.Donation
 {
-    public class DonationDTO
+     public class DonationDTO
     {
         public int DonationId { get; set; }
 

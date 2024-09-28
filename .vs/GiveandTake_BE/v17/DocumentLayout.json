@@ -1,22 +1,50 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Capstone Project\\GiveandTake-BE\\",
+  "WorkspaceRootPath": "D:\\Capstone Project\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|d:\\capstone project\\giveandtake-be\\giveandtake_api\\controllers\\donationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{A2E99F58-AFB8-46BC-96BF-C1C1A2CE6E46}|Giveandtake_Business\\Giveandtake_Business.csproj|d:\\capstone project\\giveandtake_business\\donationbusiness.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2E99F58-AFB8-46BC-96BF-C1C1A2CE6E46}|Giveandtake_Business\\Giveandtake_Business.csproj|solutionrelative:giveandtake_business\\donationbusiness.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CABB6CCA-2C81-4E36-B410-5BFA2C3A775C}|GiveandTake_Repo\\GiveandTake_Repo.csproj|d:\\capstone project\\giveandtake_repo\\dtos\\donation\\donationdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CABB6CCA-2C81-4E36-B410-5BFA2C3A775C}|GiveandTake_Repo\\GiveandTake_Repo.csproj|solutionrelative:giveandtake_repo\\dtos\\donation\\donationdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{760996F4-2774-47DF-93FD-4CA2985FC187}|Giveandtake_Services\\Giveandtake_Services.csproj|d:\\capstone project\\giveandtake_services\\implements\\donationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{760996F4-2774-47DF-93FD-4CA2985FC187}|Giveandtake_Services\\Giveandtake_Services.csproj|solutionrelative:giveandtake_services\\implements\\donationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|d:\\capstone project\\giveandtake_api\\controllers\\donationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|solutionrelative:giveandtake_api\\controllers\\donationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2E99F58-AFB8-46BC-96BF-C1C1A2CE6E46}|Giveandtake_Business\\Giveandtake_Business.csproj|d:\\capstone project\\giveandtake-be\\giveandtake_business\\utils\\jwtutils.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2E99F58-AFB8-46BC-96BF-C1C1A2CE6E46}|Giveandtake_Business\\Giveandtake_Business.csproj|solutionrelative:giveandtake_business\\utils\\jwtutils.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2E99F58-AFB8-46BC-96BF-C1C1A2CE6E46}|Giveandtake_Business\\Giveandtake_Business.csproj|d:\\capstone project\\giveandtake_business\\accountbusiness.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2E99F58-AFB8-46BC-96BF-C1C1A2CE6E46}|Giveandtake_Business\\Giveandtake_Business.csproj|solutionrelative:giveandtake_business\\accountbusiness.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|d:\\capstone project\\giveandtake-be\\giveandtake_api\\controllers\\rewardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|solutionrelative:giveandtake_api\\controllers\\rewardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{760996F4-2774-47DF-93FD-4CA2985FC187}|Giveandtake_Services\\Giveandtake_Services.csproj|d:\\capstone project\\giveandtake_services\\interfaces\\idonationservicecs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{760996F4-2774-47DF-93FD-4CA2985FC187}|Giveandtake_Services\\Giveandtake_Services.csproj|solutionrelative:giveandtake_services\\interfaces\\idonationservicecs.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|d:\\capstone project\\giveandtake-be\\giveandtake_api\\controllers\\categorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|solutionrelative:giveandtake_api\\controllers\\categorycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{760996F4-2774-47DF-93FD-4CA2985FC187}|Giveandtake_Services\\Giveandtake_Services.csproj|d:\\capstone project\\giveandtake_services\\interfaces\\iaccountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{760996F4-2774-47DF-93FD-4CA2985FC187}|Giveandtake_Services\\Giveandtake_Services.csproj|solutionrelative:giveandtake_services\\interfaces\\iaccountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{760996F4-2774-47DF-93FD-4CA2985FC187}|Giveandtake_Services\\Giveandtake_Services.csproj|d:\\capstone project\\giveandtake_services\\implements\\accountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{760996F4-2774-47DF-93FD-4CA2985FC187}|Giveandtake_Services\\Giveandtake_Services.csproj|solutionrelative:giveandtake_services\\implements\\accountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|d:\\capstone project\\giveandtake_api\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4D3103FE-F55B-48D8-8B1C-FA781E002515}|GiveandTake_API\\GiveandTake_API.csproj|solutionrelative:giveandtake_api\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CABB6CCA-2C81-4E36-B410-5BFA2C3A775C}|GiveandTake_Repo\\GiveandTake_Repo.csproj|d:\\capstone project\\giveandtake_repo\\repository\\interfaces\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CABB6CCA-2C81-4E36-B410-5BFA2C3A775C}|GiveandTake_Repo\\GiveandTake_Repo.csproj|solutionrelative:giveandtake_repo\\repository\\interfaces\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CABB6CCA-2C81-4E36-B410-5BFA2C3A775C}|GiveandTake_Repo\\GiveandTake_Repo.csproj|d:\\capstone project\\giveandtake_repo\\repository\\implements\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CABB6CCA-2C81-4E36-B410-5BFA2C3A775C}|GiveandTake_Repo\\GiveandTake_Repo.csproj|solutionrelative:giveandtake_repo\\repository\\implements\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,11 +54,31 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 16,
+          "SelectedChildIndex": 23,
           "Children": [
             {
               "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:133:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:132:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
               "$type": "Bookmark",
@@ -39,10 +87,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{873151d0-cf2e-48cc-b4bf-ad0394f6a3c3}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             },
             {
               "$type": "Bookmark",
@@ -55,10 +99,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:130:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:132:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
               "$type": "Bookmark",
@@ -81,68 +121,140 @@
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:133:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:131:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "DonationController.cs",
-              "DocumentMoniker": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\Controllers\\DonationController.cs",
-              "RelativeDocumentMoniker": "GiveandTake_API\\Controllers\\DonationController.cs",
-              "ToolTip": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\Controllers\\DonationController.cs",
-              "RelativeToolTip": "GiveandTake_API\\Controllers\\DonationController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABQAAAAqAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T17:15:45.832Z",
-              "EditorCaption": ""
-            },
-            {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "JwtUtils.cs",
-              "DocumentMoniker": "D:\\Capstone Project\\GiveandTake-BE\\Giveandtake_Business\\Utils\\JwtUtils.cs",
-              "RelativeDocumentMoniker": "Giveandtake_Business\\Utils\\JwtUtils.cs",
-              "ToolTip": "D:\\Capstone Project\\GiveandTake-BE\\Giveandtake_Business\\Utils\\JwtUtils.cs",
-              "RelativeToolTip": "Giveandtake_Business\\Utils\\JwtUtils.cs",
-              "ViewState": "AQIAABkAAAAAAAAAAAAQwCYAAAAAAAAA",
+              "Title": "DonationDTO.cs",
+              "DocumentMoniker": "D:\\Capstone Project\\GiveandTake_Repo\\DTOs\\Donation\\DonationDTO.cs",
+              "RelativeDocumentMoniker": "GiveandTake_Repo\\DTOs\\Donation\\DonationDTO.cs",
+              "ToolTip": "D:\\Capstone Project\\GiveandTake_Repo\\DTOs\\Donation\\DonationDTO.cs*",
+              "RelativeToolTip": "GiveandTake_Repo\\DTOs\\Donation\\DonationDTO.cs*",
+              "ViewState": "AQIAAAgAAAAAAAAAAAAuwC8AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-27T05:29:13.584Z",
+              "WhenOpened": "2024-09-28T08:55:30.047Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "CategoryController.cs",
-              "DocumentMoniker": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\Controllers\\CategoryController.cs",
-              "RelativeDocumentMoniker": "GiveandTake_API\\Controllers\\CategoryController.cs",
-              "ToolTip": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\Controllers\\CategoryController.cs",
-              "RelativeToolTip": "GiveandTake_API\\Controllers\\CategoryController.cs",
-              "ViewState": "AQIAABYAAAAAAAAAAAAgwCsAAAAAAAAA",
+              "Title": "DonationController.cs",
+              "DocumentMoniker": "D:\\Capstone Project\\GiveandTake_API\\Controllers\\DonationController.cs",
+              "RelativeDocumentMoniker": "GiveandTake_API\\Controllers\\DonationController.cs",
+              "ToolTip": "D:\\Capstone Project\\GiveandTake_API\\Controllers\\DonationController.cs",
+              "RelativeToolTip": "GiveandTake_API\\Controllers\\DonationController.cs",
+              "ViewState": "AQIAABkAAAAAAAAAAAApwCwAAABZAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-26T13:14:01.028Z",
+              "WhenOpened": "2024-09-28T08:20:26.979Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "RewardController.cs",
-              "DocumentMoniker": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\Controllers\\RewardController.cs",
-              "RelativeDocumentMoniker": "GiveandTake_API\\Controllers\\RewardController.cs",
-              "ToolTip": "D:\\Capstone Project\\GiveandTake-BE\\GiveandTake_API\\Controllers\\RewardController.cs",
-              "RelativeToolTip": "GiveandTake_API\\Controllers\\RewardController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAE8AAAA8AAAA",
+              "DocumentIndex": 4,
+              "Title": "AccountBusiness.cs",
+              "DocumentMoniker": "D:\\Capstone Project\\Giveandtake_Business\\AccountBusiness.cs",
+              "RelativeDocumentMoniker": "Giveandtake_Business\\AccountBusiness.cs",
+              "ToolTip": "D:\\Capstone Project\\Giveandtake_Business\\AccountBusiness.cs",
+              "RelativeToolTip": "Giveandtake_Business\\AccountBusiness.cs",
+              "ViewState": "AQIAAGYAAAAAAAAAAAA1wH0AAAArAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-26T13:11:09.321Z",
+              "WhenOpened": "2024-09-28T08:07:11.299Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AccountService.cs",
+              "DocumentMoniker": "D:\\Capstone Project\\Giveandtake_Services\\Implements\\AccountService.cs",
+              "RelativeDocumentMoniker": "Giveandtake_Services\\Implements\\AccountService.cs",
+              "ToolTip": "D:\\Capstone Project\\Giveandtake_Services\\Implements\\AccountService.cs",
+              "RelativeToolTip": "Giveandtake_Services\\Implements\\AccountService.cs",
+              "ViewState": "AQIAABQAAAAAAAAAAIA1wCMAAABUAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-28T08:05:12.779Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "IAccountService.cs",
+              "DocumentMoniker": "D:\\Capstone Project\\Giveandtake_Services\\Interfaces\\IAccountService.cs",
+              "RelativeDocumentMoniker": "Giveandtake_Services\\Interfaces\\IAccountService.cs",
+              "ToolTip": "D:\\Capstone Project\\Giveandtake_Services\\Interfaces\\IAccountService.cs",
+              "RelativeToolTip": "Giveandtake_Services\\Interfaces\\IAccountService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAABNAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-28T08:06:17.112Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DonationService.cs",
+              "DocumentMoniker": "D:\\Capstone Project\\Giveandtake_Services\\Implements\\DonationService.cs",
+              "RelativeDocumentMoniker": "Giveandtake_Services\\Implements\\DonationService.cs",
+              "ToolTip": "D:\\Capstone Project\\Giveandtake_Services\\Implements\\DonationService.cs",
+              "RelativeToolTip": "Giveandtake_Services\\Implements\\DonationService.cs",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAAABUAAABBAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-28T08:20:20.568Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "IDonationServicecs.cs",
+              "DocumentMoniker": "D:\\Capstone Project\\Giveandtake_Services\\Interfaces\\IDonationServicecs.cs",
+              "RelativeDocumentMoniker": "Giveandtake_Services\\Interfaces\\IDonationServicecs.cs",
+              "ToolTip": "D:\\Capstone Project\\Giveandtake_Services\\Interfaces\\IDonationServicecs.cs",
+              "RelativeToolTip": "Giveandtake_Services\\Interfaces\\IDonationServicecs.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-28T08:20:25.113Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DonationBusiness.cs",
+              "DocumentMoniker": "D:\\Capstone Project\\Giveandtake_Business\\DonationBusiness.cs",
+              "RelativeDocumentMoniker": "Giveandtake_Business\\DonationBusiness.cs",
+              "ToolTip": "D:\\Capstone Project\\Giveandtake_Business\\DonationBusiness.cs",
+              "RelativeToolTip": "Giveandtake_Business\\DonationBusiness.cs",
+              "ViewState": "AQIAABIAAAAAAAAAAAAowB4AAAAqAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-28T08:20:31.962Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "D:\\Capstone Project\\GiveandTake_API\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "GiveandTake_API\\Controllers\\AccountController.cs",
+              "ToolTip": "D:\\Capstone Project\\GiveandTake_API\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "GiveandTake_API\\Controllers\\AccountController.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAABMAAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-28T08:00:28.057Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "IGenericRepository.cs",
+              "DocumentMoniker": "D:\\Capstone Project\\GiveandTake_Repo\\Repository\\Interfaces\\IGenericRepository.cs",
+              "RelativeDocumentMoniker": "GiveandTake_Repo\\Repository\\Interfaces\\IGenericRepository.cs",
+              "ToolTip": "D:\\Capstone Project\\GiveandTake_Repo\\Repository\\Interfaces\\IGenericRepository.cs",
+              "RelativeToolTip": "GiveandTake_Repo\\Repository\\Interfaces\\IGenericRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAwDoAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-28T08:29:47.471Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "GenericRepository.cs",
+              "DocumentMoniker": "D:\\Capstone Project\\GiveandTake_Repo\\Repository\\Implements\\GenericRepository.cs",
+              "RelativeDocumentMoniker": "GiveandTake_Repo\\Repository\\Implements\\GenericRepository.cs",
+              "ToolTip": "D:\\Capstone Project\\GiveandTake_Repo\\Repository\\Implements\\GenericRepository.cs",
+              "RelativeToolTip": "GiveandTake_Repo\\Repository\\Implements\\GenericRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAHoAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-28T08:20:34.248Z"
             }
           ]
         },
