@@ -33,8 +33,8 @@ namespace Giveandtake_Services.Implements
         public Task<IGiveandtakeResult> GetAccountInfoByEmail(string email)
             => _accountBusiness.GetAccountInfoByEmail(email);
 
-        public Task<IGiveandtakeResult> GetAllAccount()
-            => _accountBusiness.GetAllAccount();
+        public Task<IGiveandtakeResult> GetAllAccount(int page = 1, int pageSize = 8)
+            => _accountBusiness.GetAllAccount(page, pageSize);
 
         public Task<IGiveandtakeResult> Login(string email, string password)
             => _accountBusiness.Login(email, password);

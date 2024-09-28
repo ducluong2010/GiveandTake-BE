@@ -19,14 +19,14 @@ namespace GiveandTake_API.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.Donation.DonationsEndPoint)]
-        [SwaggerOperation(Summary = "Get all Donations")]
-        public async Task<IActionResult> GetAllDonations()
+        [SwaggerOperation(Summary = "Get all Donations with pagination")]
+        public async Task<IActionResult> GetAllDonations([FromQuery] int page = 1, [FromQuery] int pageSize = 8)
         {
-            var response = await _donationService.GetAllDonations();
+            var response = await _donationService.GetAllDonations(page, pageSize);
             if (response.Status >= 0)
                 return Ok(response.Data);
             else
-                return BadRequest(response);
+                return BadRequest(response.Message);
         }
 
         [HttpGet(ApiEndPointConstant.Donation.DonationEndPoint)]

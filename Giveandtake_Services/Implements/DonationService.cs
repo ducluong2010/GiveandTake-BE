@@ -18,8 +18,8 @@ namespace Giveandtake_Services.Implements
             _donationBusiness = new DonationBusiness();
         }
 
-        public Task<IGiveandtakeResult> GetAllDonations()
-            => _donationBusiness.GetAllDonations();
+        public Task<IGiveandtakeResult> GetAllDonations(int page = 1, int pageSize = 8)
+            => _donationBusiness.GetAllDonations(page, pageSize);
 
         public Task<IGiveandtakeResult> GetDonationById(int id)
             => _donationBusiness.GetDonationById(id);
