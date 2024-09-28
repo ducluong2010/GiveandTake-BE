@@ -396,3 +396,20 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Bỏ qua các thư mục build
+bin/
+obj/
+artifacts/
+TestResults/
+
+# Bỏ qua các file log và tạm thời
+*.log
+*.tmp
+*.vs/
+*.user
+*.suo
+
+# Bỏ qua thư viện bên ngoài
+packages/
+node_modules/
