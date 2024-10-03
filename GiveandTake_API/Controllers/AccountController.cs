@@ -71,6 +71,18 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
+        [HttpPut(ApiEndPointConstant.Account.PromoteToPremiumEndPoint)]
+        [SwaggerOperation(Summary = "Promote Account to Premium")]
+        public async Task<IActionResult> PromoteToPremium(int id)
+        {
+            var response = await _accountService.PromoteToPremium(id);
+            if (response.Status >= 0)
+                return Ok(response);
+            else
+                return BadRequest(response);
+        }
+
+
         [HttpDelete(ApiEndPointConstant.Account.AccountEndpoint)]
         [SwaggerOperation(Summary = "Delete Account")]
         public async Task<IActionResult> DeleteAccount(int id)
@@ -92,5 +104,18 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response);
         }
+
+        [HttpDelete(ApiEndPointConstant.Account.UnbanAccountEndPoint)]
+        [SwaggerOperation(Summary = "Unban Account")]
+        public async Task<IActionResult> UnbanAccount(int id)
+        {
+            var response = await _accountService.UnbanAccount(id);
+            if (response.Status >= 0)
+                return Ok(response);
+            else
+                return BadRequest(response);
+        }
+
+
     }
 }
