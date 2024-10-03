@@ -25,9 +25,15 @@ public partial class Account
 
     public bool? IsActive { get; set; }
 
+    public bool? IsPremium { get; set; }
+
+    public DateTime? PremiumUntil { get; set; }
+
     public virtual ICollection<Donation> Donations { get; set; } = new List<Donation>();
 
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
+
+    public virtual ICollection<Membership> Memberships { get; set; } = new List<Membership>();
 
     public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 
