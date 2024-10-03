@@ -27,6 +27,8 @@ public partial class GiveandtakeContext : DbContext
 
     public virtual DbSet<FeedbackMedium> FeedbackMedia { get; set; }
 
+    public virtual DbSet<Membership> Memberships { get; set; }
+
     public virtual DbSet<Message> Messages { get; set; }
 
     public virtual DbSet<Reward> Rewards { get; set; }
@@ -62,6 +64,7 @@ public partial class GiveandtakeContext : DbContext
             entity.Property(e => e.IsActive).HasColumnType("bit(1)");
             entity.Property(e => e.Password).HasMaxLength(20);
             entity.Property(e => e.Phone).HasMaxLength(20);
+            entity.Property(e => e.PremiumUntil).HasColumnType("datetime");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Accounts)
                 .HasForeignKey(d => d.RoleId)
@@ -108,6 +111,7 @@ public partial class GiveandtakeContext : DbContext
             entity.HasIndex(e => e.DonationId, "DonationId");
 
             entity.Property(e => e.IsThumbnail).HasColumnType("bit(1)");
+
             entity.Property(e => e.Url).HasColumnType("text");
 
             entity.HasOne(d => d.Donation).WithMany(p => p.DonationImages)
@@ -149,6 +153,23 @@ public partial class GiveandtakeContext : DbContext
             entity.HasOne(d => d.Feedback).WithMany(p => p.FeedbackMedia)
                 .HasForeignKey(d => d.FeedbackId)
                 .HasConstraintName("FeedbackMedia_ibfk_1");
+        });
+
+        modelBuilder.Entity<Membership>(entity =>
+        {
+            entity.HasKey(e => e.MembershipId).HasName("PRIMARY");
+
+            entity.ToTable("Membership");
+
+            entity.HasIndex(e => e.AccountId, "AccountId");
+
+            entity.Property(e => e.PremiumUntil).HasColumnType("datetime");
+            entity.Property(e => e.PurchaseDate).HasColumnType("datetime");
+            entity.Property(e => e.Status).HasMaxLength(50);
+
+            entity.HasOne(d => d.Account).WithMany(p => p.Memberships)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("Membership_ibfk_1");
         });
 
         modelBuilder.Entity<Message>(entity =>
