@@ -76,6 +76,8 @@ namespace Giveandtake_Business
                 AvatarUrl = String.Empty,
                 RoleId = 3,
                 IsActive = true,
+                IsPremium = false,
+                PremiumUntil = null
             };
 
             await _unitOfWork.GetRepository<Account>().InsertAsync(newAccount);
@@ -118,7 +120,9 @@ namespace Giveandtake_Business
                     Password = a.Password,
                     Phone = a.Phone,
                     Point = a.Point,
-                    RoleId = a.RoleId
+                    RoleId = a.RoleId,
+                    IsPremium = a.IsPremium,
+                    PremiumUnti = a.PremiumUntil,
                 }
             );
 
@@ -179,7 +183,10 @@ namespace Giveandtake_Business
                                           Password = a.Password,
                                           Phone = a.Phone,
                                           Point = a.Point,
-                                          RoleId = a.RoleId
+                                          RoleId = a.RoleId,
+                                          IsPremium = a.IsPremium,
+                                          PremiumUnti = a.PremiumUntil,
+
                                       });
             if (acc != null) return new GiveandtakeResult(acc);
             return new GiveandtakeResult();
@@ -203,7 +210,9 @@ namespace Giveandtake_Business
                                           Password = a.Password,
                                           Phone = a.Phone,
                                           Point = a.Point,
-                                          RoleId = a.RoleId
+                                          RoleId = a.RoleId,
+                                          IsPremium = a.IsPremium,
+                                          PremiumUnti = a.PremiumUntil,
                                       });
             if (acc != null) return new GiveandtakeResult(acc);
             return new GiveandtakeResult();
@@ -237,6 +246,8 @@ namespace Giveandtake_Business
                 AvatarUrl = inputedAccount.AvatarUrl,
                 RoleId = inputedAccount.RoleId,
                 IsActive = true,
+                IsPremium = false,
+                PremiumUntil = null,
             };
 
             await _unitOfWork.GetRepository<Account>().InsertAsync(newAccount);
@@ -272,6 +283,8 @@ namespace Giveandtake_Business
                 currentAcc.AvatarUrl = String.IsNullOrEmpty(accInfo.AvatarUrl) ? currentAcc.AvatarUrl : accInfo.AvatarUrl;
                 currentAcc.Point = accInfo.Point;
                 currentAcc.IsActive = accInfo.IsActive;
+                currentAcc.IsPremium = accInfo.IsPremium;
+                currentAcc.PremiumUntil = accInfo.PremiumUnti;
 
                 _unitOfWork.GetRepository<Account>().UpdateAsync(currentAcc);
                 await _unitOfWork.CommitAsync();
@@ -327,7 +340,6 @@ namespace Giveandtake_Business
             return new GiveandtakeResult("Unbanned");
         }
 
-
         // Method to change password for the current logged-in account
         public async Task<IGiveandtakeResult> ChangePassword(int accountId, string oldPassword, string newPassword)
         {
@@ -352,8 +364,25 @@ namespace Giveandtake_Business
             result.Message = "Password changed successfully";
             return result;
         }
-        #endregion
+
+        // Method to promote an account to Membership
+        public async Task<IGiveandtakeResult> PromoteToPremium(int accountId)
+        {
+            Account account = await _unitOfWork.GetRepository<Account>()
+                .SingleOrDefaultAsync(predicate: a => a.AccountId == accountId);
+            if (account == null) return new GiveandtakeResult();
+            else
+            {
+                account.IsPremium = true;
+                account.PremiumUntil = DateTime.Now.AddDays(30);
+                    
+                _unitOfWork.GetRepository<Account>().UpdateAsync(account);
+                await _unitOfWork.CommitAsync();
+            }
+            return new GiveandtakeResult("Your account was promoted to Premium");
+        }
     }
+
     public class PaginatedResult<T>
     {
         public List<T> Items { get; set; }

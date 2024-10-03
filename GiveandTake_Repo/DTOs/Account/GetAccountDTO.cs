@@ -27,6 +27,10 @@ namespace GiveandTake_Repo.DTOs.Account
         public string? AvatarUrl { get; set; }
 
         public bool? IsActive { get; set; }
+
+        public bool? IsPremium { get; set; }
+
+        public DateTime? PremiumUnti { get; set; }
     }
 
     public class AccountDTO
@@ -48,5 +52,9 @@ namespace GiveandTake_Repo.DTOs.Account
         public string? AvatarUrl { get; set; }
 
         public bool? IsActive { get; set; }
+
+        public bool? IsPremium { get; set; }
+
+        public DateTime? PremiumUnti { get; set; }
     }
 }

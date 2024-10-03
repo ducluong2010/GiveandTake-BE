@@ -27,5 +27,10 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> DeleteAccount(int id);
 
         Task<IGiveandtakeResult> BanAccount(int accountId);
+
+        Task<IGiveandtakeResult> UnbanAccount(int accountId);
+
+        Task<IGiveandtakeResult> PromoteToPremium(int accountId);
+
     }
 }

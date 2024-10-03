@@ -17,7 +17,9 @@
             public const string AccountsEndpoint = ApiEndpoint + "/accounts";
             public const string EmailAccountsEndpoint = AccountsEndpoint + "/{email}/info";
             public const string AccountEndpoint = AccountsEndpoint + "/{id}";
-            public const string BanAccountEndPoint = AccountsEndpoint + "/accounts/{id}";
+            public const string PromoteToPremiumEndPoint = AccountsEndpoint + "/promote/{id}";
+            public const string BanAccountEndPoint = AccountsEndpoint + "/ban/{id}";
+            public const string UnbanAccountEndPoint = AccountsEndpoint + "/unban/{id}";
         }
 
         public class Category
@@ -32,6 +34,7 @@
             public const string RewardEndPoint = RewardsEndPoint + "/{id}";
             public const string RewardStatusEndPoint = RewardsEndPoint + "/{id}/status";
         }
+
         public class Donation
         {
             public const string DonationsEndPoint = ApiEndpoint + "/donations";
