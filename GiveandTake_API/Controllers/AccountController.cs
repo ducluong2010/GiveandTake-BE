@@ -116,6 +116,15 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
-
+        [HttpPut(ApiEndPointConstant.Account.ChangePasswordEndPoint)]
+        [SwaggerOperation(Summary = "Change Account Password")]
+        public async Task<IActionResult> ChangePassword(int id, string oldPassword, string newPassword)
+        {
+            var response = await _accountService.ChangePassword(id, oldPassword, newPassword);
+            if (response.Status >= 0)
+                return Ok(response);
+            else
+                return BadRequest(response);
+        }
     }
 }
