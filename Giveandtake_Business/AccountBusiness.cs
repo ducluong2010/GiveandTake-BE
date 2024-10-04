@@ -379,7 +379,7 @@ namespace Giveandtake_Business
                 _unitOfWork.GetRepository<Account>().UpdateAsync(account);
                 await _unitOfWork.CommitAsync();
             }
-            return new GiveandtakeResult("Your account was promoted to Premium");
+            return new GiveandtakeResult("Account was promoted to Premium");
         }
     }
 
@@ -391,4 +391,5 @@ namespace Giveandtake_Business
         public int PageSize { get; set; }
         public int TotalPages { get; set; }
     }
+    #endregion
 }

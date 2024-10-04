@@ -50,5 +50,8 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> UpdateAccountInfo(int id, AccountDTO accInfo)
             => _accountBusiness.UpdateAccountInfo(id, accInfo);
+
+        public Task<IGiveandtakeResult> ChangePassword(int accountId, string oldPassword, string newPassword)
+            => _accountBusiness.ChangePassword(accountId, oldPassword, newPassword);
     }
 }
