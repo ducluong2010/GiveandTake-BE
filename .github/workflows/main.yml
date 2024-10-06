@@ -13,8 +13,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+#Ktra các file
     - name: List directory contents
       run: ls -la
-
+#Chạy docker compose để build
     - name: Run `docker compose`
       run: docker compose up --build -d
