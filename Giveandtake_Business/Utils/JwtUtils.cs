@@ -30,13 +30,14 @@ namespace Giveandtake_Business.Utils
             var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
             List<Claim> claims = new List<Claim>()
-                {
-                    new Claim(JwtRegisteredClaimNames.Jti, account.AccountId.ToString()),
-                    new Claim("FullName", account.FullName),
-                    new Claim("Email", account.Email),
-                    new Claim("Password", account.Password),
-                    new Claim(ClaimTypes.Role, account.RoleId.ToString(), ClaimValueTypes.Integer32),
-                };
+                    {
+                        new Claim(JwtRegisteredClaimNames.Jti, account.AccountId.ToString()),
+                        new Claim("FullName", account.FullName),
+                        new Claim("Email", account.Email),
+                        new Claim("Password", account.Password),
+                        new Claim(ClaimTypes.Role, account.RoleId.ToString(), ClaimValueTypes.Integer32),
+                        new Claim("IsPremium", (bool)account.IsPremium ? "true" : "false")
+                    };
 
             // Add expiredTime of token
             var expires = DateTime.Now.AddMinutes(30);
