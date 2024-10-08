@@ -1,0 +1,21 @@
+name: GiveandTake
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  docker-compose:
+    runs-on: self-hosted
+    environment: docker
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+#Ktra các file
+    - name: List directory contents
+      run: ls -la
+#Chạy docker compose để build
+    - name: Run `docker compose`
+      run: sudo docker compose up --build -d
