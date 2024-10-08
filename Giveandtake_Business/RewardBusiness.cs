@@ -61,7 +61,6 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(reward);
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "2")]
         // Update reward information
         public async Task<IGiveandtakeResult> UpdateReward(int id, RewardDTO rewardInfo)
         {
@@ -79,10 +78,10 @@ namespace Giveandtake_Business
                     return new GiveandtakeResult(-1, "Point and Quantity must be greater than 0");
                 }
 
-                // Update status to "Rewarded" if quantity is 0
+                // Update status to "Claimed" if quantity is 0
                 if (rewardInfo.Quantity == 0)
                 {
-                    rewardInfo.Status = "Rewarded";
+                    rewardInfo.Status = "Claimed";
                 }
 
                 reward.AccountId = rewardInfo.AccountId > 0 ? rewardInfo.AccountId : reward.AccountId;
@@ -100,7 +99,6 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(1, "Reward updated successfully");
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "2")]
         // Add new reward
         public async Task<IGiveandtakeResult> CreateReward(RewardDTO rewardInfo)
         {
@@ -115,10 +113,10 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult(-1, "Account Id must be greater than 0");
             }
 
-            // Update status to "Rewarded" if quantity is 0
+            // Update status to "Claimed" if quantity is 0
             if (rewardInfo.Quantity == 0)
             {
-                rewardInfo.Status = "Sent";
+                rewardInfo.Status = "Claimed";
             }
 
             Reward newReward = new Reward
@@ -149,7 +147,6 @@ namespace Giveandtake_Business
             return result;
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "2")]
         // Delete reward
         public async Task<IGiveandtakeResult> DeleteReward(int id)
         {
@@ -164,11 +161,10 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(1, "Reward deleted successfully");
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "2")]
         // Change reward status
         public async Task<IGiveandtakeResult> ChangeRewardStatus(int id, string newStatus)
         {
-            if (newStatus.ToLower() != "inactive" && newStatus.ToLower() != "active")
+            if (newStatus.ToLower() != "inactive" && newStatus.ToLower() != "active" && newStatus.ToLower() != "claimed" && newStatus.ToLower() != "premium")
             {
                 return new GiveandtakeResult(-4, "Invalid status");
             }
