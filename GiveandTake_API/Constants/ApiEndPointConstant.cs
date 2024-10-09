@@ -49,6 +49,11 @@
             public const string DonationsEndPoint = ApiEndpoint + "/donations";
             public const string DonationEndPoint = DonationsEndPoint + "/{id}";
             public const string DonationStatusEndPoint = DonationsEndPoint + "/{id}/status";
+            public const string ToggleDonationStatusEndPoint = DonationsEndPoint +"/{id}/toggle";
+            public const string ToggleCancelEndPoint = DonationsEndPoint + "/{id}/togglecp";
+            public const string ToggleApprovedEndPoint = DonationsEndPoint + "/{id}/toggleac";
+            public const string CheckBannedAccountDonationsEndPoint = DonationsEndPoint + "/checkban";
+            public const string CheckHidingDonationsEndPoint = DonationsEndPoint + "/checkactived";
         }
 
         public class Transaction

@@ -24,7 +24,7 @@ namespace Giveandtake_Services.Implements
         public Task<IGiveandtakeResult> GetDonationById(int id)
             => _donationBusiness.GetDonationById(id);
 
-        public Task<IGiveandtakeResult> CreateDonation(CreateUpdateDonationDTO donationInfo)
+        public Task<IGiveandtakeResult> CreateDonation(CreateDonationDTO donationInfo)
             => _donationBusiness.CreateDonation(donationInfo);
 
         public Task<IGiveandtakeResult> UpdateDonation(int id, CreateUpdateDonationDTO donationInfo)
@@ -32,5 +32,20 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> DeleteDonation(int id)
             => _donationBusiness.DeleteDonation(id);
+
+        public Task<IGiveandtakeResult> ToggleDonationStatus(int donationId)
+            => _donationBusiness.ToggleDonationStatus(donationId);
+
+        public Task<IGiveandtakeResult> ToggleCancel(int donationId)
+            => _donationBusiness.ToggleCancel(donationId);
+        public Task<IGiveandtakeResult> ToggleApproved(int donationId)
+            => _donationBusiness.ToggleApproved(donationId);
+
+        public Task<IGiveandtakeResult> CheckAndUpdateAllBannedAccountsDonations()
+           => _donationBusiness.CheckAndUpdateAllBannedAccountsDonations();
+
+        public Task<IGiveandtakeResult> CheckAndUpdateDonationsForActivatedAccounts()
+           => _donationBusiness.CheckAndUpdateDonationsForActivatedAccounts();
+
     }
 }
