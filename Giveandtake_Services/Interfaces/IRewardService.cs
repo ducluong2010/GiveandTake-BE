@@ -13,7 +13,7 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> GetAllRewards();
         Task<IGiveandtakeResult> GetRewardById(int id);
         Task<IGiveandtakeResult> UpdateReward(int id, RewardDTO rewardInfo);
-        Task<IGiveandtakeResult> CreateReward(RewardDTO rewardInfo);
+        Task<IGiveandtakeResult> CreateReward(int accountId, RewardDTO rewardInfo);
         Task<IGiveandtakeResult> DeleteReward(int id);
         Task<IGiveandtakeResult> ChangeRewardStatus(int id, string status);
     }

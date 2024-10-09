@@ -97,6 +97,7 @@ namespace Giveandtake_Business
 
             return result;
         }
+
         #endregion
 
 
@@ -392,4 +393,6 @@ namespace Giveandtake_Business
         public int TotalPages { get; set; }
     }
     #endregion
+
+
 }

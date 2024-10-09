@@ -31,8 +31,6 @@ namespace GiveandTake_Repo.DTOs.Reward
 
     public class RewardDTO
     {
-        public int? AccountId { get; set; }
-
         public string? RewardName { get; set; }
 
         public string? Description { get; set; }

@@ -17,8 +17,8 @@ namespace Giveandtake_Services.Implements
             _rewardBusiness = new RewardBusiness();
         }
 
-        public Task<IGiveandtakeResult> CreateReward(RewardDTO rewardInfo)
-            => _rewardBusiness.CreateReward(rewardInfo);
+        public Task<IGiveandtakeResult> CreateReward(int accountId, RewardDTO rewardInfo)
+            => _rewardBusiness.CreateReward(accountId, rewardInfo);
 
         public Task<IGiveandtakeResult> DeleteReward(int id)
             => _rewardBusiness.DeleteReward(id);

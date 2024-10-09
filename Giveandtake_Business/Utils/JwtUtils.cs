@@ -1,4 +1,5 @@
 ﻿using GiveandTake_Repo.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -13,6 +14,13 @@ namespace Giveandtake_Business.Utils
 {
     public class JwtUtils
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public JwtUtils(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
+
         public static string GenerateJwtToken(Account account)
         {
             // Load configuration from appsettings.json
@@ -30,14 +38,14 @@ namespace Giveandtake_Business.Utils
             var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
             List<Claim> claims = new List<Claim>()
-                    {
-                        new Claim(JwtRegisteredClaimNames.Jti, account.AccountId.ToString()),
-                        new Claim("FullName", account.FullName),
-                        new Claim("Email", account.Email),
-                        new Claim("Password", account.Password),
-                        new Claim(ClaimTypes.Role, account.RoleId.ToString(), ClaimValueTypes.Integer32),
-                        new Claim("IsPremium", (bool)account.IsPremium ? "true" : "false")
-                    };
+                            {
+                                new Claim("AccountId", account.AccountId.ToString()),
+                                new Claim("FullName", account.FullName),
+                                new Claim("Email", account.Email),
+                                new Claim("Password", account.Password),
+                                new Claim(ClaimTypes.Role, account.RoleId.ToString(), ClaimValueTypes.Integer32),
+                                new Claim("IsPremium", (bool)account.IsPremium ? "true" : "false")
+                            };
 
             // Add expiredTime of token
             var expires = DateTime.Now.AddMinutes(30);
