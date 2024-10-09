@@ -36,11 +36,27 @@
             public const string RewardStatusEndPoint = RewardsEndPoint + "/{id}/status";
         }
 
+        public class Rewarded
+        {
+            public const string RewardedEndPoint = ApiEndpoint + "/rewardeds";
+            public const string RewardedByAccountEndPoint = RewardedEndPoint + "/{accountId}";
+            public const string RewardedByIdEndPoint = RewardedEndPoint + "/{id}";
+
+        }
+
         public class Donation
         {
             public const string DonationsEndPoint = ApiEndpoint + "/donations";
             public const string DonationEndPoint = DonationsEndPoint + "/{id}";
             public const string DonationStatusEndPoint = DonationsEndPoint + "/{id}/status";
+        }
+
+        public class Transaction
+        {
+            public const string TransactionsEndPoint = ApiEndpoint + "/transactions";
+            public const string TransactionEndPoint = TransactionsEndPoint + "/{id}";
+            public const string TransactionStatusEndPoint = TransactionsEndPoint + "/{id}/status";
+            public const string TransactionByAccountEndPoint = TransactionsEndPoint + "/{accountId}";
         }
     }
 }

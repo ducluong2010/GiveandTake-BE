@@ -20,6 +20,7 @@ namespace Giveandtake_Business
             _unitOfWork = new UnitOfWork();
         }
 
+        #region Reward
         // Get all reward
         public async Task<IGiveandtakeResult> GetAllRewards()
         {
@@ -187,5 +188,7 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(1, "Reward status updated successfully");
         }
+
+        #endregion
     }
 }
