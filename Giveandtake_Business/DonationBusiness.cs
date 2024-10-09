@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Giveandtake_Business
 {
@@ -18,14 +19,13 @@ namespace Giveandtake_Business
             _unitOfWork = new UnitOfWork();
         }
 
-        // Get all donations
         public async Task<IGiveandtakeResult> GetAllDonations(int page = 1, int pageSize = 8)
         {
             var repository = _unitOfWork.GetRepository<Donation>();
 
             // Get all active donations based on Status
             var allDonations = await repository.GetListAsync(
-            predicate: d => d.Status == "Approved", // Kiểm tra Status là kiểu string
+            predicate: d => true, 
             selector: d => new DonationDTO
             {
                 DonationId = d.DonationId,
@@ -82,9 +82,6 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(paginatedResult);
         }
 
-
-
-        // Get donation by id
         public async Task<IGiveandtakeResult> GetDonationById(int donationId)
         {
             var donation = await _unitOfWork.GetRepository<Donation>()
@@ -107,7 +104,6 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(donation);
         }
 
-        // Update donation information using CreateUpdateDonationDTO
         public async Task<IGiveandtakeResult> UpdateDonation(int id, CreateUpdateDonationDTO donationInfo)
         {
             var donation = await _unitOfWork.GetRepository<Donation>()
@@ -118,7 +114,6 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult(-1, "Donation not found");
             }
 
-            // Update only the fields that are provided in the DTO
             donation.Name = !string.IsNullOrEmpty(donationInfo.Name) ? donationInfo.Name : donation.Name;
             donation.Description = !string.IsNullOrEmpty(donationInfo.Description) ? donationInfo.Description : donation.Description;
             donation.Point = donationInfo.Point ?? donation.Point;
@@ -132,8 +127,7 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(1, "Donation updated successfully");
         }
 
-        // Create new donation using CreateUpdateDonationDTO
-        public async Task<IGiveandtakeResult> CreateDonation(CreateUpdateDonationDTO donationInfo)
+        public async Task<IGiveandtakeResult> CreateDonation(CreateDonationDTO donationInfo)
         {
             var newDonation = new Donation
             {
@@ -143,7 +137,7 @@ namespace Giveandtake_Business
                 Description = donationInfo.Description,
                 Point = donationInfo.Point,
                 CreatedAt = DateTime.Now,
-                Status = donationInfo.Status,
+                Status = "Pending",
                 DonationImages = new List<DonationImage>() // Xử lý nếu cần thêm DonationImages
             };
 
@@ -157,8 +151,7 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(1, "Donation created successfully");
         }
-
-        // Delete donation
+ 
         public async Task<IGiveandtakeResult> DeleteDonation(int id)
         {
             var donation = await _unitOfWork.GetRepository<Donation>()
@@ -173,5 +166,164 @@ namespace Giveandtake_Business
             await _unitOfWork.CommitAsync();
             return new GiveandtakeResult(1, "Donation deleted successfully");
         }
+
+        public async Task<IGiveandtakeResult> ToggleDonationStatus(int donationId)
+        {
+            var donation = await _unitOfWork.GetRepository<Donation>()
+                .SingleOrDefaultAsync(predicate: d => d.DonationId == donationId);
+
+            if (donation == null)
+            {
+                return new GiveandtakeResult(-1, "Donation not found");
+            }
+
+            if (donation.Status == "Pending")
+            {
+                donation.Status = "Approved";
+            }
+            else if (donation.Status == "Approved")
+            {
+                donation.Status = "Pending";
+            }
+            else
+            {
+                return new GiveandtakeResult(-1, "Donation is in an invalid status.");
+            }
+            donation.UpdatedAt = DateTime.Now;
+
+            _unitOfWork.GetRepository<Donation>().UpdateAsync(donation);
+            await _unitOfWork.CommitAsync();
+
+            return new GiveandtakeResult(1, "Donation status toggled successfully");
+        }
+
+        public async Task<IGiveandtakeResult> ToggleCancel(int donationId)
+        {
+            var donation = await _unitOfWork.GetRepository<Donation>()
+                .SingleOrDefaultAsync(predicate: d => d.DonationId == donationId);
+
+            if (donation == null)
+            {
+                return new GiveandtakeResult(-1, "Donation not found");
+            }
+
+            if (donation.Status == "Pending")
+            {
+                donation.Status = "Cancel";
+            }
+            else if (donation.Status == "Cancel")
+            {
+                donation.Status = "Pending";
+            }
+            else
+            {
+                return new GiveandtakeResult(-1, "Donation is in an invalid status.");
+            }
+            donation.UpdatedAt = DateTime.Now;
+
+            _unitOfWork.GetRepository<Donation>().UpdateAsync(donation);
+            await _unitOfWork.CommitAsync();
+
+            return new GiveandtakeResult(1, "Donation status toggled successfully");
+        }
+
+        public async Task<IGiveandtakeResult> ToggleApproved(int donationId)
+        {
+            var donation = await _unitOfWork.GetRepository<Donation>()
+                .SingleOrDefaultAsync(predicate: d => d.DonationId == donationId);
+
+            if (donation == null)
+            {
+                return new GiveandtakeResult(-1, "Donation not found");
+            }
+
+            if (donation.Status == "Approved")
+            {
+                donation.Status = "Cancel";
+            }
+            else if (donation.Status == "Cancel")
+            {
+                donation.Status = "Approved";
+            }
+            else
+            {
+                return new GiveandtakeResult(-1, "Donation is in an invalid status.");
+            }
+            donation.UpdatedAt = DateTime.Now;
+
+            _unitOfWork.GetRepository<Donation>().UpdateAsync(donation);
+            await _unitOfWork.CommitAsync();
+
+            return new GiveandtakeResult(1, "Donation status toggled successfully");
+        }
+
+        public async Task<IGiveandtakeResult> CheckAndUpdateAllBannedAccountsDonations()
+        {
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+
+            var bannedAccounts = await accountRepository.GetListAsync(
+                predicate: a => a.IsActive == false
+            );
+
+            int totalUpdatedDonations = 0;
+
+            foreach (var account in bannedAccounts)
+            {
+                var donations = await donationRepository.GetListAsync(
+                    predicate: d => d.AccountId == account.AccountId && d.Status != "Hiding"
+                );
+
+                foreach (var donation in donations)
+                {
+                    donation.Status = "Hiding";
+                    donation.UpdatedAt = DateTime.Now;
+                    donationRepository.UpdateAsync(donation);
+                }
+
+                totalUpdatedDonations += donations.Count;
+            }
+
+            await _unitOfWork.CommitAsync();
+
+            return new GiveandtakeResult(1, $"Updated {totalUpdatedDonations} donations to Hiding status for {bannedAccounts.Count} banned accounts");
+        }
+
+        public async Task<IGiveandtakeResult> CheckAndUpdateDonationsForActivatedAccounts()
+        {
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+
+            var activeAccountIds = await accountRepository.GetListAsync(
+                predicate: a => a.IsActive == true,
+                selector: a => a.AccountId.ToString()
+            );
+
+            var hidingDonations = await donationRepository.GetListAsync(
+                predicate: d => d.Status == "Hiding" && activeAccountIds.Contains(d.AccountId.ToString())
+            );
+
+            if (!hidingDonations.Any())
+            {
+                Console.WriteLine("No hiding donations found for active accounts.");
+                return new GiveandtakeResult(0, "No hiding donations to update.");
+            }
+
+            int totalUpdatedDonations = 0;
+
+            foreach (var donation in hidingDonations)
+            {
+                donation.Status = "Approved";
+                donation.UpdatedAt = DateTime.Now;
+                Console.WriteLine($"Updating donation ID: {donation.DonationId} to Approved.");
+                totalUpdatedDonations++;
+                donationRepository.UpdateAsync(donation);
+            }
+
+            await _unitOfWork.CommitAsync();
+
+            return new GiveandtakeResult(1, $"Updated {totalUpdatedDonations} donations from Hiding to Approved status for activated accounts");
+        }
+
     }
 }
