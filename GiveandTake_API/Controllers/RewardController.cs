@@ -1,10 +1,12 @@
 ﻿using GiveandTake_API.Constants;
+using Giveandtake_Business.Utils;
 using GiveandTake_Repo.DTOs.Reward;
 using Giveandtake_Services.Implements;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Security.Claims;
 
 namespace GiveandTake_API.Controllers
 {
@@ -12,9 +14,10 @@ namespace GiveandTake_API.Controllers
     public class RewardController : ControllerBase
     {
         private readonly RewardService _rewardService;
+
         public RewardController()
         {
-           _rewardService = new RewardService();
+            _rewardService = new RewardService();
         }
 
         [HttpGet(ApiEndPointConstant.Reward.RewardsEndPoint)]
@@ -44,7 +47,10 @@ namespace GiveandTake_API.Controllers
         [SwaggerOperation(Summary = "Create a new Reward")]
         public async Task<IActionResult> CreateReward(RewardDTO rewardDTO)
         {
-            var response = await _rewardService.CreateReward(rewardDTO);
+            // Get the account ID from the JWT token
+            int accountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
+
+            var response = await _rewardService.CreateReward(accountId, rewardDTO);
             if (response.Status >= 0)
                 return Ok(response);
             else
@@ -86,6 +92,5 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response);
         }
-
     }
 }

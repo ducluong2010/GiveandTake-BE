@@ -25,7 +25,7 @@ namespace Giveandtake_Business
 
             // Get all active donations based on Status
             var allDonations = await repository.GetListAsync(
-            predicate: d => d.Status == "1", // Kiểm tra Status là kiểu string
+            predicate: d => d.Status == "Approved", // Kiểm tra Status là kiểu string
             selector: d => new DonationDTO
             {
                 DonationId = d.DonationId,

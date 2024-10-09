@@ -85,7 +85,6 @@ namespace Giveandtake_Business
                     rewardInfo.Status = "Claimed";
                 }
 
-                reward.AccountId = rewardInfo.AccountId > 0 ? rewardInfo.AccountId : reward.AccountId;
                 reward.RewardName = String.IsNullOrEmpty(rewardInfo.RewardName) ? reward.RewardName : rewardInfo.RewardName;
                 reward.Description = String.IsNullOrEmpty(rewardInfo.Description) ? reward.Description : rewardInfo.Description;
                 reward.ImageUrl = String.IsNullOrEmpty(rewardInfo.ImageUrl) ? reward.ImageUrl : rewardInfo.ImageUrl;
@@ -101,7 +100,7 @@ namespace Giveandtake_Business
         }
 
         // Add new reward
-        public async Task<IGiveandtakeResult> CreateReward(RewardDTO rewardInfo)
+        public async Task<IGiveandtakeResult> CreateReward(int accountId, RewardDTO rewardInfo)
         {
             GiveandtakeResult result = new GiveandtakeResult();
             // Validate point and quantity
@@ -109,9 +108,12 @@ namespace Giveandtake_Business
             {
                 return new GiveandtakeResult(-1, "Point and Quantity must be greater than 0");
             }
-            if (rewardInfo.AccountId < 0)
+
+            var account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(predicate:
+                c => c.AccountId == accountId);
+            if (account == null)
             {
-                return new GiveandtakeResult(-1, "Account Id must be greater than 0");
+                return new GiveandtakeResult(-1, "Account not found");
             }
 
             // Update status to "Claimed" if quantity is 0
@@ -121,9 +123,8 @@ namespace Giveandtake_Business
             }
 
             Reward newReward = new Reward
-
             {
-                AccountId = rewardInfo.AccountId,
+                AccountId = accountId,
                 RewardName = rewardInfo.RewardName,
                 Description = rewardInfo.Description,
                 ImageUrl = rewardInfo.ImageUrl,
@@ -138,7 +139,7 @@ namespace Giveandtake_Business
 
             if (isSuccessful)
             {
-                result = new GiveandtakeResult(1, "Create Susscessfull");
+                result = new GiveandtakeResult(1, "Create Successful");
             }
             else
             {
