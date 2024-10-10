@@ -63,5 +63,15 @@
             public const string TransactionStatusEndPoint = TransactionsEndPoint + "/{id}/status";
             public const string TransactionByAccountEndPoint = TransactionsEndPoint + "/{accountId}";
         }
+
+
+        public class DonationImage
+        {
+            public const string DonationImagesEndPoint = ApiEndpoint + "/product-images";
+            public const string DonationImageEndPoint = DonationImagesEndPoint + "/{id}";
+            public const string DonationAllImageEndPoint = DonationImagesEndPoint + "/donation/{donationId}"; // Đổi đường dẫn ở đây
+            public const string ChangeThumbnailEndPoint = DonationImagesEndPoint + "/{id}/thumbnail";
+        }
+
     }
 }

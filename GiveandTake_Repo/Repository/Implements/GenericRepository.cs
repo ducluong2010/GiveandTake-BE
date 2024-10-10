@@ -121,6 +121,11 @@ namespace GiveandTake_Repo.Repository.Implements
             _dbSet.RemoveRange(entities);
         }
 
+        public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.FirstOrDefaultAsync(predicate);
+        }
+
         #endregion
     }
 }

@@ -2,6 +2,7 @@
 using GiveandTake_Repo.DTOs.Account;
 using GiveandTake_Repo.DTOs.Reward;
 using GiveandTake_Repo.Models;
+using Giveandtake_Services.Implements;
 using Giveandtake_Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -12,39 +13,45 @@ namespace GiveandTake_API.Controllers
     [ApiController]
     public class RewardedController : ControllerBase
     {
-        private readonly IRewardedService _rewardedService;
-        private readonly IAccountService _accountService;
-        private readonly IRewardService _rewardService;
+        private readonly RewardedService _rewardedService;
 
-        public RewardedController(IRewardedService rewardedService, IAccountService accountService, IRewardService rewardService)
+
+        public RewardedController()
         {
-            _rewardedService = rewardedService;
-            _accountService = accountService;
-            _rewardService = rewardService;
+            _rewardedService = new RewardedService();
         }
 
         [HttpGet(ApiEndPointConstant.Rewarded.RewardedEndPoint)]
         [SwaggerOperation(Summary = "Get all rewarded items")]
         public async Task<IActionResult> GetAllRewarded()
         {
-            var result = await _rewardedService.GetAllRewarded();
-            return Ok(result);
+            var response = await _rewardedService.GetAllRewarded();
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response);
         }
 
         [HttpGet(ApiEndPointConstant.Rewarded.RewardedByIdEndPoint)]
         [SwaggerOperation(Summary = "Get rewarded item by id")]
         public async Task<IActionResult> GetRewardedById(int id)
         {
-            var result = await _rewardedService.GetRewardedById(id);
-            return Ok(result);
+            var response = await _rewardedService.GetRewardedById(id);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response);
         }
 
         [HttpGet(ApiEndPointConstant.Rewarded.RewardedByAccountEndPoint)]
         [SwaggerOperation(Summary = "Get rewarded items by account id")]
         public async Task<IActionResult> GetRewardedByAccountId(int accountId)
         {
-            var result = await _rewardedService.GetRewardedByAccountId(accountId);
-            return Ok(result);
+            var response = await _rewardedService.GetRewardedByAccountId(accountId);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response);
         }
 
         

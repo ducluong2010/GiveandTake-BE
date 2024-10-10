@@ -34,6 +34,7 @@ namespace GiveandTake_Repo.Repository.Interfaces
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null);
 
+        Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
 
         #endregion
 

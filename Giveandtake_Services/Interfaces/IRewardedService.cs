@@ -15,6 +15,5 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> GetRewardedById(int id);
         Task<IGiveandtakeResult> GetRewardedByAccountId(int accountId);
         Task <IGiveandtakeResult> ClainReward(Rewarded rewardedInfo);
-        //Task<IGiveandtakeResult> ClaimReward(Account account, Rewarded rewardedInfo);
     }
 }
