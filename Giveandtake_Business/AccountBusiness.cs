@@ -21,7 +21,6 @@ namespace Giveandtake_Business
         }
 
         #region Authentication
-        // Method for user login
         public async Task<IGiveandtakeResult> Login(string email, string password)
         {
             Account account = await _unitOfWork.GetRepository<Account>()
@@ -43,7 +42,11 @@ namespace Giveandtake_Business
                 return result;
             }
 
-            result.Data = JwtUtils.GenerateJwtToken(account);
+            result.Data = new
+            {
+                AccountId = account.AccountId,
+                JwtToken = JwtUtils.GenerateJwtToken(account)
+            };
             result.Status = 1;
             result.Message = "Login successfully";
             return result;
