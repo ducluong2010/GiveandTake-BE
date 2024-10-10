@@ -18,7 +18,7 @@ namespace GiveandTake_Repo.DTOs.Transaction
 
             public string? Status { get; set; }
 
-            public string? AccountId { get; set; }
+            public int? AccountId { get; set; }
         }
 
         public class UpdateTransaction
@@ -31,7 +31,7 @@ namespace GiveandTake_Repo.DTOs.Transaction
 
             public string? Status { get; set; }
 
-            public string? AccountId { get; set; }
+            public int? AccountId { get; set; }
         }
 
         public class GetTransaction
@@ -46,7 +46,7 @@ namespace GiveandTake_Repo.DTOs.Transaction
 
             public string? Status { get; set; }
 
-            public string? AccountId { get; set; }
+            public int? AccountId { get; set; }
 
         }
     }

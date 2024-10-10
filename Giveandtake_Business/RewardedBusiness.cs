@@ -30,7 +30,7 @@ namespace Giveandtake_Business
                     RewardId = x.RewardId,
                     AccountId = x.AccountId,
                     Status = x.Status,
-                    CreatedAt = x.CreatedAt
+                    ClaimedAt = x.ClaimedAt
                 });
             return new GiveandtakeResult(rewardedList);
         }
@@ -46,7 +46,7 @@ namespace Giveandtake_Business
                                           RewardId = x.RewardId,
                                           AccountId = x.AccountId,
                                           Status = x.Status,
-                                          CreatedAt = x.CreatedAt
+                                          ClaimedAt = x.ClaimedAt
                                       });
             return new GiveandtakeResult(rewarded);
         }
@@ -62,7 +62,7 @@ namespace Giveandtake_Business
                                   RewardId = x.RewardId,
                                   AccountId = x.AccountId,
                                   Status = x.Status,
-                                  CreatedAt = x.CreatedAt
+                                  ClaimedAt = x.ClaimedAt
                               });
             return new GiveandtakeResult(rewarded);
         }
@@ -76,7 +76,7 @@ namespace Giveandtake_Business
                 RewardId = rewardedInfo.RewardId,
                 AccountId = rewardedInfo.AccountId,
                 Status = rewardedInfo.Status,
-                CreatedAt = DateTime.Now
+                ClaimedAt = DateTime.Now
             };
 
             await _unitOfWork.GetRepository<Rewarded>().InsertAsync(rewarded);
