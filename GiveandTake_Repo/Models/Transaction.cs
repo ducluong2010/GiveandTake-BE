@@ -15,7 +15,7 @@ public partial class Transaction
 
     public string? Status { get; set; }
 
-    public string? AccountId { get; set; }
+    public int? AccountId { get; set; }
 
     public virtual ICollection<TransactionDetail> TransactionDetails { get; set; } = new List<TransactionDetail>();
 }

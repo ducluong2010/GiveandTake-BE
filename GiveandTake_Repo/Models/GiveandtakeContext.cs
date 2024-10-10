@@ -219,7 +219,7 @@ public partial class GiveandtakeContext : DbContext
 
             entity.HasIndex(e => e.RewardId, "RewardId");
 
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+            entity.Property(e => e.ClaimedAt).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(50);
 
             entity.HasOne(d => d.Account).WithMany(p => p.Rewardeds)
@@ -234,8 +234,6 @@ public partial class GiveandtakeContext : DbContext
         modelBuilder.Entity<Transaction>(entity =>
         {
             entity.HasKey(e => e.TransactionId).HasName("PRIMARY");
-
-            entity.Property(e => e.AccountId).HasMaxLength(50);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
