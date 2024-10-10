@@ -94,7 +94,7 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
-        [HttpDelete(ApiEndPointConstant.Account.BanAccountEndPoint)]
+        [HttpPut(ApiEndPointConstant.Account.BanAccountEndPoint)]
         [SwaggerOperation(Summary = "Ban Account")]
         public async Task<IActionResult> BanAccount(int id)
         {
@@ -105,7 +105,7 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
-        [HttpDelete(ApiEndPointConstant.Account.UnbanAccountEndPoint)]
+        [HttpPut(ApiEndPointConstant.Account.UnbanAccountEndPoint)]
         [SwaggerOperation(Summary = "Unban Account")]
         public async Task<IActionResult> UnbanAccount(int id)
         {
