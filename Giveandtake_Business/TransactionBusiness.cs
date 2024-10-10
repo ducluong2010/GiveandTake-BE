@@ -69,7 +69,7 @@ namespace Giveandtake_Business
         public async Task<IGiveandtakeResult> GetTransactionsByAccount(int id)
         {
             var transactionsList = await _unitOfWork.GetRepository<Transaction>().GetListAsync(
-                 predicate: o => o.AccountId.ToString() == id.ToString(),
+                 predicate: o => o.AccountId == id,
                  selector: o => new GetTransaction()
                  {
                      TransactionId = o.TransactionId,
