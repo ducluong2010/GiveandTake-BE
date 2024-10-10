@@ -11,8 +11,6 @@ public partial class TransactionDetail
 
     public int? DonationId { get; set; }
 
-    public int? Type { get; set; }
-
     public virtual Donation? Donation { get; set; }
 
     public virtual Transaction? Transaction { get; set; }

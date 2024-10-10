@@ -13,7 +13,7 @@ public partial class Rewarded
 
     public string? Status { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
+    public DateTime? ClaimedAt { get; set; }
 
     public virtual Account? Account { get; set; }
 
