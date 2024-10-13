@@ -29,7 +29,8 @@ namespace Giveandtake_Business
                 CategoryName = c.CategoryName,
                 Description = c.Description,
                 ImageUrl = c.ImageUrl,
-                Status = c.Status
+                Status = c.Status,
+                Point = c.Point
             });
             return new GiveandtakeResult(result);
         }
@@ -45,7 +46,8 @@ namespace Giveandtake_Business
                                           CategoryName = x.CategoryName,
                                           Description = x.Description,
                                           ImageUrl = x.ImageUrl,
-                                          Status = x.Status
+                                          Status = x.Status,
+                                          Point = x.Point
                                       });
             return new GiveandtakeResult(category);
         }
@@ -63,6 +65,7 @@ namespace Giveandtake_Business
             category.Description = String.IsNullOrEmpty(categoryInfo.Description) ? category.Description : categoryInfo.Description;
             category.ImageUrl = String.IsNullOrEmpty(categoryInfo.ImageUrl) ? category.ImageUrl : categoryInfo.ImageUrl;
             category.Status = String.IsNullOrEmpty(categoryInfo.Status) ? category.Status : categoryInfo.Status;
+            category.Point = categoryInfo.Point > 0 ? categoryInfo.Point : category.Point;
 
             _unitOfWork.GetRepository<Category>().UpdateAsync(category);
             await _unitOfWork.CommitAsync();
@@ -78,7 +81,8 @@ namespace Giveandtake_Business
                 CategoryName = categoryInfo.CategoryName,
                 Description = categoryInfo.Description,
                 ImageUrl = categoryInfo.ImageUrl,
-                Status = categoryInfo.Status
+                Status = categoryInfo.Status,
+                Point = categoryInfo.Point
             };
             await _unitOfWork.GetRepository<Category>().InsertAsync(newCategory);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
