@@ -106,6 +106,14 @@ namespace Giveandtake_Business
 
         public async Task<IGiveandtakeResult> UpdateDonation(int id, CreateUpdateDonationDTO donationInfo)
         {
+            var category = await _unitOfWork.GetRepository<Category>()
+                .FirstOrDefaultAsync(c => c.CategoryId == donationInfo.CategoryId);
+
+            if (category == null)
+            {
+                return new GiveandtakeResult(-1, "Category not found");
+            }
+
             var donation = await _unitOfWork.GetRepository<Donation>()
                 .SingleOrDefaultAsync(predicate: d => d.DonationId == id);
 
@@ -116,7 +124,7 @@ namespace Giveandtake_Business
 
             donation.Name = !string.IsNullOrEmpty(donationInfo.Name) ? donationInfo.Name : donation.Name;
             donation.Description = !string.IsNullOrEmpty(donationInfo.Description) ? donationInfo.Description : donation.Description;
-            donation.Point = donationInfo.Point ?? donation.Point;
+            donation.Point = category.Point;
             donation.ApprovedBy = donationInfo.ApprovedBy ?? donation.ApprovedBy;
             donation.TotalRating = donationInfo.TotalRating ?? donation.TotalRating;
             donation.Status = !string.IsNullOrEmpty(donationInfo.Status) ? donationInfo.Status : donation.Status;
@@ -129,13 +137,21 @@ namespace Giveandtake_Business
 
         public async Task<IGiveandtakeResult> CreateDonation(CreateDonationDTO donationInfo)
         {
+            var category = await _unitOfWork.GetRepository<Category>()
+                .FirstOrDefaultAsync(c => c.CategoryId == donationInfo.CategoryId);
+
+            if (category == null)
+            {
+                return new GiveandtakeResult(-1, "Category not found");
+            }
+
             var newDonation = new Donation
             {
                 AccountId = donationInfo.AccountId,
                 CategoryId = donationInfo.CategoryId,
                 Name = donationInfo.Name,
                 Description = donationInfo.Description,
-                Point = donationInfo.Point,
+                Point = category.Point,
                 CreatedAt = DateTime.Now,
                 Status = "Pending",
                 DonationImages = new List<DonationImage>() // Xử lý nếu cần thêm DonationImages
