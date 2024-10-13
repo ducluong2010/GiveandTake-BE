@@ -12,9 +12,6 @@ namespace Giveandtake_Services.Implements
 {
     public class RewardedService : IRewardedService
     {
-        public Task<IGiveandtakeResult> ClainReward(Rewarded rewardedInfo)
-            => new RewardedBusiness().ClaimReward(rewardedInfo);
-
         public Task<IGiveandtakeResult> GetAllRewarded()
             => new RewardedBusiness().GetAllRewarded();
 
@@ -23,6 +20,9 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> GetRewardedById(int id)
             => new RewardedBusiness().GetRewardedById(id);
+
+        public Task<IGiveandtakeResult> ClaimReward(RewardedDTO rewardedInfo)
+            => new RewardedBusiness().ClaimReward(rewardedInfo);
 
     }
 }

@@ -69,7 +69,7 @@ namespace Giveandtake_Business
 
 
         // Claim reward
-         public async Task<IGiveandtakeResult> ClaimReward(Rewarded rewardedInfo)
+        public async Task<IGiveandtakeResult> ClaimReward(RewardedDTO rewardedInfo)
         {
             Rewarded rewarded = new Rewarded
             {
@@ -79,63 +79,59 @@ namespace Giveandtake_Business
                 ClaimedAt = DateTime.Now
             };
 
+            var reward = await _unitOfWork.GetRepository<Reward>()
+                .SingleOrDefaultAsync(predicate: r => r.RewardId == rewardedInfo.RewardId);
+
+            if (reward != null)
+            {
+                var customer = await _unitOfWork.GetRepository<Account>()
+                    .SingleOrDefaultAsync(predicate: c => c.AccountId == rewardedInfo.AccountId);
+
+                if (customer != null && customer.Point >= reward.Point)
+                {
+                    customer.Point -= reward.Point;
+                    _unitOfWork.GetRepository<Account>().UpdateAsync(customer);
+                    rewarded.Status = "Success";
+                    reward.Quantity -= 1;
+
+                   _unitOfWork.GetRepository<Reward>().UpdateAsync(reward);
+
+                }
+                else
+                {
+                    GiveandtakeResult insufficientPointsResult = new GiveandtakeResult();
+                    insufficientPointsResult.Status = -1;
+                    insufficientPointsResult.Message = "Insufficient points to claim reward";
+                    return insufficientPointsResult;
+                }
+            }
+
             await _unitOfWork.GetRepository<Rewarded>().InsertAsync(rewarded);
+            bool status = await _unitOfWork.CommitAsync() > 0;
 
             GiveandtakeResult result = new GiveandtakeResult();
-            bool status = await _unitOfWork.CommitAsync() > 0;
-            if (status) {
-                result.Data = rewarded;
+            if (status)
+            {
+                var rewardedDto = new RewardedDTO
+                {
+                    RewardId = rewarded.RewardId,
+                    AccountId = rewarded.AccountId,
+                    Status = rewarded.Status,
+                    ClaimedAt = rewarded.ClaimedAt
+                };
+
+                result.Data = rewardedDto;
                 result.Status = 1;
                 result.Message = "Claim reward successfully";
-            } else {
+            }
+            else
+            {
                 result.Status = -1;
                 result.Message = "Failed to claim reward";
             }
+
             return result;
         }
-
-        //public async Task<IGiveandtakeResult> ClaimReward(Account account, Rewarded rewardedInfo)
-        //{
-        //    var accountEntity = await _unitOfWork.GetRepository<Account>()
-        //        .SingleOrDefaultAsync(predicate: c => c.AccountId == account.AccountId);
-
-        //    if (accountEntity == null)
-        //    {
-        //        return new GiveandtakeResult(-1, "Account not found");
-        //    }
-
-        //    if (accountEntity.Point < rewardedInfo.Reward.Point)
-        //    {
-        //        return new GiveandtakeResult(-1, "Not enough points to redeem the reward");
-        //    }
-
-        //    accountEntity.Point -= rewardedInfo.Reward.Point;
-        //    rewardedInfo.Reward.Quantity--;
-
-        //    var rewarded = new Rewarded
-        //    {
-        //        RewardId = rewardedInfo.RewardId,
-        //        AccountId = rewardedInfo.AccountId,
-        //        Status = rewardedInfo.Status,
-        //        CreatedAt = DateTime.Now
-        //    };
-
-        //    _unitOfWork.GetRepository<Rewarded>().InsertAsync(rewarded);
-        //    _unitOfWork.GetRepository<Account>().UpdateAsync(accountEntity);
-
-        //    bool status = await _unitOfWork.CommitAsync() > 0;
-
-        //    if (status)
-        //    {
-        //        return new GiveandtakeResult(1, "Claim reward successfully");
-        //    }
-        //    else
-        //    {
-        //        return new GiveandtakeResult(-1, "Failed to claim reward");
-        //    }
-        //}
-
         #endregion
-
     }
 }
