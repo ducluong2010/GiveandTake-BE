@@ -17,5 +17,7 @@ namespace GiveandTake_Repo.DTOs.Category
         public string? ImageUrl { get; set; }
 
         public string? Status { get; set; }
+
+        public int Point { get; set; }
     }
 }
