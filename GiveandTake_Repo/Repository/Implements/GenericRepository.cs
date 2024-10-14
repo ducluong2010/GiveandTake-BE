@@ -79,6 +79,15 @@ namespace GiveandTake_Repo.Repository.Implements
             return await query.Select(selector).ToListAsync();
         }
 
+        public async Task<ICollection<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null)
+        {
+            if (predicate != null)
+            {
+                return await _dbSet.Where(predicate).ToListAsync();
+            }
+            return await _dbSet.ToListAsync();
+        }
+
         #endregion
 
         #region Insert

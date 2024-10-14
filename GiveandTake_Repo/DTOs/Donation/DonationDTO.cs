@@ -6,13 +6,17 @@ using System.Threading.Tasks;
 
 namespace GiveandTake_Repo.DTOs.Donation
 {
-     public class DonationDTO
+    public class DonationDTO
     {
         public int DonationId { get; set; }
 
         public int? AccountId { get; set; }
 
+        public string? AccountName { get; set; } 
+
         public int? CategoryId { get; set; }
+
+        public string? CategoryName { get; set; } 
 
         public string? Name { get; set; }
 
@@ -26,12 +30,16 @@ namespace GiveandTake_Repo.DTOs.Donation
 
         public int? ApprovedBy { get; set; }
 
+        public string? ApprovedByName { get; set; } 
+
         public int? TotalRating { get; set; }
 
         public string? Status { get; set; }
 
         public List<string>? DonationImages { get; set; }
+
     }
+
     public class CreateUpdateDonationDTO
     {
         public int? AccountId { get; set; }
