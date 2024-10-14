@@ -22,35 +22,41 @@ namespace Giveandtake_Business
         public async Task<IGiveandtakeResult> GetAllDonations(int page = 1, int pageSize = 8)
         {
             var repository = _unitOfWork.GetRepository<Donation>();
+            var accountRepository = _unitOfWork.GetRepository<Account>();
 
-            // Get all active donations based on Status
+            var allAccounts = await accountRepository.GetAllAsync();
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
+
             var allDonations = await repository.GetListAsync(
-            predicate: d => true, 
-            selector: d => new DonationDTO
-            {
-                DonationId = d.DonationId,
-                AccountId = d.AccountId,
-                CategoryId = d.CategoryId,
-                Name = d.Name,
-                Description = d.Description,
-                Point = d.Point,
-                CreatedAt = d.CreatedAt,
-                UpdatedAt = d.UpdatedAt,
-                ApprovedBy = d.ApprovedBy,
-                TotalRating = d.TotalRating,
-                Status = d.Status,
-                DonationImages = d.DonationImages.Select(di => di.Url).ToList()
-            });
+                predicate: d => true,
+                selector: d => new DonationDTO
+                {
+                    DonationId = d.DonationId,
+                    AccountId = d.AccountId,
+                    AccountName = d.Account.FullName,
+                    CategoryId = d.CategoryId,
+                    CategoryName = d.Category.CategoryName,
+                    Name = d.Name,
+                    Description = d.Description,
+                    Point = d.Point,
+                    CreatedAt = d.CreatedAt,
+                    UpdatedAt = d.UpdatedAt,
+                    ApprovedBy = d.ApprovedBy,
+                    ApprovedByName = d.ApprovedBy.HasValue && accountDict.ContainsKey(d.ApprovedBy.Value)
+                    ? accountDict[d.ApprovedBy.Value]
+                    : null,
+                    TotalRating = d.TotalRating,
+                    Status = d.Status,
+                    DonationImages = d.DonationImages.Select(di => di.Url).ToList()
+                },
+                include: source => source
+                    .Include(d => d.Account)
+                    .Include(d => d.Category)
+            );
 
-
-            // Đếm tổng số donations
-            int totalItems = allDonations.Count;
+            int totalItems = allDonations.Count();
             int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
-
-            // Điều chỉnh trang nếu nó vượt quá tổng số trang
             if (page > totalPages) page = totalPages;
-
-            // Nếu không có donations nào, trả về danh sách trống
             if (totalItems == 0)
             {
                 return new GiveandtakeResult(new PaginatedResult<DonationDTO>
@@ -62,77 +68,192 @@ namespace Giveandtake_Business
                     TotalPages = totalPages
                 });
             }
-
-            // Thực hiện phân trang
             var paginatedDonations = allDonations
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
-
-            // Tạo kết quả phân trang
             var paginatedResult = new PaginatedResult<DonationDTO>
             {
-                Items = paginatedDonations, // Danh sách donations đã phân trang
+                Items = paginatedDonations,
                 TotalItems = totalItems,
                 Page = page,
                 PageSize = pageSize,
                 TotalPages = totalPages
             };
-
             return new GiveandtakeResult(paginatedResult);
         }
 
         public async Task<IGiveandtakeResult> GetDonationById(int donationId)
         {
-            var donation = await _unitOfWork.GetRepository<Donation>()
-                .SingleOrDefaultAsync(predicate: d => d.DonationId == donationId,
-                                      selector: x => new DonationDTO
-                                      {
-                                          DonationId = x.DonationId,
-                                          AccountId = x.AccountId,
-                                          CategoryId = x.CategoryId,
-                                          Name = x.Name,
-                                          Description = x.Description,
-                                          Point = x.Point,
-                                          CreatedAt = x.CreatedAt,
-                                          UpdatedAt = x.UpdatedAt,
-                                          ApprovedBy = x.ApprovedBy,
-                                          TotalRating = x.TotalRating,
-                                          Status = x.Status,
-                                          DonationImages = x.DonationImages.Select(di => di.Url).ToList()
-                                      });
-            return new GiveandtakeResult(donation);
-        }
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+            var accountRepository = _unitOfWork.GetRepository<Account>();
 
-        public async Task<IGiveandtakeResult> UpdateDonation(int id, CreateUpdateDonationDTO donationInfo)
-        {
-            var category = await _unitOfWork.GetRepository<Category>()
-                .FirstOrDefaultAsync(c => c.CategoryId == donationInfo.CategoryId);
-
-            if (category == null)
-            {
-                return new GiveandtakeResult(-1, "Category not found");
-            }
-
-            var donation = await _unitOfWork.GetRepository<Donation>()
-                .SingleOrDefaultAsync(predicate: d => d.DonationId == id);
+            // Fetch the donation with related entities
+            var donation = await donationRepository.SingleOrDefaultAsync(
+                predicate: d => d.DonationId == donationId,
+                include: source => source
+                    .Include(d => d.Account)
+                    .Include(d => d.Category)
+                    .Include(d => d.DonationImages)
+            );
 
             if (donation == null)
+            {
+                return new GiveandtakeResult(404, "Donation not found");
+            }
+
+            // Fetch the approver's name if ApprovedBy is not null
+            string approverName = null;
+            if (donation.ApprovedBy.HasValue)
+            {
+                var approver = await accountRepository.SingleOrDefaultAsync(
+                    predicate: a => a.AccountId == donation.ApprovedBy.Value,
+                    orderBy: null,
+                    include: null
+                );
+                approverName = approver?.FullName;
+            }
+
+            var donationDTO = new DonationDTO
+            {
+                DonationId = donation.DonationId,
+                AccountId = donation.AccountId,
+                AccountName = donation.Account?.FullName,
+                CategoryId = donation.CategoryId,
+                CategoryName = donation.Category?.CategoryName,
+                Name = donation.Name,
+                Description = donation.Description,
+                Point = donation.Point,
+                CreatedAt = donation.CreatedAt,
+                UpdatedAt = donation.UpdatedAt,
+                ApprovedBy = donation.ApprovedBy,
+                ApprovedByName = approverName,
+                TotalRating = donation.TotalRating,
+                Status = donation.Status,
+                DonationImages = donation.DonationImages?.Select(di => di.Url).ToList() ?? new List<string>()
+            };
+
+            return new GiveandtakeResult(donationDTO);
+        }
+
+        //public async Task<IGiveandtakeResult> UpdateDonation(int id, CreateUpdateDonationDTO donationInfo)
+        //{
+        //    var category = await _unitOfWork.GetRepository<Category>()
+        //        .FirstOrDefaultAsync(c => c.CategoryId == donationInfo.CategoryId);
+
+        //    if (category == null)
+        //    {
+        //        return new GiveandtakeResult(-1, "Category not found");
+        //    }
+
+        //    var donation = await _unitOfWork.GetRepository<Donation>()
+        //        .SingleOrDefaultAsync(predicate: d => d.DonationId == id);
+
+        //    if (donation == null)
+        //    {
+        //        return new GiveandtakeResult(-1, "Donation not found");
+        //    }
+
+        //    donation.Name = !string.IsNullOrEmpty(donationInfo.Name) ? donationInfo.Name : donation.Name;
+        //    donation.Description = !string.IsNullOrEmpty(donationInfo.Description) ? donationInfo.Description : donation.Description;
+        //    donation.Point = category.Point;
+        //    donation.ApprovedBy = donationInfo.ApprovedBy ?? donation.ApprovedBy;
+        //    donation.TotalRating = donationInfo.TotalRating ?? donation.TotalRating;
+        //    donation.Status = !string.IsNullOrEmpty(donationInfo.Status) ? donationInfo.Status : donation.Status;
+        //    donation.UpdatedAt = DateTime.Now;
+
+        //    _unitOfWork.GetRepository<Donation>().UpdateAsync(donation);
+        //    await _unitOfWork.CommitAsync();
+        //    return new GiveandtakeResult(1, "Donation updated successfully");
+        //}
+        public async Task<IGiveandtakeResult> UpdateDonation(int id, CreateUpdateDonationDTO donationInfo)
+        {
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+            var categoryRepository = _unitOfWork.GetRepository<Category>();
+
+            // Lấy donation hiện tại
+            var existingDonation = await donationRepository.SingleOrDefaultAsync(
+                predicate: d => d.DonationId == id
+            );
+
+            if (existingDonation == null)
             {
                 return new GiveandtakeResult(-1, "Donation not found");
             }
 
-            donation.Name = !string.IsNullOrEmpty(donationInfo.Name) ? donationInfo.Name : donation.Name;
-            donation.Description = !string.IsNullOrEmpty(donationInfo.Description) ? donationInfo.Description : donation.Description;
-            donation.Point = category.Point;
-            donation.ApprovedBy = donationInfo.ApprovedBy ?? donation.ApprovedBy;
-            donation.TotalRating = donationInfo.TotalRating ?? donation.TotalRating;
-            donation.Status = !string.IsNullOrEmpty(donationInfo.Status) ? donationInfo.Status : donation.Status;
-            donation.UpdatedAt = DateTime.Now;
+            // Nếu người dùng có chọn category mới thì cập nhật
+            if (donationInfo.CategoryId.HasValue)
+            {
+                var category = await categoryRepository.SingleOrDefaultAsync(
+                    predicate: c => c.CategoryId == donationInfo.CategoryId.Value
+                );
+                if (category == null)
+                {
+                    return new GiveandtakeResult(-1, "Category not found");
+                }
+                existingDonation.CategoryId = category.CategoryId;
+                existingDonation.Point = category.Point;
+            }
 
-            _unitOfWork.GetRepository<Donation>().UpdateAsync(donation);
+            // Chỉ cập nhật những trường người dùng có sửa đổi
+            if (!string.IsNullOrEmpty(donationInfo.Name))
+                existingDonation.Name = donationInfo.Name;
+
+            if (!string.IsNullOrEmpty(donationInfo.Description))
+                existingDonation.Description = donationInfo.Description;
+
+            if (donationInfo.AccountId.HasValue)
+                existingDonation.AccountId = donationInfo.AccountId.Value;
+
+            if (donationInfo.ApprovedBy.HasValue)
+                existingDonation.ApprovedBy = donationInfo.ApprovedBy.Value;
+
+            if (donationInfo.TotalRating.HasValue)
+                existingDonation.TotalRating = donationInfo.TotalRating.Value;
+
+            if (!string.IsNullOrEmpty(donationInfo.Status))
+                existingDonation.Status = donationInfo.Status;
+
+            existingDonation.UpdatedAt = DateTime.Now;
+
+            if (donationInfo.DonationImages != null && donationInfo.DonationImages.Any())
+            {
+                await UpdateDonationImages(existingDonation.DonationId, donationInfo.DonationImages);
+            }
+
+            _unitOfWork.GetRepository<Donation>().UpdateAsync(existingDonation);
             await _unitOfWork.CommitAsync();
+
             return new GiveandtakeResult(1, "Donation updated successfully");
+        }
+        private async Task UpdateDonationImages(int donationId, IEnumerable<string> donationImages)
+        {
+            var donationImageRepository = _unitOfWork.GetRepository<DonationImage>();
+
+            var existingImages = await donationImageRepository.GetListAsync(
+                predicate: di => di.DonationId == donationId
+            );
+
+            if (existingImages != null && existingImages.Any())
+            {
+                foreach (var image in existingImages)
+                {
+                    donationImageRepository.DeleteAsync(image); 
+                }
+            }
+
+            foreach (var imageUrl in donationImages)
+            {
+                var newDonationImage = new DonationImage
+                {
+                    DonationId = donationId,
+                    Url = imageUrl,
+                    IsThumbnail = false 
+                };
+                await donationImageRepository.InsertAsync(newDonationImage); 
+            }
+
+            await _unitOfWork.CommitAsync();
         }
 
         public async Task<IGiveandtakeResult> CreateDonation(CreateDonationDTO donationInfo)
