@@ -1,4 +1,5 @@
-﻿using GiveandTake_Repo.Models;
+﻿using GiveandTake_Repo.DTOs.Transaction;
+using GiveandTake_Repo.Models;
 using GiveandTake_Repo.Repository.Implements;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace Giveandtake_Business
             _unitOfWork ??= new UnitOfWork();
         }
 
-        #region Transaction
+        #region CRUD Transaction
 
         // Get all transactions
         public async Task<IGiveandtakeResult> GetAllTransactions()
@@ -189,6 +190,95 @@ namespace Giveandtake_Business
                 Message = "Transaction deleted successfully"
             };
         }
+
         #endregion
+
+        #region Logic Transaction
+        // Tạo transaction và transaction detail khi người nhận tạo yêu cầu
+        public async Task<IGiveandtakeResult> CreateTransactionWithDetail(CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto)
+        {
+            // Lấy donation dựa trên donationId
+            var donation = await _unitOfWork.GetRepository<Donation>().SingleOrDefaultAsync(
+                predicate: d => d.DonationId == transactionDetailDto.DonationId);
+
+            if (donation == null)
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Donation not found"
+                };
+            }
+
+            // Tạo transaction với TotalPoint lấy từ Donation
+            Transaction transaction = new Transaction
+            {
+                TotalPoint = donation.Point, // Cập nhật TotalPoint từ điểm của donation
+                CreatedDate = createTransaction.CreatedDate,
+                UpdatedDate = createTransaction.UpdatedDate,
+                Status = "Pending",
+                AccountId = createTransaction.AccountId
+            };
+
+            await _unitOfWork.GetRepository<Transaction>().InsertAsync(transaction);
+            await _unitOfWork.CommitAsync(); // Commit trước để TransactionId được tạo
+
+            transactionDetailDto.TransactionId = transaction.TransactionId;
+
+            // Tạo transaction detail
+            TransactionDetail transactionDetail = new TransactionDetail
+            {
+                TransactionId = transaction.TransactionId,
+                DonationId = transactionDetailDto.DonationId,
+            };
+
+            await _unitOfWork.GetRepository<TransactionDetail>().InsertAsync(transactionDetail);
+
+            IGiveandtakeResult result = new GiveandtakeResult();
+
+            bool status = await _unitOfWork.CommitAsync() > 0;
+            if (status)
+            {
+                result.Status = 1;
+                result.Message = "Transaction and TransactionDetail created successfully";
+            }
+            else
+            {
+                result.Status = -1;
+                result.Message = "Transaction creation failed";
+            }
+            return result;
         }
+
+
+        // Lấy các giao dịch chứa transaction detail với donation id của người gửi
+        public async Task<IGiveandtakeResult> GetTransactionsByDonationForSender(int senderAccountId)
+        {
+            var transactionsList = await _unitOfWork.GetRepository<Transaction>()
+                .GetListAsync(
+                    predicate: t => t.TransactionDetails.Any(td =>
+                        td.Donation != null && td.Donation.AccountId == senderAccountId),
+                    selector: t => new GetTransaction()
+                    {
+                        TransactionId = t.TransactionId,
+                        TotalPoint = t.TotalPoint,
+                        CreatedDate = t.CreatedDate,
+                        UpdatedDate = t.UpdatedDate,
+                        Status = t.Status,
+                        AccountId = t.AccountId
+                    });
+
+            if (transactionsList == null || !transactionsList.Any())
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "No transactions found for your donations"
+                };
+            }
+
+            return new GiveandtakeResult(transactionsList);
+        }
+        #endregion
+    }
 }

@@ -23,6 +23,9 @@ namespace Giveandtake_Services.Implements
         public Task<IGiveandtakeResult> CreateTransaction(TransactionDTO.CreateTransaction transactionInfo)
             => _transactionBusiness.CreateTransaction(transactionInfo);
 
+        public Task<IGiveandtakeResult> CreateTransactionWithDetail(TransactionDTO.CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto)
+           => _transactionBusiness.CreateTransactionWithDetail(createTransaction, transactionDetailDto);
+
         public Task<IGiveandtakeResult> DeleteTransaction(int id)
             => _transactionBusiness.DeleteTransaction(id);
 
@@ -34,6 +37,9 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> GetTransactionById(int id)
             => _transactionBusiness.GetTransactionById(id);
+
+        public Task<IGiveandtakeResult> GetTransactionsByDonationForSender(int senderAccountId)
+            => _transactionBusiness.GetTransactionsByDonationForSender(senderAccountId);
 
         public Task<IGiveandtakeResult> UpdateTransaction(int id, TransactionDTO.UpdateTransaction transactionInfo)
             => _transactionBusiness.UpdateTransaction(id, transactionInfo);
