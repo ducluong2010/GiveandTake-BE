@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static GiveandTake_Repo.DTOs.Transaction.TransactionDTO;
 
 namespace Giveandtake_Services.Interfaces
 {
@@ -18,5 +19,8 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> DeleteTransaction(int id);
         Task ChangeTransactionStatus(int id, string status);
 
+        // New methods
+        Task<IGiveandtakeResult> CreateTransactionWithDetail(CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto);
+        Task<IGiveandtakeResult> GetTransactionsByDonationForSender(int senderAccountId);
     }
 }

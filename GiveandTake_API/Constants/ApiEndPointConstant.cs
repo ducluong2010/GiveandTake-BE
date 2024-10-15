@@ -61,9 +61,22 @@
             public const string TransactionsEndPoint = ApiEndpoint + "/transactions";
             public const string TransactionEndPoint = TransactionsEndPoint + "/{id}";
             public const string TransactionStatusEndPoint = TransactionsEndPoint + "/{id}/status";
-            public const string TransactionByAccountEndPoint = TransactionsEndPoint + "/{accountId}";
+            public const string TransactionByAccountEndPoint = TransactionsEndPoint + "/account/{accountId}";
+
+            // Thêm endpoint để người gửi xem các transaction có chứa donation của họ
+            public const string TransactionByDonationForSenderEndPoint = TransactionsEndPoint + "/donation/sender/{senderAccountId}";
+
+            // Thêm endpoint để tạo transaction và transaction detail đồng thời
+            public const string CreateTransactionWithDetailEndPoint = TransactionsEndPoint + "/with-detail";
         }
 
+
+        public class TransactionDetail
+        {
+            public const string TransactionDetailsEndPoint = ApiEndpoint + "/transaction-details";
+            public const string TransactionDetailEndPoint = TransactionDetailsEndPoint + "/{id}";
+            public const string TransactionDetailByTransactionEndPoint = TransactionDetailsEndPoint + "/transaction/{transactionId}";
+        }
 
         public class DonationImage
         {

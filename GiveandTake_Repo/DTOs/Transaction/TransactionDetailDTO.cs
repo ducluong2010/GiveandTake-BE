@@ -6,7 +6,19 @@ using System.Threading.Tasks;
 
 namespace GiveandTake_Repo.DTOs.Transaction
 {
-    internal class TransactionDetailDTO
+    public class TransactionDetailDTO
     {
+        public int? TransactionId { get; set; }
+
+        public int? DonationId { get; set; }
+    }
+
+    public class GetTransactionDetailDTO
+    {
+        public int TransactionDetailId { get; set; }
+
+        public int? TransactionId { get; set; }
+
+        public int? DonationId { get; set; }
     }
 }
