@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace GiveandTake_Repo.Models;
 
@@ -43,7 +44,7 @@ public partial class GiveandtakeContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySql("server=3.108.250.160;port=3307;database=giveandtake;uid=root;pwd=Cuong123_A", Microsoft.EntityFrameworkCore.ServerVersion.Parse("9.0.1-mysql"));
+        => optionsBuilder.UseMySql("server=103.163.25.35;port=3306;database=giveandtake;uid=admin;pwd=Luong123_A", Microsoft.EntityFrameworkCore.ServerVersion.Parse("9.0.1-mysql"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
