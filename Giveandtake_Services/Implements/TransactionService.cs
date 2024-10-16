@@ -27,24 +27,34 @@ namespace Giveandtake_Services.Implements
         public Task<IGiveandtakeResult> GetTransactionById(int id)
             => _transactionBusiness.GetTransactionById(id);
 
-        // New methods
-
         public Task<IGiveandtakeResult> GetTransactionsByDonationForSender(int senderAccountId)
-            => _transactionBusiness.GetTransactionsByDonationForSender(senderAccountId);
-
-        public Task<IGiveandtakeResult> CreateTransactionWithDetail(TransactionDTO.CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto)
-           => _transactionBusiness.CreateTransactionWithDetail(createTransaction, transactionDetailDto);
+          => _transactionBusiness.GetTransactionsByDonationForSender(senderAccountId);
 
         // Specifid methods for admin and staff
 
-        public Task ChangeTransactionStatusToPending(int transactionId)
+        public Task<IGiveandtakeResult> ChangeTransactionStatusToPending(int transactionId)
             => _transactionBusiness.ChangeTransactionStatusToPending(transactionId);
 
-        public Task ChangeTransactionStatusToSuspended(int transactionId)
+        public Task<IGiveandtakeResult> ChangeTransactionStatusToSuspended(int transactionId)
             => _transactionBusiness.ChangeTransactionStatusToSuspended(transactionId);
 
         public Task<IGiveandtakeResult> DeleteSuspendedTransaction(int id)
             => _transactionBusiness.DeleteSuspendedTransaction(id);
+
+        // Specifid methods for user
+
+        public Task<IGiveandtakeResult> CreateTransactionWithDetail(TransactionDTO.CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto)
+            => _transactionBusiness.CreateTransactionWithDetail(createTransaction, transactionDetailDto);
+
+        public Task<IGiveandtakeResult> ChangeTransactionStatusToAccepted(int transactionId, int senderAccountId)
+            => _transactionBusiness.ChangeTransactionStatusToAccepted(transactionId, senderAccountId);
+
+        public Task<IGiveandtakeResult> ChangeTransactionStatusToRejected(int transactionId, int senderAccountId)
+            => _transactionBusiness.ChangeTransactionStatusToRejected(transactionId, senderAccountId);
+
+        public Task<IGiveandtakeResult> CompleteTransaction(int transactionId, int senderAccountId)
+            => _transactionBusiness.CompleteTransaction(transactionId, senderAccountId);
+
 
         #region Unused methods
         //public Task<IGiveandtakeResult> CreateTransaction(TransactionDTO.CreateTransaction transactionInfo)

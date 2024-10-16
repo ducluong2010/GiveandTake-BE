@@ -22,8 +22,11 @@ namespace GiveandTake_API.Controllers
         [SwaggerOperation(Summary = "Change Transaction status to Suspended")]
         public async Task<IActionResult> ChangeTransactionStatusToSuspended(int id)
         {
-            await _transactionService.ChangeTransactionStatusToSuspended(id);
-            return Ok();
+            var response = await _transactionService.ChangeTransactionStatusToSuspended(id);
+            if (response.Status >= 0)
+                return Ok(response);
+            else
+                return BadRequest(response);
         }
 
         // Change Transaction status to Pending
@@ -31,8 +34,11 @@ namespace GiveandTake_API.Controllers
         [SwaggerOperation(Summary = "Change Transaction status to Pending")]
         public async Task<IActionResult> ChangeTransactionStatusToPending(int id)
         {
-            await _transactionService.ChangeTransactionStatusToPending(id);
-            return Ok();
+            var response = await _transactionService.ChangeTransactionStatusToPending(id);
+            if (response.Status >= 0)
+                return Ok(response);
+            else
+                return BadRequest(response);
         }
 
         // Delete Suspended Transaction
@@ -42,11 +48,22 @@ namespace GiveandTake_API.Controllers
         {
             var response = await _transactionService.DeleteSuspendedTransaction(id);
             if (response.Status >= 0)
+                return Ok(response);
+            else
+                return BadRequest(response);
+        }
+
+        // Get Transactions by Donation for Sender (admin)
+        [HttpGet(ApiEndPointConstant.Transaction.TransactionByDonationForAdminEndPoint)]
+        [SwaggerOperation(Summary = "Get Transactions by Donation for Sender By Admin")]
+        public async Task<IActionResult> GetTransactionsByDonationForSender(int senderAccountId)
+        {
+            var response = await _transactionService.GetTransactionsByDonationForSender(senderAccountId);
+            if (response.Status >= 0)
                 return Ok(response.Data);
             else
                 return BadRequest(response.Message);
         }
-
         #endregion
     }
 }
