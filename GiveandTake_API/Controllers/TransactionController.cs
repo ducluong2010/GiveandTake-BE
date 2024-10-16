@@ -15,9 +15,9 @@ namespace GiveandTake_API.Controllers
             _transactionService = new TransactionService();
         }
 
-        #region CRUD Transaction
+        #region Transaction
 
-        // Method 1: Get all Transactions
+        // Get all Transactions
         [HttpGet(ApiEndPointConstant.Transaction.TransactionsEndPoint)]
         [SwaggerOperation(Summary = "Get all Transactions")]
         public async Task<IActionResult> GetAllTransactions()
@@ -29,7 +29,7 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response.Message);
         }
 
-        // Method 2: Get Transaction by its id
+        // Get Transaction by its id
         [HttpGet(ApiEndPointConstant.Transaction.TransactionEndPoint)]
         [SwaggerOperation(Summary = "Get Transaction by its id")]
         public async Task<IActionResult> GetTransactionById(int id)
@@ -41,7 +41,7 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response.Message);
         }
 
-        // Method 3: Get Transactions by Account
+        // Get Transactions by Account
         [HttpGet(ApiEndPointConstant.Transaction.TransactionByAccountEndPoint)]
         [SwaggerOperation(Summary = "Get Transactions by Account")]
         public async Task<IActionResult> GetTransactionByAccount(int accountId)
@@ -53,55 +53,7 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response.Message);
         }
 
-        // Method 4: Create a new Transaction
-        [HttpPost(ApiEndPointConstant.Transaction.TransactionsEndPoint)]
-        [SwaggerOperation(Summary = "Create a new Transaction")]
-        public async Task<IActionResult> CreateTransaction(TransactionDTO.CreateTransaction transactionInfo)
-        {
-            var response = await _transactionService.CreateTransaction(transactionInfo);
-            if (response.Status >= 0)
-                return Ok(response);
-            else
-                return BadRequest(response);
-        }
-
-        // Method 5: Update a Transaction
-        [HttpPut(ApiEndPointConstant.Transaction.TransactionEndPoint)]
-        [SwaggerOperation(Summary = "Update a Transaction")]
-        public async Task<IActionResult> UpdateTransaction(int id, TransactionDTO.UpdateTransaction transactionInfo)
-        {
-            var response = await _transactionService.UpdateTransaction(id, transactionInfo);
-            if (response.Status >= 0)
-                return Ok(response);
-            else
-                return BadRequest(response);
-        }
-
-        // Method 6: Delete a Transaction
-        [HttpDelete(ApiEndPointConstant.Transaction.TransactionEndPoint)]
-        [SwaggerOperation(Summary = "Delete a Transaction")]
-        public async Task<IActionResult> DeleteTransaction(int id)
-        {
-            var response = await _transactionService.DeleteTransaction(id);
-            if (response.Status >= 0)
-                return Ok(response);
-            else
-                return BadRequest(response);
-        }
-
-        // Method 7: Change Transaction Status
-        [HttpPut(ApiEndPointConstant.Transaction.TransactionStatusEndPoint)]
-        [SwaggerOperation(Summary = "Change Transaction Status")]
-        public async Task<IActionResult> ChangeTransactionStatus(int id, string status)
-        {
-            await _transactionService.ChangeTransactionStatus(id, status);
-            return Ok();
-        }
-        #endregion
-
-        #region Logic Transaction
-
-        // Method 1: Create Transaction with Detail
+        // Create Transaction with Detail
         [HttpPost(ApiEndPointConstant.Transaction.CreateTransactionWithDetailEndPoint)]
         [SwaggerOperation(Summary = "Create Transaction with Transaction Details")]
         public async Task<IActionResult> CreateTransactionWithDetail([FromBody] CreateTransactionWithDetail transactionInfo)
@@ -114,17 +66,67 @@ namespace GiveandTake_API.Controllers
         }
 
 
-        // Method 2: Get Transactions by Donation for Sender
+        // Get Transactions by Donation for Sender (user)
         [HttpGet(ApiEndPointConstant.Transaction.TransactionByDonationForSenderEndPoint)]
         [SwaggerOperation(Summary = "Get Transactions by Donation for Sender")]
-        public async Task<IActionResult> GetTransactionsByDonationForSender(int senderAccountId)
+        public async Task<IActionResult> GetTransactionsByDonationForSender()
         {
-            var response = await _transactionService.GetTransactionsByDonationForSender(senderAccountId);
+            int accountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
+            var response = await _transactionService.GetTransactionsByDonationForSender(accountId);
             if (response.Status >= 0)
                 return Ok(response.Data);
             else
                 return BadRequest(response.Message);
         }
+
+        #endregion
+
+        #region Unused Methods
+
+        //// Method 4: Create a new Transaction
+        //[HttpPost(ApiEndPointConstant.Transaction.TransactionsEndPoint)]
+        //[SwaggerOperation(Summary = "Create a new Transaction")]
+        //public async Task<IActionResult> CreateTransaction(TransactionDTO.CreateTransaction transactionInfo)
+        //{
+        //    var response = await _transactionService.CreateTransaction(transactionInfo);
+        //    if (response.Status >= 0)
+        //        return Ok(response);
+        //    else
+        //        return BadRequest(response);
+        //}
+
+        //// Method 5: Update a Transaction
+        //[HttpPut(ApiEndPointConstant.Transaction.TransactionEndPoint)]
+        //[SwaggerOperation(Summary = "Update a Transaction")]
+        //public async Task<IActionResult> UpdateTransaction(int id, TransactionDTO.UpdateTransaction transactionInfo)
+        //{
+        //    var response = await _transactionService.UpdateTransaction(id, transactionInfo);
+        //    if (response.Status >= 0)
+        //        return Ok(response);
+        //    else
+        //        return BadRequest(response);
+        //}
+
+        //// Method 6: Delete a Transaction
+        //[HttpDelete(ApiEndPointConstant.Transaction.TransactionEndPoint)]
+        //[SwaggerOperation(Summary = "Delete a Transaction")]
+        //public async Task<IActionResult> DeleteTransaction(int id)
+        //{
+        //    var response = await _transactionService.DeleteTransaction(id);
+        //    if (response.Status >= 0)
+        //        return Ok(response);
+        //    else
+        //        return BadRequest(response);
+        //}
+
+        //// Method 7: Change Transaction Status
+        //[HttpPut(ApiEndPointConstant.Transaction.TransactionStatusEndPoint)]
+        //[SwaggerOperation(Summary = "Change Transaction Status")]
+        //public async Task<IActionResult> ChangeTransactionStatus(int id, string status)
+        //{
+        //    await _transactionService.ChangeTransactionStatus(id, status);
+        //    return Ok();
+        //}
         #endregion
     }
 }

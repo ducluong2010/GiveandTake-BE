@@ -64,10 +64,22 @@
             public const string TransactionByAccountEndPoint = TransactionsEndPoint + "/account/{accountId}";
 
             // Thêm endpoint để người gửi xem các transaction có chứa donation của họ
-            public const string TransactionByDonationForSenderEndPoint = TransactionsEndPoint + "/donation/sender/{senderAccountId}";
+            public const string TransactionByDonationForAdminEndPoint = TransactionsEndPoint + "/donation/sender/{senderAccountId}";
+
+            public const string TransactionByDonationForSenderEndPoint = TransactionsEndPoint + "/donation/sender";
+
 
             // Thêm endpoint để tạo transaction và transaction detail đồng thời
             public const string CreateTransactionWithDetailEndPoint = TransactionsEndPoint + "/with-detail";
+
+            // Endpoint để xóa transaction có trạng thái "Suspended"
+            public const string DeleteSuspendedTransactionEndPoint = TransactionsEndPoint + "/suspended/{id}";
+
+            // Endpoint để thay đổi trạng thái transaction thành "Suspended"
+            public const string ChangeTransactionStatusToSuspendedEndPoint = TransactionsEndPoint + "/{id}/suspend";
+
+            // Endpoint để thay đổi trạng thái transaction thành "Pending"
+            public const string ChangeTransactionStatusToPendingEndPoint = TransactionsEndPoint + "/{id}/pending";
         }
 
 
@@ -82,7 +94,7 @@
         {
             public const string DonationImagesEndPoint = ApiEndpoint + "/product-images";
             public const string DonationImageEndPoint = DonationImagesEndPoint + "/{id}";
-            public const string DonationAllImageEndPoint = DonationImagesEndPoint + "/donation/{donationId}"; // Đổi đường dẫn ở đây
+            public const string DonationAllImageEndPoint = DonationImagesEndPoint + "/donation/{donationId}";
             public const string ChangeThumbnailEndPoint = DonationImagesEndPoint + "/{id}/thumbnail";
         }
 

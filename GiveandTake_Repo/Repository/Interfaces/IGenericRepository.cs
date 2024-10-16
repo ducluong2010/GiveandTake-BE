@@ -36,6 +36,9 @@ namespace GiveandTake_Repo.Repository.Interfaces
 
         Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
 
+        Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> predicate);
+
+
         Task<ICollection<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null);
 
 

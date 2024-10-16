@@ -48,6 +48,7 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response.Message);
         }
 
+        #region Unused methods
         //[HttpPost(ApiEndPointConstant.TransactionDetail.TransactionDetailsEndPoint)]
         //[SwaggerOperation(Summary = "Create a new Transaction Detail")]
         //public async Task<IActionResult> CreateTransactionDetail(TransactionDetailDTO transactionDetail)
@@ -80,5 +81,6 @@ namespace GiveandTake_API.Controllers
         //    else
         //        return BadRequest(response);
         //}
+        #endregion
     }
 }

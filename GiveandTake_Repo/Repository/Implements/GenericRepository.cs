@@ -135,6 +135,11 @@ namespace GiveandTake_Repo.Repository.Implements
             return await _dbSet.FirstOrDefaultAsync(predicate);
         }
 
+        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.Where(predicate).ToListAsync();
+        }
+
         #endregion
     }
 }

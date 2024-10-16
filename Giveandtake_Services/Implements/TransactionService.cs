@@ -12,22 +12,11 @@ namespace Giveandtake_Services.Implements
     public class TransactionService : ITransactionService
     {
         private readonly TransactionBusiness _transactionBusiness;
+
         public TransactionService()
         {
             _transactionBusiness = new TransactionBusiness();
         }
-
-        public Task ChangeTransactionStatus(int id, string status)
-            => _transactionBusiness.ChangeTransactionStatus(id, status);
-
-        public Task<IGiveandtakeResult> CreateTransaction(TransactionDTO.CreateTransaction transactionInfo)
-            => _transactionBusiness.CreateTransaction(transactionInfo);
-
-        public Task<IGiveandtakeResult> CreateTransactionWithDetail(TransactionDTO.CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto)
-           => _transactionBusiness.CreateTransactionWithDetail(createTransaction, transactionDetailDto);
-
-        public Task<IGiveandtakeResult> DeleteTransaction(int id)
-            => _transactionBusiness.DeleteTransaction(id);
 
         public Task<IGiveandtakeResult> GetAllTransactions()
             => _transactionBusiness.GetAllTransactions();
@@ -38,10 +27,31 @@ namespace Giveandtake_Services.Implements
         public Task<IGiveandtakeResult> GetTransactionById(int id)
             => _transactionBusiness.GetTransactionById(id);
 
+        // New methods
+
         public Task<IGiveandtakeResult> GetTransactionsByDonationForSender(int senderAccountId)
             => _transactionBusiness.GetTransactionsByDonationForSender(senderAccountId);
 
-        public Task<IGiveandtakeResult> UpdateTransaction(int id, TransactionDTO.UpdateTransaction transactionInfo)
-            => _transactionBusiness.UpdateTransaction(id, transactionInfo);
+        public Task<IGiveandtakeResult> CreateTransactionWithDetail(TransactionDTO.CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto)
+           => _transactionBusiness.CreateTransactionWithDetail(createTransaction, transactionDetailDto);
+
+        // Specifid methods for admin and staff
+
+        public Task ChangeTransactionStatusToPending(int transactionId)
+            => _transactionBusiness.ChangeTransactionStatusToPending(transactionId);
+
+        public Task ChangeTransactionStatusToSuspended(int transactionId)
+            => _transactionBusiness.ChangeTransactionStatusToSuspended(transactionId);
+
+        public Task<IGiveandtakeResult> DeleteSuspendedTransaction(int id)
+            => _transactionBusiness.DeleteSuspendedTransaction(id);
+
+        #region Unused methods
+        //public Task<IGiveandtakeResult> CreateTransaction(TransactionDTO.CreateTransaction transactionInfo)
+        //    => _transactionBusiness.CreateTransaction(transactionInfo);
+
+        //public Task<IGiveandtakeResult> UpdateTransaction(int id, TransactionDTO.UpdateTransaction transactionInfo)
+        //    => _transactionBusiness.UpdateTransaction(id, transactionInfo);
+        #endregion
     }
 }

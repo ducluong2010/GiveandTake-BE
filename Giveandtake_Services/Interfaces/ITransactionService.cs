@@ -14,13 +14,19 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> GetAllTransactions();
         Task<IGiveandtakeResult> GetTransactionById(int id);
         Task<IGiveandtakeResult> GetTransactionByAccount (int accountId);
-        Task<IGiveandtakeResult> CreateTransaction(TransactionDTO.CreateTransaction transactionInfo);
-        Task<IGiveandtakeResult> UpdateTransaction(int id, TransactionDTO.UpdateTransaction transactionInfo);
-        Task<IGiveandtakeResult> DeleteTransaction(int id);
-        Task ChangeTransactionStatus(int id, string status);
+
+        // Specifid methods for admin and staff
+        Task<IGiveandtakeResult> DeleteSuspendedTransaction(int id);
+        Task ChangeTransactionStatusToSuspended(int transactionId);
+        Task ChangeTransactionStatusToPending(int transactionId);
 
         // New methods
         Task<IGiveandtakeResult> CreateTransactionWithDetail(CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto);
         Task<IGiveandtakeResult> GetTransactionsByDonationForSender(int senderAccountId);
+
+        #region Unused methods
+        //Task<IGiveandtakeResult> CreateTransaction(TransactionDTO.CreateTransaction transactionInfo);
+        //Task<IGiveandtakeResult> UpdateTransaction(int id, TransactionDTO.UpdateTransaction transactionInfo);
+        #endregion
     }
 }
