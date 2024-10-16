@@ -65,10 +65,23 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response.Message);
         }
 
+        // Get Transactions by Donation for Sender (admin)
+
+        [HttpGet(ApiEndPointConstant.Transaction.TransactionByDonationForAdminEndPoint)]
+        [SwaggerOperation(Summary = "Get Transactions by Donation for Sender By Admin")]
+        public async Task<IActionResult> GetTransactionsByDonationForSender(int senderAccountId)
+        {
+            var response = await _transactionService.GetTransactionsByDonationForSender(senderAccountId);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
+
 
         // Get Transactions by Donation for Sender (user)
         [HttpGet(ApiEndPointConstant.Transaction.TransactionByDonationForSenderEndPoint)]
-        [SwaggerOperation(Summary = "Get Transactions by Donation for Sender")]
+        [SwaggerOperation(Summary = "Get Transactions by Donation for Sender By User")]
         public async Task<IActionResult> GetTransactionsByDonationForSender()
         {
             int accountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
