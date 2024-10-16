@@ -21,7 +21,7 @@ namespace Giveandtake_Business
             _unitOfWork ??= new UnitOfWork();
         }
 
-        #region CRUD Transaction
+        #region Basic Transaction Method
 
         // Get all transactions
         public async Task<IGiveandtakeResult> GetAllTransactions()
@@ -66,7 +66,7 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(transactionsList);
         }
         
-        // Get transactions by account
+        // Get transactions by receiver id
         public async Task<IGiveandtakeResult> GetTransactionsByAccount(int id)
         {
             var transactionsList = await _unitOfWork.GetRepository<Transaction>().GetListAsync(
@@ -91,52 +91,46 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(transactionsList);
         }
 
-        // Create transaction
-        public async Task<IGiveandtakeResult> CreateTransaction(CreateTransaction createTransaction)
-        {
-            Transaction transaction = new Transaction
-            {
-                TotalPoint = createTransaction.TotalPoint,
-                CreatedDate = createTransaction.CreatedDate,
-                UpdatedDate = createTransaction.UpdatedDate,
-                Status = "Pending",
-                AccountId = createTransaction.AccountId
-            };
-
-            await _unitOfWork.GetRepository<Transaction>().InsertAsync(transaction);
-            IGiveandtakeResult result = new GiveandtakeResult();
-
-            bool status = await _unitOfWork.CommitAsync() > 0;
-            if (status)
-            {
-                result.Status = 1;
-                result.Message = "Transaction created successfully";
-            }
-            else
-            {
-                result.Status = -1;
-                result.Message = "Transaction created failed";
-            }
-            return result;
-        }
-
-        // Change transaction status
-        public async Task ChangeTransactionStatus(int transactionId, string status)
+        // Change transaction status to Suspended - Admin/Staff
+        public async Task ChangeTransactionStatusToSuspended(int transactionId)
         {
             var transaction = await _unitOfWork.GetRepository<Transaction>().SingleOrDefaultAsync(
                 predicate: o => o.TransactionId == transactionId);
 
             if (transaction != null)
             {
-                transaction.Status = status;
+                transaction.Status = "Suspended";
                 transaction.UpdatedDate = DateTime.Now;
                 _unitOfWork.GetRepository<Transaction>().UpdateAsync(transaction);
                 await _unitOfWork.CommitAsync();
             }
         }
 
-        // Update transaction
-        public async Task<IGiveandtakeResult> UpdateTransaction(int id, UpdateTransaction updateTransaction)
+        // Revert transaction status to "Pending" - Admin/Staff
+        public async Task ChangeTransactionStatusToPending(int transactionId)
+        {
+            var transaction = await _unitOfWork.GetRepository<Transaction>().SingleOrDefaultAsync(
+                predicate: o => o.TransactionId == transactionId);
+
+            if (transaction != null)
+            {
+                // Only allow to revert if the current status is "Suspended"
+                if (transaction.Status == "Suspended")
+                {
+                    transaction.Status = "Pending";
+                    transaction.UpdatedDate = DateTime.Now;
+                    _unitOfWork.GetRepository<Transaction>().UpdateAsync(transaction);
+                    await _unitOfWork.CommitAsync();
+                }
+                else
+                {
+                    throw new InvalidOperationException("Transaction is not suspended and cannot be reverted to pending.");
+                }
+            }
+        }
+
+        // Delete suspended transaction and its details - Admin/Staff
+        public async Task<IGiveandtakeResult> DeleteSuspendedTransaction(int id)
         {
             var transaction = await _unitOfWork.GetRepository<Transaction>().SingleOrDefaultAsync(
                 predicate: o => o.TransactionId == id);
@@ -150,35 +144,21 @@ namespace Giveandtake_Business
                 };
             }
 
-            transaction.TotalPoint = updateTransaction.TotalPoint;
-            transaction.CreatedDate = updateTransaction.CreatedDate;
-            transaction.UpdatedDate = updateTransaction.UpdatedDate;
-            transaction.Status = updateTransaction.Status;
-            transaction.AccountId = updateTransaction.AccountId;
-
-            _unitOfWork.GetRepository<Transaction>().UpdateAsync(transaction);
-            await _unitOfWork.CommitAsync();
-
-            return new GiveandtakeResult
-            {
-                Status = 1,
-                Message = "Transaction updated successfully"
-            };
-        }
-
-        // Delete transaction
-        public async Task<IGiveandtakeResult> DeleteTransaction(int id)
-        {
-            var transaction = await _unitOfWork.GetRepository<Transaction>().SingleOrDefaultAsync(
-                predicate: o => o.TransactionId == id);
-
-            if (transaction == null)
+            if (transaction.Status != "Suspended")
             {
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "Transaction not found"
+                    Message = "Only suspended transactions can be deleted"
                 };
+            }
+
+            var transactionDetails = await _unitOfWork.GetRepository<TransactionDetail>().FindAllAsync(
+                predicate: td => td.TransactionId == id);
+
+            foreach (var detail in transactionDetails)
+            {
+                _unitOfWork.GetRepository<TransactionDetail>().DeleteAsync(detail);
             }
 
             _unitOfWork.GetRepository<Transaction>().DeleteAsync(transaction);
@@ -187,10 +167,9 @@ namespace Giveandtake_Business
             return new GiveandtakeResult
             {
                 Status = 1,
-                Message = "Transaction deleted successfully"
+                Message = "Transaction and its details deleted successfully"
             };
         }
-
         #endregion
 
         #region Logic Transaction
@@ -251,7 +230,7 @@ namespace Giveandtake_Business
         }
 
 
-        // Lấy các giao dịch chứa transaction detail với donation id của người gửi
+        // Get transaction by sender id
         public async Task<IGiveandtakeResult> GetTransactionsByDonationForSender(int senderAccountId)
         {
             var transactionsList = await _unitOfWork.GetRepository<Transaction>()
@@ -279,6 +258,69 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(transactionsList);
         }
+        #endregion
+
+        #region Unused Methods
+        //// Create transaction
+        //public async Task<IGiveandtakeResult> CreateTransaction(CreateTransaction createTransaction)
+        //{
+        //    Transaction transaction = new Transaction
+        //    {
+        //        TotalPoint = createTransaction.TotalPoint,
+        //        CreatedDate = createTransaction.CreatedDate,
+        //        UpdatedDate = createTransaction.UpdatedDate,
+        //        Status = "Pending",
+        //        AccountId = createTransaction.AccountId
+        //    };
+
+        //    await _unitOfWork.GetRepository<Transaction>().InsertAsync(transaction);
+        //    IGiveandtakeResult result = new GiveandtakeResult();
+
+        //    bool status = await _unitOfWork.CommitAsync() > 0;
+        //    if (status)
+        //    {
+        //        result.Status = 1;
+        //        result.Message = "Transaction created successfully";
+        //    }
+        //    else
+        //    {
+        //        result.Status = -1;
+        //        result.Message = "Transaction created failed";
+        //    }
+        //    return result;
+        //}
+
+
+        //// Update transaction
+        //public async Task<IGiveandtakeResult> UpdateTransaction(int id, UpdateTransaction updateTransaction)
+        //{
+        //    var transaction = await _unitOfWork.GetRepository<Transaction>().SingleOrDefaultAsync(
+        //        predicate: o => o.TransactionId == id);
+
+        //    if (transaction == null)
+        //    {
+        //        return new GiveandtakeResult
+        //        {
+        //            Status = -1,
+        //            Message = "Transaction not found"
+        //        };
+        //    }
+
+        //    transaction.TotalPoint = updateTransaction.TotalPoint;
+        //    transaction.CreatedDate = updateTransaction.CreatedDate;
+        //    transaction.UpdatedDate = updateTransaction.UpdatedDate;
+        //    transaction.Status = updateTransaction.Status;
+        //    transaction.AccountId = updateTransaction.AccountId;
+
+        //    _unitOfWork.GetRepository<Transaction>().UpdateAsync(transaction);
+        //    await _unitOfWork.CommitAsync();
+
+        //    return new GiveandtakeResult
+        //    {
+        //        Status = 1,
+        //        Message = "Transaction updated successfully"
+        //    };
+        //}
         #endregion
     }
 }
