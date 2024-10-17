@@ -17,9 +17,8 @@ namespace GiveandTake_API.Controllers
 
         #region Admin Transaction
 
-        // Change Transaction status to Suspended
         [HttpPut(ApiEndPointConstant.Transaction.ChangeTransactionStatusToSuspendedEndPoint)]
-        [SwaggerOperation(Summary = "Change Transaction status to Suspended")]
+        [SwaggerOperation(Summary = "Change transaction status to Suspended - Admin")]
         public async Task<IActionResult> ChangeTransactionStatusToSuspended(int id)
         {
             var response = await _transactionService.ChangeTransactionStatusToSuspended(id);
@@ -29,9 +28,8 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
-        // Change Transaction status to Pending
         [HttpPut(ApiEndPointConstant.Transaction.ChangeTransactionStatusToPendingEndPoint)]
-        [SwaggerOperation(Summary = "Change Transaction status to Pending")]
+        [SwaggerOperation(Summary = "Change transaction status to Pending - Admin")]
         public async Task<IActionResult> ChangeTransactionStatusToPending(int id)
         {
             var response = await _transactionService.ChangeTransactionStatusToPending(id);
@@ -41,9 +39,8 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
-        // Delete Suspended Transaction
         [HttpDelete(ApiEndPointConstant.Transaction.DeleteSuspendedTransactionEndPoint)]
-        [SwaggerOperation(Summary = "Delete Suspended Transaction")]
+        [SwaggerOperation(Summary = "Delete Suspended transaction - Admin")]
         public async Task<IActionResult> DeleteSuspendedTransaction(int id)
         {
             var response = await _transactionService.DeleteSuspendedTransaction(id);
@@ -53,9 +50,8 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
-        // Get Transactions by Donation for Sender (admin)
         [HttpGet(ApiEndPointConstant.Transaction.TransactionByDonationForAdminEndPoint)]
-        [SwaggerOperation(Summary = "Get Transactions by Donation for Sender By Admin")]
+        [SwaggerOperation(Summary = "Get transactions contain sender's items - Admin")]
         public async Task<IActionResult> GetTransactionsByDonationForSender(int senderAccountId)
         {
             var response = await _transactionService.GetTransactionsByDonationForSender(senderAccountId);

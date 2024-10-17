@@ -28,14 +28,15 @@ namespace GiveandTake_API.Controllers
 
         [HttpGet(ApiEndPointConstant.TransactionDetail.TransactionDetailEndPoint)]
         [SwaggerOperation(Summary = "Get Transaction Detail by its id")]
-        public async Task<IActionResult> GetTransactionDetailById(int transactionDetailId)
+        public async Task<IActionResult> GetTransactionDetailById(int id)
         {
-            var response = await _transactionDetailService.GetTransactionDetailById(transactionDetailId);
+            var response = await _transactionDetailService.GetTransactionDetailById(id);
             if (response.Status >= 0)
                 return Ok(response.Data);
             else
                 return BadRequest(response.Message);
         }
+
 
         [HttpGet(ApiEndPointConstant.TransactionDetail.TransactionDetailByTransactionEndPoint)]
         [SwaggerOperation(Summary = "Get Transaction Detail by Transaction")]
@@ -47,40 +48,5 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response.Message);
         }
-
-        #region Unused methods
-        //[HttpPost(ApiEndPointConstant.TransactionDetail.TransactionDetailsEndPoint)]
-        //[SwaggerOperation(Summary = "Create a new Transaction Detail")]
-        //public async Task<IActionResult> CreateTransactionDetail(TransactionDetailDTO transactionDetail)
-        //{
-        //    var response = await _transactionDetailService.CreateTransactionDetail(transactionDetail);
-        //    if (response.Status >= 0)
-        //        return Ok(response);
-        //    else
-        //        return BadRequest(response);
-        //}
-
-        //[HttpPut(ApiEndPointConstant.TransactionDetail.TransactionDetailEndPoint)]
-        //[SwaggerOperation(Summary = "Update a Transaction Detail")]
-        //public async Task<IActionResult> UpdateTransactionDetail(int transactionDetailId, TransactionDetailDTO transactionDetail)
-        //{
-        //    var response = await _transactionDetailService.UpdateTransactionDetail(transactionDetailId, transactionDetail);
-        //    if (response.Status >= 0)
-        //        return Ok(response);
-        //    else
-        //        return BadRequest(response);
-        //}
-
-        //[HttpDelete(ApiEndPointConstant.TransactionDetail.TransactionDetailEndPoint)]
-        //[SwaggerOperation(Summary = "Delete a Transaction Detail")]
-        //public async Task<IActionResult> DeleteTransactionDetail(int transactionDetailId)
-        //{
-        //    var response = await _transactionDetailService.DeleteTransactionDetail(transactionDetailId);
-        //    if (response.Status >= 0)
-        //        return Ok(response);
-        //    else
-        //        return BadRequest(response);
-        //}
-        #endregion
     }
 }

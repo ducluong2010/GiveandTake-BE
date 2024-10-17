@@ -63,6 +63,8 @@
             public const string TransactionEndPoint = TransactionsEndPoint + "/{id}";
             public const string TransactionStatusEndPoint = TransactionsEndPoint + "/{id}/status";
             public const string TransactionByAccountEndPoint = TransactionsEndPoint + "/account/{accountId}";
+            public const string TransactionByAccountForCurrentUserEndPoint = TransactionsEndPoint + "/account/current";
+
 
             public const string TransactionByDonationForAdminEndPoint = TransactionsEndPoint + "/donation/sender/{senderAccountId}";
             public const string TransactionByDonationForSenderEndPoint = TransactionsEndPoint + "/donation/sender";
