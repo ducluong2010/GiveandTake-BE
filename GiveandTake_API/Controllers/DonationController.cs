@@ -39,7 +39,7 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response);
         }
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "1")]
+
         [HttpPost(ApiEndPointConstant.Donation.DonationsEndPoint)]
         [SwaggerOperation(Summary = "Create a new Donation")]
         public async Task<IActionResult> CreateDonation(CreateDonationDTO donation)
@@ -51,7 +51,6 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "2")]
         [HttpPut(ApiEndPointConstant.Donation.DonationEndPoint)]
         [SwaggerOperation(Summary = "Update Donation")]
         public async Task<IActionResult> UpdateDonation(int id, CreateUpdateDonationDTO donation)
@@ -63,7 +62,6 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "2")]
         [HttpDelete(ApiEndPointConstant.Donation.DonationEndPoint)]
         [SwaggerOperation(Summary = "Delete Donation")]
         public async Task<IActionResult> DeleteDonation(int id)
@@ -74,7 +72,7 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response);
         }
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "2")] 
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "2")]
         [HttpPut(ApiEndPointConstant.Donation.ToggleDonationStatusEndPoint)]
         [SwaggerOperation(Summary = "Change status between Pending and Approved")]
         public async Task<IActionResult> ToggleDonationStatus(int id)
@@ -129,5 +127,16 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response);
         }
+        [HttpGet(ApiEndPointConstant.Donation.SearchDonationsEndPoint)]
+        [SwaggerOperation(Summary = "Search donations")]
+        public async Task<IActionResult> SearchDonations([FromQuery] string searchTerm, [FromQuery] int page = 1, [FromQuery] int pageSize = 8)
+        {
+            var response = await _donationService.SearchDonations(searchTerm, page, pageSize);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
+
     }
 }
