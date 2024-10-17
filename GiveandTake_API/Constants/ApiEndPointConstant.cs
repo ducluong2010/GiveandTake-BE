@@ -54,6 +54,7 @@
             public const string ToggleApprovedEndPoint = DonationsEndPoint + "/{id}/toggleac";
             public const string CheckBannedAccountDonationsEndPoint = DonationsEndPoint + "/checkban";
             public const string CheckHidingDonationsEndPoint = DonationsEndPoint + "/checkactived";
+            public const string SearchDonationsEndPoint = DonationsEndPoint + "/search";
         }
 
         public class Transaction

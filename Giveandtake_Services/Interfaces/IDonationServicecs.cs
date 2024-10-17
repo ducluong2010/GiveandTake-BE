@@ -20,5 +20,6 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> ToggleApproved(int id);
         Task<IGiveandtakeResult> CheckAndUpdateAllBannedAccountsDonations();
         Task<IGiveandtakeResult> CheckAndUpdateDonationsForActivatedAccounts();
+        Task<IGiveandtakeResult> SearchDonations(string searchTerm, int page = 1, int pageSize = 8);
     }
 }
