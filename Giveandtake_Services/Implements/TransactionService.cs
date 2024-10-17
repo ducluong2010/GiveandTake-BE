@@ -54,14 +54,5 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> CompleteTransaction(int transactionId, int senderAccountId)
             => _transactionBusiness.CompleteTransaction(transactionId, senderAccountId);
-
-
-        #region Unused methods
-        //public Task<IGiveandtakeResult> CreateTransaction(TransactionDTO.CreateTransaction transactionInfo)
-        //    => _transactionBusiness.CreateTransaction(transactionInfo);
-
-        //public Task<IGiveandtakeResult> UpdateTransaction(int id, TransactionDTO.UpdateTransaction transactionInfo)
-        //    => _transactionBusiness.UpdateTransaction(id, transactionInfo);
-        #endregion
     }
 }

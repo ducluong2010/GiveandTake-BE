@@ -26,10 +26,5 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> ChangeTransactionStatusToAccepted(int transactionId, int senderAccountId);
         Task<IGiveandtakeResult> ChangeTransactionStatusToRejected(int transactionId, int senderAccountId);
         Task<IGiveandtakeResult> CompleteTransaction(int transactionId, int senderAccountId);
-
-        #region Unused methods
-        //Task<IGiveandtakeResult> CreateTransaction(TransactionDTO.CreateTransaction transactionInfo);
-        //Task<IGiveandtakeResult> UpdateTransaction(int id, TransactionDTO.UpdateTransaction transactionInfo);
-        #endregion
     }
 }
