@@ -305,7 +305,7 @@ namespace Giveandtake_Business
             return result;
         }
 
-        // Change transaction status to Accepted by Sender - Sender
+        // Accept the transaction - Sender
         public async Task<IGiveandtakeResult> ChangeTransactionStatusToAccepted(int transactionId, int senderAccountId)
         {
             var transaction = await _unitOfWork.GetRepository<Transaction>()
@@ -357,7 +357,7 @@ namespace Giveandtake_Business
             };
         }
 
-        // Change transaction status to Rejected by Sender - Sender
+        // Reject the transaction - Sender
         public async Task<IGiveandtakeResult> ChangeTransactionStatusToRejected(int transactionId, int senderAccountId)
         {
             var transaction = await _unitOfWork.GetRepository<Transaction>().SingleOrDefaultAsync(
@@ -394,7 +394,7 @@ namespace Giveandtake_Business
             };
         }
 
-        // Complete transaction and update sender's points - Sender
+        // Complete the transaction - Sender
         public async Task<IGiveandtakeResult> CompleteTransaction(int transactionId, int senderAccountId)
         {
             var transaction = await _unitOfWork.GetRepository<Transaction>().SingleOrDefaultAsync(
@@ -449,6 +449,34 @@ namespace Giveandtake_Business
             {
                 Status = 1,
                 Message = "Transaction completed, sender's points updated, and donation status changed to Claimed"
+            };
+        }
+
+        // Cancel the transaction - Sender/Receiver
+        public async Task<IGiveandtakeResult> ChangeTransactionStatusToCanceled(int transactionId)
+        {
+            Transaction transaction = await _unitOfWork.GetRepository<Transaction>().SingleOrDefaultAsync(
+                predicate: o => o.TransactionId == transactionId);
+
+            if (transaction == null)
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Transaction not found"
+                };
+            }
+            else
+            {
+                transaction.Status = "Canceled";
+                transaction.UpdatedDate = DateTime.Now;
+                _unitOfWork.GetRepository<Transaction>().UpdateAsync(transaction);
+                await _unitOfWork.CommitAsync();
+            }
+            return new GiveandtakeResult
+            {
+                Status = 1,
+                Message = "Transaction status changed to Canceled"
             };
         }
         #endregion
