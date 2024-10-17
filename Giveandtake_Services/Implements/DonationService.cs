@@ -47,5 +47,7 @@ namespace Giveandtake_Services.Implements
         public Task<IGiveandtakeResult> CheckAndUpdateDonationsForActivatedAccounts()
            => _donationBusiness.CheckAndUpdateDonationsForActivatedAccounts();
 
+        public Task<IGiveandtakeResult> SearchDonations(string searchTerm, int page = 1, int pageSize = 8)
+           => _donationBusiness.SearchDonations(searchTerm, page, pageSize);
     }
 }

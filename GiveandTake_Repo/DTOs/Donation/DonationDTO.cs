@@ -39,7 +39,6 @@ namespace GiveandTake_Repo.DTOs.Donation
         public List<string>? DonationImages { get; set; }
 
     }
-
     public class CreateUpdateDonationDTO
     {
         public int? AccountId { get; set; }

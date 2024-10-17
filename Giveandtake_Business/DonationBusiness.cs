@@ -171,7 +171,6 @@ namespace Giveandtake_Business
             var donationRepository = _unitOfWork.GetRepository<Donation>();
             var categoryRepository = _unitOfWork.GetRepository<Category>();
 
-            // Lấy donation hiện tại
             var existingDonation = await donationRepository.SingleOrDefaultAsync(
                 predicate: d => d.DonationId == id
             );
@@ -181,7 +180,6 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult(-1, "Donation not found");
             }
 
-            // Nếu người dùng có chọn category mới thì cập nhật
             if (donationInfo.CategoryId.HasValue)
             {
                 var category = await categoryRepository.SingleOrDefaultAsync(
@@ -194,8 +192,6 @@ namespace Giveandtake_Business
                 existingDonation.CategoryId = category.CategoryId;
                 existingDonation.Point = category.Point;
             }
-
-            // Chỉ cập nhật những trường người dùng có sửa đổi
             if (!string.IsNullOrEmpty(donationInfo.Name))
                 existingDonation.Name = donationInfo.Name;
 
@@ -226,6 +222,7 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(1, "Donation updated successfully");
         }
+
         private async Task UpdateDonationImages(int donationId, IEnumerable<string> donationImages)
         {
             var donationImageRepository = _unitOfWork.GetRepository<DonationImage>();
@@ -462,5 +459,79 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(1, $"Updated {totalUpdatedDonations} donations from Hiding to Approved status for activated accounts");
         }
 
+        public async Task<IGiveandtakeResult> SearchDonations(string searchTerm, int page = 1, int pageSize = 8)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return new GiveandtakeResult(-1, "Search term cannot be empty");
+            }
+
+            var repository = _unitOfWork.GetRepository<Donation>();
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+
+            var allAccounts = await accountRepository.GetAllAsync();
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
+
+            var searchResults = await repository.GetListAsync(
+                predicate: d => d.Account.FullName.Contains(searchTerm) ||
+                                d.Name.Contains(searchTerm) ||
+                                d.Description.Contains(searchTerm),
+                selector: d => new DonationDTO
+                {
+                    DonationId = d.DonationId,
+                    AccountId = d.AccountId,
+                    AccountName = d.Account.FullName,
+                    CategoryId = d.CategoryId,
+                    CategoryName = d.Category.CategoryName,
+                    Name = d.Name,
+                    Description = d.Description,
+                    Point = d.Point,
+                    CreatedAt = d.CreatedAt,
+                    UpdatedAt = d.UpdatedAt,
+                    ApprovedBy = d.ApprovedBy,
+                    ApprovedByName = d.ApprovedBy.HasValue && accountDict.ContainsKey(d.ApprovedBy.Value)
+                        ? accountDict[d.ApprovedBy.Value]
+                        : null,
+                    TotalRating = d.TotalRating,
+                    Status = d.Status,
+                    DonationImages = d.DonationImages.Select(di => di.Url).ToList()
+                },
+                include: source => source
+                    .Include(d => d.Account)
+                    .Include(d => d.Category)
+            );
+
+            int totalItems = searchResults.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            if (page > totalPages) page = totalPages;
+
+            if (totalItems == 0)
+            {
+                return new GiveandtakeResult(new PaginatedResult<DonationDTO>
+                {
+                    Items = new List<DonationDTO>(),
+                    TotalItems = totalItems,
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalPages = totalPages
+                });
+            }
+
+            var paginatedResults = searchResults
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var paginatedResult = new PaginatedResult<DonationDTO>
+            {
+                Items = paginatedResults,
+                TotalItems = totalItems,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
+
+            return new GiveandtakeResult(paginatedResult);
+        }
     }
 }
