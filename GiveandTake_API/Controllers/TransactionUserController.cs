@@ -23,7 +23,9 @@ namespace GiveandTake_API.Controllers
         [SwaggerOperation(Summary = "Create transaction with details - Sender")]
         public async Task<IActionResult> CreateTransactionWithDetail([FromBody] CreateTransactionWithDetail transactionInfo)
         {
-            var response = await _transactionService.CreateTransactionWithDetail(transactionInfo.Transaction, transactionInfo.TransactionDetail);
+            int senderAccountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
+
+            var response = await _transactionService.CreateTransactionWithDetail(transactionInfo.Transaction, transactionInfo.TransactionDetail, senderAccountId);
             if (response.Status >= 0)
                 return Ok(response);
             else

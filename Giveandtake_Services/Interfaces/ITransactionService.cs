@@ -22,7 +22,7 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> ChangeTransactionStatusToPending(int transactionId);
 
         // Specifid methods for user
-        Task<IGiveandtakeResult> CreateTransactionWithDetail(CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto);
+        Task<IGiveandtakeResult> CreateTransactionWithDetail(CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto, int senderAccountId);
         //Task<IGiveandtakeResult> ChangeTransactionStatusToAccepted(int transactionId, int senderAccountId);
         //Task<IGiveandtakeResult> ChangeTransactionStatusToRejected(int transactionId, int senderAccountId);
         Task<IGiveandtakeResult> CompleteTransaction(int transactionId, int senderAccountId);

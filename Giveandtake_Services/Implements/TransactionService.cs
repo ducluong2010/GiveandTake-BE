@@ -43,8 +43,8 @@ namespace Giveandtake_Services.Implements
 
         // Specifid methods for user
 
-        public Task<IGiveandtakeResult> CreateTransactionWithDetail(TransactionDTO.CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto)
-            => _transactionBusiness.CreateTransactionWithDetail(createTransaction, transactionDetailDto);
+        public Task<IGiveandtakeResult> CreateTransactionWithDetail(TransactionDTO.CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto, int senderAccountId)
+            => _transactionBusiness.CreateTransactionWithDetail(createTransaction, transactionDetailDto, senderAccountId);
 
         //public Task<IGiveandtakeResult> ChangeTransactionStatusToAccepted(int transactionId, int senderAccountId)
         //    => _transactionBusiness.ChangeTransactionStatusToAccepted(transactionId, senderAccountId);
