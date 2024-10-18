@@ -233,7 +233,8 @@ namespace Giveandtake_Business
 
         #region Specific User Transaction
         // Create transaction and transaction detail at the same time - Sender
-        public async Task<IGiveandtakeResult> CreateTransactionWithDetail(CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto)
+        public async Task<IGiveandtakeResult> CreateTransactionWithDetail(CreateTransaction createTransaction,
+            TransactionDetailDTO transactionDetailDto, int senderAccountId)
         {
             var account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: a => a.AccountId == createTransaction.AccountId);
@@ -248,14 +249,14 @@ namespace Giveandtake_Business
             }
 
             var donation = await _unitOfWork.GetRepository<Donation>().SingleOrDefaultAsync(
-                predicate: d => d.DonationId == transactionDetailDto.DonationId);
+                predicate: d => d.DonationId == transactionDetailDto.DonationId && d.AccountId == senderAccountId); // Xác thực người gửi
 
             if (donation == null)
             {
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "Donation not found"
+                    Message = "Donation not found or it does not belong to you"
                 };
             }
 
@@ -307,6 +308,8 @@ namespace Giveandtake_Business
             }
             return result;
         }
+
+
 
         // Complete the transaction - Sender
         public async Task<IGiveandtakeResult> CompleteTransaction(int transactionId, int senderAccountId)
