@@ -23,8 +23,8 @@ namespace Giveandtake_Services.Interfaces
 
         // Specifid methods for user
         Task<IGiveandtakeResult> CreateTransactionWithDetail(CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto);
-        Task<IGiveandtakeResult> ChangeTransactionStatusToAccepted(int transactionId, int senderAccountId);
-        Task<IGiveandtakeResult> ChangeTransactionStatusToRejected(int transactionId, int senderAccountId);
+        //Task<IGiveandtakeResult> ChangeTransactionStatusToAccepted(int transactionId, int senderAccountId);
+        //Task<IGiveandtakeResult> ChangeTransactionStatusToRejected(int transactionId, int senderAccountId);
         Task<IGiveandtakeResult> CompleteTransaction(int transactionId, int senderAccountId);
     }
 }
