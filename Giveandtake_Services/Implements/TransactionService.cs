@@ -46,11 +46,11 @@ namespace Giveandtake_Services.Implements
         public Task<IGiveandtakeResult> CreateTransactionWithDetail(TransactionDTO.CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto)
             => _transactionBusiness.CreateTransactionWithDetail(createTransaction, transactionDetailDto);
 
-        public Task<IGiveandtakeResult> ChangeTransactionStatusToAccepted(int transactionId, int senderAccountId)
-            => _transactionBusiness.ChangeTransactionStatusToAccepted(transactionId, senderAccountId);
+        //public Task<IGiveandtakeResult> ChangeTransactionStatusToAccepted(int transactionId, int senderAccountId)
+        //    => _transactionBusiness.ChangeTransactionStatusToAccepted(transactionId, senderAccountId);
 
-        public Task<IGiveandtakeResult> ChangeTransactionStatusToRejected(int transactionId, int senderAccountId)
-            => _transactionBusiness.ChangeTransactionStatusToRejected(transactionId, senderAccountId);
+        //public Task<IGiveandtakeResult> ChangeTransactionStatusToRejected(int transactionId, int senderAccountId)
+        //    => _transactionBusiness.ChangeTransactionStatusToRejected(transactionId, senderAccountId);
 
         public Task<IGiveandtakeResult> CompleteTransaction(int transactionId, int senderAccountId)
             => _transactionBusiness.CompleteTransaction(transactionId, senderAccountId);

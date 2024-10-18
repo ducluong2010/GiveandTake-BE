@@ -15,7 +15,7 @@ namespace GiveandTake_API.Controllers
             _transactionService = new TransactionService();
         }
 
-        #region Admin Transaction
+        #region Manage Transaction
 
         [HttpPut(ApiEndPointConstant.Transaction.ChangeTransactionStatusToSuspendedEndPoint)]
         [SwaggerOperation(Summary = "Change transaction status to Suspended - Admin")]
@@ -51,7 +51,7 @@ namespace GiveandTake_API.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.Transaction.TransactionByDonationForAdminEndPoint)]
-        [SwaggerOperation(Summary = "Get transactions contain sender's items - Admin")]
+        [SwaggerOperation(Summary = "Get list of transactions that user created - Admin")]
         public async Task<IActionResult> GetTransactionsByDonationForSender(int senderAccountId)
         {
             var response = await _transactionService.GetTransactionsByDonationForSender(senderAccountId);
