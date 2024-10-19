@@ -17,6 +17,10 @@ namespace GiveandTake_Repo.DTOs.Reward
         public string? Status { get; set; }
 
         public DateTime? ClaimedAt { get; set; }
+
+        public string? RewardName { get; set; }
+
+        public string? ImageUrl { get; set; }
     }
 
     public class RewardedDTO
@@ -28,5 +32,9 @@ namespace GiveandTake_Repo.DTOs.Reward
         public string? Status { get; set; }
 
         public DateTime? ClaimedAt { get; set; }
+
+        public string? RewardName { get; set; }
+
+        public string? ImageUrl { get; set; }
     }
 }

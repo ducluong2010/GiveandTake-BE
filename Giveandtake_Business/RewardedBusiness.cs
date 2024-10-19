@@ -1,6 +1,7 @@
 ﻿using GiveandTake_Repo.DTOs.Reward;
 using GiveandTake_Repo.Models;
 using GiveandTake_Repo.Repository.Implements;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,8 +31,12 @@ namespace Giveandtake_Business
                     RewardId = x.RewardId,
                     AccountId = x.AccountId,
                     Status = x.Status,
-                    ClaimedAt = x.ClaimedAt
-                });
+                    ClaimedAt = x.ClaimedAt,
+                    // Thêm thông tin từ bảng Reward
+                    RewardName = x.Reward.RewardName,
+                    ImageUrl = x.Reward.ImageUrl
+                },
+                include: r => r.Include(rewarded => rewarded.Reward)); // Thực hiện include bảng Reward
             return new GiveandtakeResult(rewardedList);
         }
 
@@ -46,12 +51,16 @@ namespace Giveandtake_Business
                                           RewardId = x.RewardId,
                                           AccountId = x.AccountId,
                                           Status = x.Status,
-                                          ClaimedAt = x.ClaimedAt
-                                      });
+                                          ClaimedAt = x.ClaimedAt,
+                                          // Thêm thông tin từ bảng Reward
+                                          RewardName = x.Reward.RewardName,
+                                          ImageUrl = x.Reward.ImageUrl
+                                      },
+                                      include: r => r.Include(rewarded => rewarded.Reward)); // Thực hiện include bảng Reward
             return new GiveandtakeResult(rewarded);
         }
 
-        // Get claimed rewards by account id    
+        // Get claimed rewards by account id
         public async Task<IGiveandtakeResult> GetRewardedByAccountId(int accountId)
         {
             var rewarded = await _unitOfWork.GetRepository<Rewarded>()
@@ -62,8 +71,12 @@ namespace Giveandtake_Business
                                   RewardId = x.RewardId,
                                   AccountId = x.AccountId,
                                   Status = x.Status,
-                                  ClaimedAt = x.ClaimedAt
-                              });
+                                  ClaimedAt = x.ClaimedAt,
+                                  // Thêm thông tin từ bảng Reward
+                                  RewardName = x.Reward.RewardName,
+                                  ImageUrl = x.Reward.ImageUrl
+                              },
+                              include: r => r.Include(rewarded => rewarded.Reward)); // Thực hiện include bảng Reward
             return new GiveandtakeResult(rewarded);
         }
 
@@ -94,8 +107,7 @@ namespace Giveandtake_Business
                     rewarded.Status = "Success";
                     reward.Quantity -= 1;
 
-                   _unitOfWork.GetRepository<Reward>().UpdateAsync(reward);
-
+                    _unitOfWork.GetRepository<Reward>().UpdateAsync(reward);
                 }
                 else
                 {
@@ -117,7 +129,10 @@ namespace Giveandtake_Business
                     RewardId = rewarded.RewardId,
                     AccountId = rewarded.AccountId,
                     Status = rewarded.Status,
-                    ClaimedAt = rewarded.ClaimedAt
+                    ClaimedAt = rewarded.ClaimedAt,
+                    // Thêm thông tin từ bảng Reward
+                    RewardName = reward.RewardName,
+                    ImageUrl = reward.ImageUrl
                 };
 
                 result.Data = rewardedDto;
@@ -132,6 +147,7 @@ namespace Giveandtake_Business
 
             return result;
         }
+
         #endregion
     }
 }
