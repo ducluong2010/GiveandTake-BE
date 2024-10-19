@@ -48,5 +48,39 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response.Message);
         }
+
+        [HttpPost(ApiEndPointConstant.TransactionDetail.TransactionDetailsEndPoint)]
+        [SwaggerOperation(Summary = "Generate QRCode by Transaction")]
+        public async Task<IActionResult> GenerateQRCode(int transactiondetailid, int donationid)
+        {
+            if (transactiondetailid <= 0 || donationid <= 0)
+            {
+                return BadRequest("Invalid transactiondetailid or donationid");
+            }
+
+            var response = await _transactionDetailService.GenerateQRCode(transactiondetailid, donationid);
+            return response.Status >= 0
+                ? Ok(new { Message = response.Message, QRCodeData = response.Data })
+                : BadRequest(response.Message);
+        }
+
+        [HttpGet(ApiEndPointConstant.TransactionDetail.TransactionDetailsEndPoint)]
+        [SwaggerOperation(Summary = "Get QRCode by TransactionId")]
+        public IActionResult GetQRCode(int transactionId, int donationId)
+        {
+            string directoryPath = Path.Combine("wwwroot", "images", "qrcodes");
+
+            string fileName = $"qrcode_{transactionId}_{donationId}.png";
+            string filePath = Path.Combine(directoryPath, fileName);
+
+            if (!System.IO.File.Exists(filePath))
+            {
+                return NotFound(new { message = "QR Code not found" });
+            }
+
+            byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+
+            return File(fileBytes, "image/png");
+        }
     }
 }
