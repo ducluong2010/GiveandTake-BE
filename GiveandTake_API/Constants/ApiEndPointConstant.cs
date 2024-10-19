@@ -86,6 +86,9 @@
             public const string TransactionDetailsEndPoint = ApiEndpoint + "/transaction-details";
             public const string TransactionDetailEndPoint = TransactionDetailsEndPoint + "/{id}";
             public const string TransactionDetailByTransactionEndPoint = TransactionDetailsEndPoint + "/transaction/{transactionId}";
+
+            public const string QRCodeEndPoint = ApiEndpoint + "/qrcode";
+            public const string GetQRCodeByTransactionId = QRCodeEndPoint + "/{transactionId}/{donationId}";
         }
 
         public class DonationImage

@@ -64,7 +64,7 @@ namespace GiveandTake_API.Controllers
                 : BadRequest(response.Message);
         }
 
-        [HttpGet(ApiEndPointConstant.TransactionDetail.TransactionDetailsEndPoint)]
+        [HttpGet(ApiEndPointConstant.TransactionDetail.GetQRCodeByTransactionId)]
         [SwaggerOperation(Summary = "Get QRCode by TransactionId")]
         public IActionResult GetQRCode(int transactionId, int donationId)
         {
