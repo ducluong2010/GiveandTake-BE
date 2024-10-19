@@ -39,9 +39,8 @@
         public class Rewarded
         {
             public const string RewardedEndPoint = ApiEndpoint + "/rewardeds";
-            public const string RewardedByAccountEndPoint = RewardedEndPoint + "/{accountId}";
+            public const string RewardedByAccountEndPoint = RewardedEndPoint + "/account/{accountId}";
             public const string RewardedByIdEndPoint = RewardedEndPoint + "/{id}";
-
         }
 
         public class Donation

@@ -58,16 +58,19 @@ namespace GiveandTake_API.Controllers
         [SwaggerOperation(Summary = "Claim a reward")]
         public async Task<IActionResult> ClaimReward(RewardedDTO rewardedInfo)
         {
+            int accountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
+
+            rewardedInfo.AccountId = accountId;
+
             var response = await _rewardedService.ClaimReward(rewardedInfo);
 
             if (response.Status >= 0)
             {
-                // Nếu response chứa DTO trong Data, chỉ trả về phần DTO
                 return Ok(response.Data);
             }
             else
             {
-                return BadRequest(response.Message);  // Trả về thông báo lỗi thay vì toàn bộ response
+                return BadRequest(response.Message); 
             }
         }
 
