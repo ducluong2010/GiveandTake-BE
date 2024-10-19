@@ -1,6 +1,7 @@
 ﻿using GiveandTake_Repo.DTOs.Transaction;
 using GiveandTake_Repo.Models;
 using GiveandTake_Repo.Repository.Implements;
+using QRCoder;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -145,5 +146,95 @@ namespace Giveandtake_Business
         }
 
         #endregion TransactionDetail
+
+        // Generate QRCode for transaction
+        public async Task<IGiveandtakeResult> GenerateQRCode(int transactionId, int donationId)
+        {
+            // Get Information from DonationId
+            var donation = await _unitOfWork.GetRepository<Donation>().SingleOrDefaultAsync(predicate: d => d.DonationId == donationId);
+
+            if (donation == null)
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Donation not found"
+                };
+            }
+
+            // Get Information form AccountId
+            var account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(predicate: a => a.AccountId == donation.AccountId);
+            if (account == null)
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Account not found"
+                };
+            }
+
+            // Get TransactionDetail from DonationId
+            var transactionDetail = await _unitOfWork.GetRepository<TransactionDetail>()
+                .SingleOrDefaultAsync(predicate: td => td.DonationId == donationId);
+
+            if (transactionDetail == null)
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Transaction Detail not found"
+                };
+            }
+
+            // Create Info in QRCode
+            string shortInfo = $"Transaction ID: {transactionId}\n" +
+                               $"Donation ID: {donationId}\n" +
+                               $"Donation Name: {donation.Name}\n" +
+                               $"Account Name: {account.FullName}";
+
+            // Generate QRCode
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(shortInfo, QRCodeGenerator.ECCLevel.Q);
+            BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
+            byte[] qrCodeBytes = qrCode.GetGraphic(20);
+
+            // File Path to save img
+            string directoryPath = Path.Combine("wwwroot", "images", "qrcodes");
+
+            // Create Path does not exist
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+
+            // Create file name base on transactionId và donationId
+            string fileName = $"qrcode_{transactionId}_{donationId}.png";
+            string filePath = Path.Combine(directoryPath, fileName);  
+
+            // Save img file to server
+            File.WriteAllBytes(filePath, qrCodeBytes);
+
+            // Save link img to database ("images/qrcodes/")
+            transactionDetail.QRcode = $"/images/qrcodes/{fileName}";
+            _unitOfWork.GetRepository<TransactionDetail>().UpdateAsync(transactionDetail);
+
+            bool status = await _unitOfWork.CommitAsync() > 0;
+            if (status)
+            {
+                return new GiveandtakeResult
+                {
+                    Status = 1,
+                    Message = "QR Code generated and saved as an image file successfully"
+                };
+            }
+            else
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "QR Code generation failed"
+                };
+            }
+        }
     }
 }
