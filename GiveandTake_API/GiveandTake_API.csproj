@@ -29,4 +29,8 @@
     <ProjectReference Include="..\Giveandtake_Services\Giveandtake_Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\qrcodes\" />
+  </ItemGroup>
+
 </Project>
