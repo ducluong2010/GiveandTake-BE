@@ -199,7 +199,7 @@ namespace Giveandtake_Business
             byte[] qrCodeBytes = qrCode.GetGraphic(20);
 
             // File Path to save img
-            string directoryPath = Path.Combine("wwwroot", "images", "qrcodes");
+            string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "qrcodes");
 
             // Create Path does not exist
             if (!Directory.Exists(directoryPath))
