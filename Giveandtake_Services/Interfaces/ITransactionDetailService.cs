@@ -16,5 +16,7 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> CreateTransactionDetail(TransactionDetailDTO transactionDetail);
         Task<IGiveandtakeResult> UpdateTransactionDetail(int transactionDetailId, TransactionDetailDTO transactionDetail);
         Task<IGiveandtakeResult> DeleteTransactionDetail(int transactionDetailId);
+
+        Task<IGiveandtakeResult> GenerateQRCode(int transactionDetailId, int donationid);
     }
 }
