@@ -272,7 +272,11 @@ namespace Giveandtake_Business
                 Point = category.Point,
                 CreatedAt = DateTime.Now,
                 Status = "Pending",
-                DonationImages = new List<DonationImage>() // Xử lý nếu cần thêm DonationImages
+                DonationImages = donationInfo.DonationImages.Select(imageUrl => new DonationImage
+                {
+                    Url = imageUrl,
+                    IsThumbnail = false 
+                }).ToList()
             };
 
             await _unitOfWork.GetRepository<Donation>().InsertAsync(newDonation);
