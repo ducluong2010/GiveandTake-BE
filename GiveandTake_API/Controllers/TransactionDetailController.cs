@@ -40,16 +40,16 @@ namespace GiveandTake_API.Controllers
 
         [HttpPost(ApiEndPointConstant.TransactionDetail.TransactionDetailsEndPoint)]
         [SwaggerOperation(Summary = "Generate QRCode by Transaction")]
-        public async Task<IActionResult> GenerateQRCode(int transactionId, int donationId)
+        public async Task<IActionResult> GenerateQRCode(int transactionId,int transactionDetailId, int donationId)
         {
             // Validate the input
-            if (transactionId <= 0 || donationId <= 0)
+            if (transactionDetailId <= 0 || donationId <= 0)
             {
                 return BadRequest("Invalid transactionId or donationId");
             }
 
             // Call the business logic to generate QR code
-            var response = await _transactionDetailService.GenerateQRCode(transactionId, donationId);
+            var response = await _transactionDetailService.GenerateQRCode(transactionId, transactionDetailId, donationId);
 
             // Return the appropriate response based on the result
             if (response.Status >= 0)
@@ -82,6 +82,5 @@ namespace GiveandTake_API.Controllers
             // Return the QRCode URL if it exists
             return Ok(new { QRCodeUrl = transactionDetail.Qrcode});
         }
-
-            }
+    }
 }
