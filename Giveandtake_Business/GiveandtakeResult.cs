@@ -11,6 +11,7 @@ namespace Giveandtake_Business
         int Status { get; set; }
         string Message { get; set; }
         object? Data { get; set; }
+        string? Qrcode { get; set; }
     }
 
     public class  GiveandtakeResult : IGiveandtakeResult
@@ -18,6 +19,7 @@ namespace Giveandtake_Business
         public int Status { get; set; }
         public string Message { get; set; }
         public object? Data { get; set; }
+        public string? Qrcode { get; set; }
 
         public GiveandtakeResult()
         {
