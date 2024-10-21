@@ -104,5 +104,16 @@
             public const string FeedbacksEndPoint = ApiEndpoint + "/feedbacks";
             public const string FeedbackEndPoint = FeedbacksEndPoint + "/{id}";
         }
+
+        public class Request
+        {
+            public const string RequestsEndPoint = ApiEndpoint + "/requests";
+            public const string RequestEndPoint = RequestsEndPoint + "/{id}";
+            public const string RequestByDonationEndPoint = RequestsEndPoint + "/donation/{donationId}";
+            public const string RequestByAccountEndPoint = RequestsEndPoint + "/account/{accountId}";
+            public const string CreateRequestEndPoint = RequestsEndPoint;
+            public const string CancelRequestEndPoint = RequestsEndPoint + "/{id}/cancel";
+            public const string DeleteRequestEndPoint = RequestsEndPoint + "/{id}";
+        }
     }
 }
