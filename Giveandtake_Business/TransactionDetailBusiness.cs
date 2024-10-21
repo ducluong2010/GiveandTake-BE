@@ -257,5 +257,37 @@ namespace Giveandtake_Business
                 };
             }
         }
+
+        public async Task<IGiveandtakeResult> GetQrcodeByTransactionDetailId(int transactionDetailId)
+        {
+            var result = new GiveandtakeResult();
+
+            // Logic lấy thông tin chi tiết của transaction detail từ database
+            var transactionDetail = await _unitOfWork.GetRepository<TransactionDetail>()
+            .SingleOrDefaultAsync(predicate: td => td.TransactionDetailId == transactionDetailId);
+
+            if (transactionDetail != null)
+            {
+                // Check if the QR code exists
+                if (!string.IsNullOrEmpty(transactionDetail.Qrcode))
+                {
+                    result.Status = 1;
+                    result.Data = transactionDetail.Qrcode; // Return the QR code
+                    result.Message = "QR code found.";
+                }
+                else
+                {
+                    result.Status = 0;
+                    result.Message = "QR code not found.";
+                }
+            }
+            else
+            {
+                result.Status = 0;
+                result.Message = "Transaction detail not found.";
+            }
+
+            return result;
+        }
     }
 }

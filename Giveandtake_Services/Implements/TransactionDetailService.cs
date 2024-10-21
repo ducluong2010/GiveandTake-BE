@@ -1,5 +1,7 @@
 ﻿using Giveandtake_Business;
 using GiveandTake_Repo.DTOs.Transaction;
+using GiveandTake_Repo.Models;
+using GiveandTake_Repo.Repository.Implements;
 using Giveandtake_Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -37,5 +39,7 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> GenerateQRCode(int transactionId, int transactionDetailId, int donationid)
             => _transactionDetailBusiness.GenerateQRCode(transactionId,transactionDetailId, donationid);
+        public Task<IGiveandtakeResult> GetQrcodeByTransactionDetailId(int transactionDetailId)
+            => _transactionDetailBusiness.GetQrcodeByTransactionDetailId(transactionDetailId);
     }
 }
