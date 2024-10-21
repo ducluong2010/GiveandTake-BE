@@ -99,5 +99,10 @@
             public const string ChangeThumbnailEndPoint = DonationImagesEndPoint + "/{id}/thumbnail";
         }
 
+        public class Feedback
+        {
+            public const string FeedbacksEndPoint = ApiEndpoint + "/feedbacks";
+            public const string FeedbackEndPoint = FeedbacksEndPoint + "/{id}";
+        }
     }
 }
