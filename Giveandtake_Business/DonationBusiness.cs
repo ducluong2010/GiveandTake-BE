@@ -272,7 +272,11 @@ namespace Giveandtake_Business
                 Point = category.Point,
                 CreatedAt = DateTime.Now,
                 Status = "Pending",
-                DonationImages = new List<DonationImage>() // Xử lý nếu cần thêm DonationImages
+                DonationImages = donationInfo.DonationImages.Select(imageUrl => new DonationImage
+                {
+                    Url = imageUrl,
+                    IsThumbnail = false 
+                }).ToList()
             };
 
             await _unitOfWork.GetRepository<Donation>().InsertAsync(newDonation);
@@ -285,21 +289,33 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(1, "Donation created successfully");
         }
- 
+
         public async Task<IGiveandtakeResult> DeleteDonation(int id)
         {
             var donation = await _unitOfWork.GetRepository<Donation>()
-                .SingleOrDefaultAsync(predicate: d => d.DonationId == id);
+                .FirstOrDefaultAsync(d => d.DonationId == id);
+
 
             if (donation == null)
             {
                 return new GiveandtakeResult(-1, "Donation not found");
             }
 
+            var donationImages = (await _unitOfWork.GetRepository<DonationImage>()
+                .GetAllAsync()).Where(img => img.DonationId == id).ToList();
+
+            foreach (var image in donationImages)
+            {
+                _unitOfWork.GetRepository<DonationImage>().DeleteAsync(image);
+            }
+
             _unitOfWork.GetRepository<Donation>().DeleteAsync(donation);
+
             await _unitOfWork.CommitAsync();
+
             return new GiveandtakeResult(1, "Donation deleted successfully");
         }
+
 
         public async Task<IGiveandtakeResult> ToggleDonationStatus(int donationId)
         {

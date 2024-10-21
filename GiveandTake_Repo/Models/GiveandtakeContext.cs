@@ -32,6 +32,8 @@ public partial class GiveandtakeContext : DbContext
 
     public virtual DbSet<Message> Messages { get; set; }
 
+    public virtual DbSet<Request> Requests { get; set; }
+
     public virtual DbSet<Reward> Rewards { get; set; }
 
     public virtual DbSet<Rewarded> Rewardeds { get; set; }
@@ -190,6 +192,31 @@ public partial class GiveandtakeContext : DbContext
                 .HasConstraintName("Message_ibfk_1");
         });
 
+        modelBuilder.Entity<Request>(entity =>
+        {
+            entity.HasKey(e => e.RequestId).HasName("PRIMARY");
+
+            entity.ToTable("Request");
+
+            entity.HasIndex(e => e.AccountId, "FK_Request_Account");
+
+            entity.HasIndex(e => e.DonationId, "FK_Request_Donation");
+
+            entity.Property(e => e.RequestDate).HasColumnType("datetime");
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .UseCollation("utf8mb3_general_ci")
+                .HasCharSet("utf8mb3");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.Requests)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK_Request_Account");
+
+            entity.HasOne(d => d.Donation).WithMany(p => p.Requests)
+                .HasForeignKey(d => d.DonationId)
+                .HasConstraintName("FK_Request_Donation");
+        });
+
         modelBuilder.Entity<Reward>(entity =>
         {
             entity.HasKey(e => e.RewardId).HasName("PRIMARY");
@@ -235,6 +262,7 @@ public partial class GiveandtakeContext : DbContext
         modelBuilder.Entity<Transaction>(entity =>
         {
             entity.HasKey(e => e.TransactionId).HasName("PRIMARY");
+
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
@@ -249,6 +277,10 @@ public partial class GiveandtakeContext : DbContext
             entity.HasIndex(e => e.DonationId, "DonationId");
 
             entity.HasIndex(e => e.TransactionId, "TransactionId");
+
+            entity.Property(e => e.Qrcode)
+                .HasColumnType("text")
+                .HasColumnName("QRcode");
 
             entity.HasOne(d => d.Donation).WithMany(p => p.TransactionDetails)
                 .HasForeignKey(d => d.DonationId)

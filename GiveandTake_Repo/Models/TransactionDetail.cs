@@ -11,7 +11,7 @@ public partial class TransactionDetail
 
     public int? DonationId { get; set; }
 
-    public string? QRcode { get; set; }
+    public string? Qrcode { get; set; }
 
     public virtual Donation? Donation { get; set; }
 

@@ -215,7 +215,7 @@ namespace Giveandtake_Business
             File.WriteAllBytes(filePath, qrCodeBytes);
 
             // Save link img to database ("images/qrcodes/")
-            transactionDetail.QRcode = $"/images/qrcodes/{fileName}";
+            transactionDetail.Qrcode = $"/images/qrcodes/{fileName}";
             _unitOfWork.GetRepository<TransactionDetail>().UpdateAsync(transactionDetail);
 
             bool status = await _unitOfWork.CommitAsync() > 0;

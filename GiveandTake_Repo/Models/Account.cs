@@ -37,6 +37,8 @@ public partial class Account
 
     public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 
+    public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
+
     public virtual ICollection<Rewarded> Rewardeds { get; set; } = new List<Rewarded>();
 
     public virtual ICollection<Reward> Rewards { get; set; } = new List<Reward>();
