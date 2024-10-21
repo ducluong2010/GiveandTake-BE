@@ -1,4 +1,6 @@
 ﻿using Giveandtake_Business;
+using GiveandTake_Repo.DTOs.Donation;
+using GiveandTake_Repo.DTOs.Feedback;
 using Giveandtake_Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -22,5 +24,13 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> GetFeedbackById(int feedbackId)
             => _feedbackBusiness.GetFeedbackById(feedbackId);
+        public Task<IGiveandtakeResult> CreateFeedback(CreateFeedbackDTO feedbackInfo)
+            => _feedbackBusiness.CreateFeedback(feedbackInfo);
+
+        public Task<IGiveandtakeResult> UpdateFeedback(int id, UpdateFeedbackDTO feedbackInfo)
+            => _feedbackBusiness.UpdateFeedback(id, feedbackInfo);
+        public Task<IGiveandtakeResult> DeleteFeedback(int id)
+            => _feedbackBusiness.DeleteFeedback(id);
+
     }
 }

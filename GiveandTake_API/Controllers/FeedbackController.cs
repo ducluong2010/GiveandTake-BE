@@ -1,4 +1,5 @@
 ﻿using GiveandTake_API.Constants;
+using GiveandTake_Repo.DTOs.Feedback;
 using Giveandtake_Services.Implements;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -35,6 +36,58 @@ namespace GiveandTake_API.Controllers
                 return Ok(response.Data);
             else
                 return BadRequest(response.Message);
+        }
+
+        [HttpPost(ApiEndPointConstant.Feedback.FeedbacksEndPoint)]
+        [SwaggerOperation(Summary = "Create new Feedback")]
+        public async Task<IActionResult> CreateFeedback([FromBody] CreateFeedbackDTO createFeedbackDto)
+        {
+            var response = await _feedbackService.CreateFeedback(createFeedbackDto);
+
+            if (response.Status >= 0)
+            {
+                return Ok(response.Message);
+            }
+            else
+            {
+                return BadRequest(response.Message);
+            }
+        }
+
+        [HttpPut(ApiEndPointConstant.Feedback.FeedbackEndPoint)]
+        [SwaggerOperation(Summary = "Update Feedback")]
+        public async Task<IActionResult> UpdateFeedback(int id, [FromBody] UpdateFeedbackDTO feedbackInfo)
+        {
+            if (feedbackInfo == null)
+            {
+                return BadRequest("Feedback data is required");
+            }
+
+            var response = await _feedbackService.UpdateFeedback(id, feedbackInfo);
+            if (response.Status >= 0)
+            {
+                return Ok(response.Message);
+            }
+            else
+            {
+                return BadRequest(response.Message);
+            }
+        }
+
+        [HttpDelete(ApiEndPointConstant.Feedback.FeedbackEndPoint)]
+        [SwaggerOperation(Summary = "Delete Feedback by its id")]
+        public async Task<IActionResult> DeleteFeedback(int id)
+        {
+            var response = await _feedbackService.DeleteFeedback(id);
+
+            if (response.Status >= 0)
+            {
+                return Ok(response.Message);
+            }
+            else
+            {
+                return BadRequest(response.Message);
+            }
         }
     }
 }

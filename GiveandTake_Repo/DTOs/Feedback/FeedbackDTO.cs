@@ -41,4 +41,15 @@ namespace GiveandTake_Repo.DTOs.Feedback
 
         public List<string>? FeedbackMediaUrls { get; set; } 
     }
+
+    public class UpdateFeedbackDTO
+    {
+        public int? Rating { get; set; }
+
+        public string? Content { get; set; }
+
+        public DateTime? CreateTime { get; set; }
+
+        public List<string>? FeedbackMediaUrls { get; set; }
+    }
 }
