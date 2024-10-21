@@ -35,5 +35,7 @@ public partial class Donation
 
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 
+    public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
+
     public virtual ICollection<TransactionDetail> TransactionDetails { get; set; } = new List<TransactionDetail>();
 }
