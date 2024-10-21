@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using GiveandTake_Repo.DTOs.Feedback;
 
 namespace Giveandtake_Business
 {
@@ -43,15 +44,28 @@ namespace Giveandtake_Business
                     UpdatedAt = d.UpdatedAt,
                     ApprovedBy = d.ApprovedBy,
                     ApprovedByName = d.ApprovedBy.HasValue && accountDict.ContainsKey(d.ApprovedBy.Value)
-                    ? accountDict[d.ApprovedBy.Value]
-                    : null,
+                        ? accountDict[d.ApprovedBy.Value]
+                        : null,
                     TotalRating = d.TotalRating,
                     Status = d.Status,
-                    DonationImages = d.DonationImages.Select(di => di.Url).ToList()
+                    DonationImages = d.DonationImages.Select(di => di.Url).ToList(),
+                    Feedbacks = d.Feedbacks.Select(f => new FeedbackDTO
+                    {
+                        FeedbackId = f.FeedbackId,
+                        AccountId = f.AccountId,
+                        AccountName = f.Account.FullName,
+                        DonationId = d.DonationId,
+                        DonationName = d.Name,
+                        Rating = f.Rating,
+                        Content = f.Content,
+                        CreatedDate = f.CreatedDate,
+                        FeedbackMediaUrls = f.FeedbackMedia.Select(fm => fm.MediaUrl).ToList() 
+                    }).ToList()
                 },
                 include: source => source
                     .Include(d => d.Account)
                     .Include(d => d.Category)
+                    .Include(d => d.Feedbacks) 
             );
 
             int totalItems = allDonations.Count();
@@ -68,10 +82,12 @@ namespace Giveandtake_Business
                     TotalPages = totalPages
                 });
             }
+
             var paginatedDonations = allDonations
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
+
             var paginatedResult = new PaginatedResult<DonationDTO>
             {
                 Items = paginatedDonations,
@@ -80,21 +96,21 @@ namespace Giveandtake_Business
                 PageSize = pageSize,
                 TotalPages = totalPages
             };
+
             return new GiveandtakeResult(paginatedResult);
         }
-
         public async Task<IGiveandtakeResult> GetDonationById(int donationId)
         {
             var donationRepository = _unitOfWork.GetRepository<Donation>();
             var accountRepository = _unitOfWork.GetRepository<Account>();
 
-            // Fetch the donation with related entities
             var donation = await donationRepository.SingleOrDefaultAsync(
                 predicate: d => d.DonationId == donationId,
                 include: source => source
                     .Include(d => d.Account)
                     .Include(d => d.Category)
                     .Include(d => d.DonationImages)
+                    .Include(d => d.Feedbacks) 
             );
 
             if (donation == null)
@@ -102,14 +118,11 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult(404, "Donation not found");
             }
 
-            // Fetch the approver's name if ApprovedBy is not null
             string approverName = null;
             if (donation.ApprovedBy.HasValue)
             {
                 var approver = await accountRepository.SingleOrDefaultAsync(
-                    predicate: a => a.AccountId == donation.ApprovedBy.Value,
-                    orderBy: null,
-                    include: null
+                    predicate: a => a.AccountId == donation.ApprovedBy.Value
                 );
                 approverName = approver?.FullName;
             }
@@ -130,7 +143,19 @@ namespace Giveandtake_Business
                 ApprovedByName = approverName,
                 TotalRating = donation.TotalRating,
                 Status = donation.Status,
-                DonationImages = donation.DonationImages?.Select(di => di.Url).ToList() ?? new List<string>()
+                DonationImages = donation.DonationImages?.Select(di => di.Url).ToList() ?? new List<string>(),
+                Feedbacks = donation.Feedbacks.Select(f => new FeedbackDTO
+                {
+                    FeedbackId = f.FeedbackId,
+                    AccountId = f.AccountId, 
+                    AccountName = f.Account?.FullName,
+                    DonationId = f.DonationId, 
+                    DonationName = f.Donation.Name,
+                    Rating = f.Rating,
+                    Content = f.Content,
+                    CreatedDate = f.CreatedDate,
+                    FeedbackMediaUrls = f.FeedbackMedia.Select(fm => fm.MediaUrl).ToList() 
+                }).ToList()
             };
 
             return new GiveandtakeResult(donationDTO);

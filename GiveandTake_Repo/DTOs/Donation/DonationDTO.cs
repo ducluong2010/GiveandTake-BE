@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GiveandTake_Repo.DTOs.Feedback;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,6 +39,7 @@ namespace GiveandTake_Repo.DTOs.Donation
 
         public List<string>? DonationImages { get; set; }
 
+        public List<FeedbackDTO>? Feedbacks { get; set; } = new List<FeedbackDTO>();
     }
     public class CreateUpdateDonationDTO
     {
