@@ -23,7 +23,7 @@ namespace Giveandtake_Business
         public TransactionBusiness()
         {
             _unitOfWork ??= new UnitOfWork();
-            _transactionDetailBusiness = new TransactionDetailBusiness(); // Khởi tạo TransactionDetailBusiness
+            _transactionDetailBusiness = new TransactionDetailBusiness();
 
         }
 
@@ -238,10 +238,11 @@ namespace Giveandtake_Business
 
         #region Specific User Transaction
 
-        // Create transaction and transaction detail at the same time - Sender
+        //// Create transaction and transaction detail at the same time - Sender
         public async Task<IGiveandtakeResult> CreateTransactionWithDetail(CreateTransaction createTransaction,
             TransactionDetailDTO transactionDetailDto, int senderAccountId)
         {
+            // Kiểm tra tài khoản
             var account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: a => a.AccountId == createTransaction.AccountId);
 
@@ -254,8 +255,9 @@ namespace Giveandtake_Business
                 };
             }
 
+            // Kiểm tra donation
             var donation = await _unitOfWork.GetRepository<Donation>().SingleOrDefaultAsync(
-                predicate: d => d.DonationId == transactionDetailDto.DonationId && d.AccountId == senderAccountId); // Xác thực người gửi
+                predicate: d => d.DonationId == transactionDetailDto.DonationId && d.AccountId == senderAccountId);
 
             if (donation == null)
             {
@@ -279,7 +281,7 @@ namespace Giveandtake_Business
             donation.Status = "Hiding";
             _unitOfWork.GetRepository<Donation>().UpdateAsync(donation);
 
-            // Kiểm tra xem người nhận có nằm trong danh sách các yêu cầu liên quan không
+            // Kiểm tra yêu cầu
             var request = await _unitOfWork.GetRepository<Request>().SingleOrDefaultAsync(
                 predicate: r => r.DonationId == donation.DonationId && r.AccountId == createTransaction.AccountId);
 
@@ -299,11 +301,11 @@ namespace Giveandtake_Business
                 CreatedDate = createTransaction.CreatedDate,
                 UpdatedDate = createTransaction.UpdatedDate,
                 Status = "Pending",
-                AccountId = createTransaction.AccountId // Người nhận là accountId đã gửi request
+                AccountId = createTransaction.AccountId
             };
 
             await _unitOfWork.GetRepository<Transaction>().InsertAsync(transaction);
-            await _unitOfWork.CommitAsync(); // Commit để tạo TransactionId
+            await _unitOfWork.CommitAsync(); // Commit để có TransactionId
 
             // Tạo transaction detail
             transactionDetailDto.TransactionId = transaction.TransactionId;
@@ -315,9 +317,9 @@ namespace Giveandtake_Business
             };
 
             await _unitOfWork.GetRepository<TransactionDetail>().InsertAsync(transactionDetail);
-            await _unitOfWork.CommitAsync(); // Commit để tạo TransactionDetailId
+            await _unitOfWork.CommitAsync(); // Commit để có TransactionDetailId
 
-            // Generate QRCode and update TransactionDetail
+            // Tạo QRCode và cập nhật TransactionDetail
             var qrCodeResult = await _transactionDetailBusiness.GenerateQRCode(transaction.TransactionId, transactionDetail.TransactionDetailId, (int)transactionDetailDto.DonationId);
 
             if (qrCodeResult.Status < 0)
@@ -329,11 +331,15 @@ namespace Giveandtake_Business
                 };
             }
 
-            // Cập nhật trạng thái request thành Accepted
+            // Gán QR code URL từ qrCodeResult.Data
+            transactionDetail.Qrcode = qrCodeResult.Data.ToString();
+            _unitOfWork.GetRepository<TransactionDetail>().UpdateAsync(transactionDetail);
+
+            // Cập nhật trạng thái request
             request.Status = "Accepted";
             _unitOfWork.GetRepository<Request>().UpdateAsync(request);
 
-            // Cập nhật trạng thái các request khác thành Rejected
+            // Từ chối các yêu cầu khác
             var otherRequests = await _unitOfWork.GetRepository<Request>().GetListAsync(
                 predicate: r => r.DonationId == donation.DonationId && r.RequestId != request.RequestId);
 
@@ -343,20 +349,21 @@ namespace Giveandtake_Business
                 _unitOfWork.GetRepository<Request>().UpdateAsync(otherRequest);
             }
 
-            IGiveandtakeResult result = new GiveandtakeResult();
+            await _unitOfWork.CommitAsync();
 
-            bool status = await _unitOfWork.CommitAsync() > 0;
-            if (status)
+            // Trả về kết quả thành công cùng với TransactionId và Qrcode
+            return new GiveandtakeResult
             {
-                result.Status = 1;
-                result.Message = "Transaction and TransactionDetail created successfully, QR Code generated, and other requests rejected.";
-            }
-            else
-            {
-                result.Status = -1;
-                result.Message = "Transaction creation failed";
-            }
-            return result;
+                Status = 1,
+                Message = "Transaction and TransactionDetail created successfully, QR Code generated, and other requests rejected.",
+                Data = new
+                {
+                    TransactionId = transaction.TransactionId,
+                    AccountId = transaction.AccountId,
+                    DonationId = transactionDetail.DonationId,
+                    Qrcode = transactionDetail.Qrcode // Trả về URL QRCode
+                }
+            };
         }
 
 

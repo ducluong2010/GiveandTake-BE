@@ -24,11 +24,22 @@ namespace GiveandTake_API.Controllers
             int senderAccountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
 
             var response = await _transactionService.CreateTransactionWithDetail(transactionInfo.Transaction, transactionInfo.TransactionDetail, senderAccountId);
+
             if (response.Status >= 0)
-                return Ok(response);
+            {
+                return Ok(new
+                {
+                    status = response.Status,
+                    message = response.Message,
+                    data = response.Data
+                });
+            }
             else
+            {
                 return BadRequest(response.Message);
+            }
         }
+
 
         [HttpPut(ApiEndPointConstant.Transaction.CompleteTransactionEndPoint)]
         [SwaggerOperation(Summary = "Complete the Transaction - Sender")]
