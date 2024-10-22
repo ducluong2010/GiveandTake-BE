@@ -220,7 +220,7 @@ namespace Giveandtake_Business
                 // Generate download URL (this URL will be public and valid for a limited time)
                 var urlSigner = UrlSigner.FromCredential(credential);
                 string objectName = $"qrcodes/{fileName}";
-                string downloadUrl = urlSigner.Sign(bucketName, objectName, TimeSpan.FromHours(1), HttpMethod.Get);
+                string downloadUrl = urlSigner.Sign(bucketName, objectName, TimeSpan.FromHours(24), HttpMethod.Get);
 
                 // Lưu link vào database
                 transactionDetail.Qrcode = downloadUrl;
