@@ -32,7 +32,8 @@ namespace Giveandtake_Business
                 {
                     TransactionDetailId = x.TransactionDetailId,
                     TransactionId = x.TransactionId,
-                    DonationId = x.DonationId
+                    DonationId = x.DonationId,
+                    Qrcode = x.Qrcode
                 });
             return new GiveandtakeResult(transactionDetailList);
         }
@@ -46,7 +47,8 @@ namespace Giveandtake_Business
                                       {
                                           TransactionDetailId = x.TransactionDetailId,
                                           TransactionId = x.TransactionId,
-                                          DonationId = x.DonationId
+                                          DonationId = x.DonationId,
+                                          Qrcode = x.Qrcode
                                       });
             return new GiveandtakeResult(transactionDetail);
         }
@@ -60,7 +62,8 @@ namespace Giveandtake_Business
                               {
                                   TransactionDetailId = x.TransactionDetailId,
                                   TransactionId = x.TransactionId,
-                                  DonationId = x.DonationId
+                                  DonationId = x.DonationId,
+                                  Qrcode = x.Qrcode
                               });
             return new GiveandtakeResult(transactionDetail);
         }

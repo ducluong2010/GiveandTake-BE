@@ -88,17 +88,17 @@ namespace Giveandtake_Business
             GiveandtakeResult result = new GiveandtakeResult();
 
             var account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(predicate:
-                c => c.AccountId == requestDTO.DonationId);
+                c => c.AccountId == requestDTO.AccountId);
             if (account == null)
             {
                 return new GiveandtakeResult(-1, "Account not found");
             }
 
             var donation = await _unitOfWork.GetRepository<Donation>().SingleOrDefaultAsync(predicate:
-                d => d.DonationId == requestDTO.DonationId);
+                d => d.DonationId == requestDTO.DonationId && d.Status == "Approved");
             if (donation == null)
             {
-                return new GiveandtakeResult(-1, "Donation not found");
+                return new GiveandtakeResult(-1, "Donation not found or not avaiable for claim (not approved)");
             }
 
             Request request = new Request
