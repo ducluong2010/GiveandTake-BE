@@ -154,7 +154,7 @@ namespace Giveandtake_Business
         #endregion TransactionDetail
 
         // Generate QRCode for transaction
-        public async Task<IGiveandtakeResult> GenerateQRCode(int transactionId, int donationId)
+        public async Task<IGiveandtakeResult> GenerateQRCode(int transactionId, int transactionDetailId, int donationId)
         {
             // Get Information from DonationId
             var donation = await _unitOfWork.GetRepository<Donation>().SingleOrDefaultAsync(predicate: d => d.DonationId == donationId);
@@ -184,6 +184,10 @@ namespace Giveandtake_Business
                                $"Donation Name: {donation.Name}\n" +
                                $"Account Name: {account.FullName}";
 
+
+            string adminSdkPath = Path.Combine(Directory.GetCurrentDirectory(), "adminsdk.json");
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", adminSdkPath);
+
             try
             {
                 // Generate QRCode
@@ -200,15 +204,19 @@ namespace Giveandtake_Business
                 {
                     FirebaseApp.Create(new AppOptions()
                     {
-                        Credential = GoogleCredential.FromFile("/etc/secrets/adminsdk.json")
+                        Credential = GoogleCredential.FromFile(adminSdkPath)
                     });
                 }
 
+                // Create a single credential instance
+                var credential = GoogleCredential.FromFile(adminSdkPath)
+                    .CreateScoped(Google.Apis.Storage.v1.StorageService.Scope.CloudPlatform);
+
                 // Create Storage client
-                StorageClient storageClient = await StorageClient.CreateAsync();
+                StorageClient storageClient = StorageClient.Create(credential);
 
                 // Your Google Cloud Storage bucket name
-                string bucketName = "gs://qrcode-5543f.appspot.com";
+                string bucketName = "qrcode-5543f.appspot.com";
 
                 // Upload to Google Cloud Storage
                 using (var stream = new MemoryStream(qrCodeBytes))
@@ -217,10 +225,8 @@ namespace Giveandtake_Business
                 }
 
                 // Generate download URL (this URL will be public and valid for a limited time)
+                var urlSigner = UrlSigner.FromCredential(credential);
                 string objectName = $"qrcodes/{fileName}";
-                var serviceAccount = GoogleCredential.FromFile("/etc/secrets/adminsdk.json")
-                    .CreateScoped(Google.Apis.Storage.v1.StorageService.Scope.CloudPlatform);
-                var urlSigner = UrlSigner.FromCredential(serviceAccount);
                 string downloadUrl = urlSigner.Sign(bucketName, objectName, TimeSpan.FromHours(1), HttpMethod.Get);
 
                 // Save link to database
@@ -253,6 +259,38 @@ namespace Giveandtake_Business
                     Message = $"QR Code generation or upload failed: {ex.Message}"
                 };
             }
+        }
+
+        public async Task<IGiveandtakeResult> GetQrcodeByTransactionDetailId(int transactionDetailId)
+        {
+            var result = new GiveandtakeResult();
+
+            // Logic lấy thông tin chi tiết của transaction detail từ database
+            var transactionDetail = await _unitOfWork.GetRepository<TransactionDetail>()
+            .SingleOrDefaultAsync(predicate: td => td.TransactionDetailId == transactionDetailId);
+
+            if (transactionDetail != null)
+            {
+                // Check if the QR code exists
+                if (!string.IsNullOrEmpty(transactionDetail.Qrcode))
+                {
+                    result.Status = 1;
+                    result.Data = transactionDetail.Qrcode; // Return the QR code
+                    result.Message = "QR code found.";
+                }
+                else
+                {
+                    result.Status = 0;
+                    result.Message = "QR code not found.";
+                }
+            }
+            else
+            {
+                result.Status = 0;
+                result.Message = "Transaction detail not found.";
+            }
+
+            return result;
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using GiveandTake_API.Constants;
+using Giveandtake_Business;
 using GiveandTake_Repo.DTOs.Transaction;
+using GiveandTake_Repo.Repository.Implements;
 using Giveandtake_Services.Implements;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -40,16 +42,16 @@ namespace GiveandTake_API.Controllers
 
         [HttpPost(ApiEndPointConstant.TransactionDetail.TransactionDetailsEndPoint)]
         [SwaggerOperation(Summary = "Generate QRCode by Transaction")]
-        public async Task<IActionResult> GenerateQRCode(int transactionId, int donationId)
+        public async Task<IActionResult> GenerateQRCode(int transactionId,int transactionDetailId, int donationId)
         {
             // Validate the input
-            if (transactionId <= 0 || donationId <= 0)
+            if (transactionDetailId <= 0 || donationId <= 0)
             {
                 return BadRequest("Invalid transactionId or donationId");
             }
 
             // Call the business logic to generate QR code
-            var response = await _transactionDetailService.GenerateQRCode(transactionId, donationId);
+            var response = await _transactionDetailService.GenerateQRCode(transactionId, transactionDetailId, donationId);
 
             // Return the appropriate response based on the result
             if (response.Status >= 0)
@@ -64,24 +66,24 @@ namespace GiveandTake_API.Controllers
 
         [HttpGet(ApiEndPointConstant.TransactionDetail.GetQRCodeByTransactionId)]
         [SwaggerOperation(Summary = "Get QRCode by TransactionId")]
-        public async Task<IActionResult> GetQRCode(int transactionId)
+        public async Task<IActionResult> GetQRCode(int transactionDetailId)
         {
-            if (transactionId <= 0)
+            // Call the business method to get the QR code by transaction detail ID
+            var result = await _transactionDetailService.GetQrcodeByTransactionDetailId(transactionDetailId);
+
+            if (result.Status == 1)
             {
-                return BadRequest("Invalid transactionId");
+                // QR code found
+                return Ok(new { QrcodeUrl = result.Data });
+            }
+            else if (result.Status == 0)
+            {
+                // QR code not found or transaction detail not found
+                return NotFound(result.Message);
             }
 
-            // Retrieve the transaction detail by transactionId
-            var transactionDetail = await _transactionDetailService.GetTransactionDetailByTransactionId(transactionId);
-
-            if (transactionDetail == null || string.IsNullOrEmpty(transactionDetail.Qrcode))
-            {
-                return NotFound(new { message = "QR Code not found" });
-            }
-
-            // Return the QRCode URL if it exists
-            return Ok(new { QRCodeUrl = transactionDetail.Qrcode});
+            // Something went wrong
+            return BadRequest(result.Message);
         }
-
-            }
+    }
 }

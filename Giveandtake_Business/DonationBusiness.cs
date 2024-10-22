@@ -574,5 +574,32 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(paginatedResult);
         }
+
+        public async Task<IGiveandtakeResult> ChangeDonationStatus(int donationId, string newStatus)
+        {
+            var validStatuses = new[] { "Pending", "Approved", "Cancel", "Hiding", "Claimed" };
+
+            if (!validStatuses.Contains(newStatus))
+            {
+                return new GiveandtakeResult(-1, "Invalid status provided.");
+            }
+
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+            var donation = await donationRepository.SingleOrDefaultAsync(predicate: d => d.DonationId == donationId);
+
+            if (donation == null)
+            {
+                return new GiveandtakeResult(-1, "Donation not found.");
+            }
+
+            donation.Status = newStatus;
+            donation.UpdatedAt = DateTime.Now;
+
+            donationRepository.UpdateAsync(donation);
+            await _unitOfWork.CommitAsync();
+
+            return new GiveandtakeResult(1, $"Donation status changed to {newStatus} successfully.");
+        }
+
     }
 }
