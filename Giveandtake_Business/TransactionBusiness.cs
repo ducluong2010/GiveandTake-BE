@@ -17,10 +17,13 @@ namespace Giveandtake_Business
     public class TransactionBusiness
     {
         private readonly UnitOfWork _unitOfWork;
+        private readonly TransactionDetailBusiness _transactionDetailBusiness;
+
 
         public TransactionBusiness()
         {
             _unitOfWork ??= new UnitOfWork();
+            _transactionDetailBusiness = new TransactionDetailBusiness(); // Khởi tạo TransactionDetailBusiness
 
         }
 
@@ -300,7 +303,7 @@ namespace Giveandtake_Business
             };
 
             await _unitOfWork.GetRepository<Transaction>().InsertAsync(transaction);
-            await _unitOfWork.CommitAsync();
+            await _unitOfWork.CommitAsync(); // Commit để tạo TransactionId
 
             // Tạo transaction detail
             transactionDetailDto.TransactionId = transaction.TransactionId;
@@ -308,10 +311,23 @@ namespace Giveandtake_Business
             {
                 TransactionId = transaction.TransactionId,
                 DonationId = transactionDetailDto.DonationId,
-                Qrcode = null // QRCode sẽ không được tạo ở đây
+                Qrcode = null // QRCode sẽ được tạo sau
             };
 
             await _unitOfWork.GetRepository<TransactionDetail>().InsertAsync(transactionDetail);
+            await _unitOfWork.CommitAsync(); // Commit để tạo TransactionDetailId
+
+            // Generate QRCode and update TransactionDetail
+            var qrCodeResult = await _transactionDetailBusiness.GenerateQRCode(transaction.TransactionId, transactionDetail.TransactionDetailId, (int)transactionDetailDto.DonationId);
+
+            if (qrCodeResult.Status < 0)
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = qrCodeResult.Message
+                };
+            }
 
             // Cập nhật trạng thái request thành Accepted
             request.Status = "Accepted";
@@ -333,7 +349,7 @@ namespace Giveandtake_Business
             if (status)
             {
                 result.Status = 1;
-                result.Message = "Transaction and TransactionDetail created successfully, and other requests rejected.";
+                result.Message = "Transaction and TransactionDetail created successfully, QR Code generated, and other requests rejected.";
             }
             else
             {
@@ -342,7 +358,6 @@ namespace Giveandtake_Business
             }
             return result;
         }
-
 
 
         // Complete the transaction - Sender
