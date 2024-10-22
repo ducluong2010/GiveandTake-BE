@@ -165,13 +165,6 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult { Status = -1, Message = "Donation not found" };
             }
 
-            // Get Information form AccountId
-            var account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(predicate: a => a.AccountId == donation.AccountId);
-            if (account == null)
-            {
-                return new GiveandtakeResult { Status = -1, Message = "Account not found" };
-            }
-
             // Get TransactionDetail from DonationId
             var transactionDetail = await _unitOfWork.GetRepository<TransactionDetail>()
                 .SingleOrDefaultAsync(predicate: td => td.DonationId == donationId);
@@ -181,10 +174,8 @@ namespace Giveandtake_Business
             }
 
             // Create Info in QRCode
-            string shortInfo = $"Transaction ID: {transactionId}\n" +
-                               $"Donation ID: {donationId}\n" +
-                               $"Donation Name: {donation.Name}\n" +
-                               $"Account Name: {account.FullName}";
+            string shortInfo = $"transaction_Id: {transactionId}\n" +
+                               $"donation_Id: {donationId}";
 
 
             string adminSdkPath = Path.Combine(Directory.GetCurrentDirectory(), "adminsdk.json");
