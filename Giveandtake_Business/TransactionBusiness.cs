@@ -48,19 +48,30 @@ namespace Giveandtake_Business
         // Get transaction by id
         public async Task<IGiveandtakeResult> GetTransactionById(int id)
         {
-            var transactionsList = await _unitOfWork.GetRepository<Transaction>().SingleOrDefaultAsync(
-                predicate: o => o.TransactionId == id,
-                selector: o => new GetTransaction()
-                {
-                    TransactionId = o.TransactionId,
-                    TotalPoint = o.TotalPoint,
-                    CreatedDate = o.CreatedDate,
-                    UpdatedDate = o.UpdatedDate,
-                    Status = o.Status,
-                    AccountId = o.AccountId
-                });
+            var transaction = await _unitOfWork.GetRepository<Transaction>()
+                .SingleOrDefaultAsync(
+                    predicate: o => o.TransactionId == id,
+                    selector: o => new
+                    {
+                        Transaction = new GetTransaction()
+                        {
+                            TransactionId = o.TransactionId,
+                            TotalPoint = o.TotalPoint,
+                            CreatedDate = o.CreatedDate,
+                            UpdatedDate = o.UpdatedDate,
+                            Status = o.Status,
+                            AccountId = o.AccountId
+                        },
+                        TransactionDetails = o.TransactionDetails.Select(td => new GetTransactionDetailDTO()
+                        {
+                            TransactionDetailId = td.TransactionDetailId,
+                            TransactionId = td.TransactionId,
+                            DonationId = td.DonationId,
+                            Qrcode = td.Qrcode
+                        }).ToList()
+                    });
 
-            if (transactionsList == null)
+            if (transaction == null)
             {
                 return new GiveandtakeResult
                 {
@@ -69,24 +80,40 @@ namespace Giveandtake_Business
                 };
             }
 
-            return new GiveandtakeResult(transactionsList);
+            return new GiveandtakeResult(new
+            {
+                Transaction = transaction.Transaction,
+                TransactionDetails = transaction.TransactionDetails
+            });
         }
-        
+
+
         // Get transactions by receiver id
         public async Task<IGiveandtakeResult> GetTransactionsByAccount(int id)
         {
             var transactionsList = await _unitOfWork.GetRepository<Transaction>().GetListAsync(
                  predicate: o => o.AccountId == id,
-                 selector: o => new GetTransaction()
+                 selector: o => new
                  {
-                     TransactionId = o.TransactionId,
-                     TotalPoint = o.TotalPoint,
-                     CreatedDate = o.CreatedDate,
-                     UpdatedDate = o.UpdatedDate,
-                     Status = o.Status,
-                     AccountId = o.AccountId
+                     Transaction = new GetTransaction()
+                     {
+                         TransactionId = o.TransactionId,
+                         TotalPoint = o.TotalPoint,
+                         CreatedDate = o.CreatedDate,
+                         UpdatedDate = o.UpdatedDate,
+                         Status = o.Status,
+                         AccountId = o.AccountId
+                     },
+                     TransactionDetails = o.TransactionDetails.Select(td => new GetTransactionDetailDTO()
+                     {
+                         TransactionDetailId = td.TransactionDetailId,
+                         TransactionId = td.TransactionId,
+                         DonationId = td.DonationId,
+                         Qrcode = td.Qrcode
+                     }).ToList()
                  });
-            if (transactionsList == null)
+
+            if (transactionsList == null || !transactionsList.Any())
             {
                 return new GiveandtakeResult
                 {
@@ -94,24 +121,35 @@ namespace Giveandtake_Business
                     Message = "Transaction not found"
                 };
             }
+
             return new GiveandtakeResult(transactionsList);
         }
 
-        // Get transaction by sender id
+
         public async Task<IGiveandtakeResult> GetTransactionsByDonationForSender(int senderAccountId)
         {
             var transactionsList = await _unitOfWork.GetRepository<Transaction>()
                 .GetListAsync(
                     predicate: t => t.TransactionDetails.Any(td =>
                         td.Donation != null && td.Donation.AccountId == senderAccountId),
-                    selector: t => new GetTransaction()
+                    selector: t => new
                     {
-                        TransactionId = t.TransactionId,
-                        TotalPoint = t.TotalPoint,
-                        CreatedDate = t.CreatedDate,
-                        UpdatedDate = t.UpdatedDate,
-                        Status = t.Status,
-                        AccountId = t.AccountId
+                        Transaction = new GetTransaction()
+                        {
+                            TransactionId = t.TransactionId,
+                            TotalPoint = t.TotalPoint,
+                            CreatedDate = t.CreatedDate,
+                            UpdatedDate = t.UpdatedDate,
+                            Status = t.Status,
+                            AccountId = t.AccountId
+                        },
+                        TransactionDetails = t.TransactionDetails.Select(td => new GetTransactionDetailDTO()
+                        {
+                            TransactionDetailId = td.TransactionDetailId,
+                            TransactionId = td.TransactionId,
+                            DonationId = td.DonationId,
+                            Qrcode = td.Qrcode
+                        }).ToList()
                     });
 
             if (transactionsList == null || !transactionsList.Any())
@@ -125,6 +163,7 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(transactionsList);
         }
+
 
         #endregion
 
