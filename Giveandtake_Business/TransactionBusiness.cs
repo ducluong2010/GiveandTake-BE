@@ -11,6 +11,7 @@ using System.Transactions;
 using static GiveandTake_Repo.DTOs.Transaction.TransactionDTO;
 using Transaction = GiveandTake_Repo.Models.Transaction;
 
+
 namespace Giveandtake_Business
 {
     public class TransactionBusiness
@@ -20,6 +21,7 @@ namespace Giveandtake_Business
         public TransactionBusiness()
         {
             _unitOfWork ??= new UnitOfWork();
+
         }
 
         #region Basic Transaction
@@ -232,6 +234,7 @@ namespace Giveandtake_Business
         #endregion
 
         #region Specific User Transaction
+
         // Create transaction and transaction detail at the same time - Sender
         public async Task<IGiveandtakeResult> CreateTransactionWithDetail(CreateTransaction createTransaction,
             TransactionDetailDTO transactionDetailDto, int senderAccountId)
@@ -269,29 +272,60 @@ namespace Giveandtake_Business
                 };
             }
 
+            // Cập nhật trạng thái donation
             donation.Status = "Hiding";
             _unitOfWork.GetRepository<Donation>().UpdateAsync(donation);
 
+            // Kiểm tra xem người nhận có nằm trong danh sách các yêu cầu liên quan không
+            var request = await _unitOfWork.GetRepository<Request>().SingleOrDefaultAsync(
+                predicate: r => r.DonationId == donation.DonationId && r.AccountId == createTransaction.AccountId);
+
+            if (request == null)
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Receiver has not made a request for this donation."
+                };
+            }
+
+            // Tạo transaction
             Transaction transaction = new Transaction
             {
                 TotalPoint = donation.Point,
                 CreatedDate = createTransaction.CreatedDate,
                 UpdatedDate = createTransaction.UpdatedDate,
                 Status = "Pending",
-                AccountId = createTransaction.AccountId
+                AccountId = createTransaction.AccountId // Người nhận là accountId đã gửi request
             };
 
             await _unitOfWork.GetRepository<Transaction>().InsertAsync(transaction);
             await _unitOfWork.CommitAsync();
 
+            // Tạo transaction detail
             transactionDetailDto.TransactionId = transaction.TransactionId;
             TransactionDetail transactionDetail = new TransactionDetail
             {
                 TransactionId = transaction.TransactionId,
                 DonationId = transactionDetailDto.DonationId,
+                Qrcode = null // QRCode sẽ không được tạo ở đây
             };
 
             await _unitOfWork.GetRepository<TransactionDetail>().InsertAsync(transactionDetail);
+
+            // Cập nhật trạng thái request thành Accepted
+            request.Status = "Accepted";
+            _unitOfWork.GetRepository<Request>().UpdateAsync(request);
+
+            // Cập nhật trạng thái các request khác thành Rejected
+            var otherRequests = await _unitOfWork.GetRepository<Request>().GetListAsync(
+                predicate: r => r.DonationId == donation.DonationId && r.RequestId != request.RequestId);
+
+            foreach (var otherRequest in otherRequests)
+            {
+                otherRequest.Status = "Rejected";
+                _unitOfWork.GetRepository<Request>().UpdateAsync(otherRequest);
+            }
 
             IGiveandtakeResult result = new GiveandtakeResult();
 
@@ -299,7 +333,7 @@ namespace Giveandtake_Business
             if (status)
             {
                 result.Status = 1;
-                result.Message = "Transaction and TransactionDetail created successfully";
+                result.Message = "Transaction and TransactionDetail created successfully, and other requests rejected.";
             }
             else
             {

@@ -11,6 +11,9 @@ namespace GiveandTake_Repo.DTOs.Transaction
         public int? TransactionId { get; set; }
 
         public int? DonationId { get; set; }
+
+        public string? Qrcode { get; set; }
+
     }
 
     public class GetTransactionDetailDTO
@@ -20,5 +23,8 @@ namespace GiveandTake_Repo.DTOs.Transaction
         public int? TransactionId { get; set; }
 
         public int? DonationId { get; set; }
+
+        public string? Qrcode { get; set; }
+
     }
 }

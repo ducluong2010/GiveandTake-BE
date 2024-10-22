@@ -15,8 +15,6 @@ namespace GiveandTake_API.Controllers
             _transactionService = new TransactionService();
         }
 
-        //=========================================
-
         #region Mainflow Transaction
 
         [HttpPost(ApiEndPointConstant.Transaction.CreateTransactionWithDetailEndPoint)]
@@ -44,14 +42,9 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response.Message);
         }
-        #endregion
-
-        //=========================================
-
-        #region Subflow Transaction
 
         [HttpGet(ApiEndPointConstant.Transaction.TransactionByAccountForCurrentUserEndPoint)]
-        [SwaggerOperation(Summary = "Get list of transactions by current logged in user - Receiver")]
+        [SwaggerOperation(Summary = "Lấy danh sách transaction mà thằng đang đăng nhập đã có")]
         public async Task<IActionResult> GetTransactionByCurrentUser()
         {
             int accountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
@@ -64,7 +57,7 @@ namespace GiveandTake_API.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.Transaction.TransactionByDonationForSenderEndPoint)]
-        [SwaggerOperation(Summary = "Get list transactions that contain current logged in user items - Sender")]
+        [SwaggerOperation(Summary = "Lấy danh sách transaction chứa đồ của thằng đang đăng nhập")]
         public async Task<IActionResult> GetTransactionsByDonationForSender()
         {
             int accountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
@@ -75,11 +68,7 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response.Message);
         }
-
-
         #endregion
-
-        //=========================================
 
         #region Unused Transaction
         //[HttpPut(ApiEndPointConstant.Transaction.ChangeTransactionStatusToAcceptedEndPoint)]
