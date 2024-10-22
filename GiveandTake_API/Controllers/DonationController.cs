@@ -138,5 +138,16 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response.Message);
         }
 
+        [HttpPut(ApiEndPointConstant.Donation.DonationStatusEndPoint)]
+        [SwaggerOperation(Summary = "Change Donation status")]
+        public async Task<IActionResult> ChangeDonationStatus(int id, [FromBody] string newStatus)
+        {
+            var response = await _donationService.ChangeDonationStatus(id, newStatus);
+            if (response.Status >= 0)
+                return Ok(response);
+            else
+                return BadRequest(response);
+        }
+
     }
 }

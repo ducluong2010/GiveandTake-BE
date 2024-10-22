@@ -1,5 +1,6 @@
 ﻿using Giveandtake_Business;
 using GiveandTake_Repo.DTOs.Donation;
+using GiveandTake_Repo.Models;
 using Giveandtake_Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -49,5 +50,8 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> SearchDonations(string searchTerm, int page = 1, int pageSize = 8)
            => _donationBusiness.SearchDonations(searchTerm, page, pageSize);
+
+        public Task<IGiveandtakeResult> ChangeDonationStatus(int donationId, string newStatus)
+            => _donationBusiness.ChangeDonationStatus(donationId, newStatus);
     }
 }
