@@ -229,7 +229,7 @@ namespace Giveandtake_Business
                 string objectName = $"qrcodes/{fileName}";
                 string downloadUrl = urlSigner.Sign(bucketName, objectName, TimeSpan.FromHours(1), HttpMethod.Get);
 
-                // Save link to database
+                // Lưu link vào database
                 transactionDetail.Qrcode = downloadUrl;
                 _unitOfWork.GetRepository<TransactionDetail>().UpdateAsync(transactionDetail);
                 bool status = await _unitOfWork.CommitAsync() > 0;
@@ -239,7 +239,8 @@ namespace Giveandtake_Business
                     return new GiveandtakeResult
                     {
                         Status = 1,
-                        Message = "QR Code generated and uploaded to Firebase successfully"
+                        Message = "QR Code generated and uploaded to Firebase successfully",
+                        Data = downloadUrl // Trả về URL QRCode
                     };
                 }
                 else
