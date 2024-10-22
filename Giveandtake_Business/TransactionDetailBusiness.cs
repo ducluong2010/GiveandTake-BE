@@ -153,6 +153,8 @@ namespace Giveandtake_Business
 
         #endregion TransactionDetail
 
+
+        #region QRCode
         // Generate QRCode for transaction
         public async Task<IGiveandtakeResult> GenerateQRCode(int transactionId, int transactionDetailId, int donationId)
         {
@@ -262,13 +264,13 @@ namespace Giveandtake_Business
             }
         }
 
-        public async Task<IGiveandtakeResult> GetQrcodeByTransactionDetailId(int transactionDetailId)
+        public async Task<IGiveandtakeResult> GetQrcodeByTransactionId(int transactionId)
         {
             var result = new GiveandtakeResult();
 
             // Logic lấy thông tin chi tiết của transaction detail từ database
             var transactionDetail = await _unitOfWork.GetRepository<TransactionDetail>()
-            .SingleOrDefaultAsync(predicate: td => td.TransactionDetailId == transactionDetailId);
+            .SingleOrDefaultAsync(predicate: td => td.TransactionId == transactionId);
 
             if (transactionDetail != null)
             {
@@ -293,5 +295,6 @@ namespace Giveandtake_Business
 
             return result;
         }
+        #endregion QRCode
     }
 }
