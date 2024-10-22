@@ -15,7 +15,7 @@ public partial class Category
 
     public string? Status { get; set; }
 
-    public int Point {  get; set; }
+    public int Point { get; set; }
 
     public virtual ICollection<Donation> Donations { get; set; } = new List<Donation>();
 }

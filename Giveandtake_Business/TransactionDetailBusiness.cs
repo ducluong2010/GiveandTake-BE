@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FirebaseAdmin;
+using Google.Cloud.Storage.V1;
+using Google.Apis.Auth.OAuth2;
 
 namespace Giveandtake_Business
 {
@@ -29,7 +32,8 @@ namespace Giveandtake_Business
                 {
                     TransactionDetailId = x.TransactionDetailId,
                     TransactionId = x.TransactionId,
-                    DonationId = x.DonationId
+                    DonationId = x.DonationId,
+                    Qrcode = x.Qrcode
                 });
             return new GiveandtakeResult(transactionDetailList);
         }
@@ -43,7 +47,8 @@ namespace Giveandtake_Business
                                       {
                                           TransactionDetailId = x.TransactionDetailId,
                                           TransactionId = x.TransactionId,
-                                          DonationId = x.DonationId
+                                          DonationId = x.DonationId,
+                                          Qrcode = x.Qrcode
                                       });
             return new GiveandtakeResult(transactionDetail);
         }
@@ -57,7 +62,8 @@ namespace Giveandtake_Business
                               {
                                   TransactionDetailId = x.TransactionDetailId,
                                   TransactionId = x.TransactionId,
-                                  DonationId = x.DonationId
+                                  DonationId = x.DonationId,
+                                  Qrcode = x.Qrcode
                               });
             return new GiveandtakeResult(transactionDetail);
         }
@@ -148,42 +154,28 @@ namespace Giveandtake_Business
         #endregion TransactionDetail
 
         // Generate QRCode for transaction
-        public async Task<IGiveandtakeResult> GenerateQRCode(int transactionId, int donationId)
+        public async Task<IGiveandtakeResult> GenerateQRCode(int transactionId, int transactionDetailId, int donationId)
         {
             // Get Information from DonationId
             var donation = await _unitOfWork.GetRepository<Donation>().SingleOrDefaultAsync(predicate: d => d.DonationId == donationId);
-
             if (donation == null)
             {
-                return new GiveandtakeResult
-                {
-                    Status = -1,
-                    Message = "Donation not found"
-                };
+                return new GiveandtakeResult { Status = -1, Message = "Donation not found" };
             }
 
             // Get Information form AccountId
             var account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(predicate: a => a.AccountId == donation.AccountId);
             if (account == null)
             {
-                return new GiveandtakeResult
-                {
-                    Status = -1,
-                    Message = "Account not found"
-                };
+                return new GiveandtakeResult { Status = -1, Message = "Account not found" };
             }
 
             // Get TransactionDetail from DonationId
             var transactionDetail = await _unitOfWork.GetRepository<TransactionDetail>()
                 .SingleOrDefaultAsync(predicate: td => td.DonationId == donationId);
-
             if (transactionDetail == null)
             {
-                return new GiveandtakeResult
-                {
-                    Status = -1,
-                    Message = "Transaction Detail not found"
-                };
+                return new GiveandtakeResult { Status = -1, Message = "Transaction Detail not found" };
             }
 
             // Create Info in QRCode
@@ -192,49 +184,113 @@ namespace Giveandtake_Business
                                $"Donation Name: {donation.Name}\n" +
                                $"Account Name: {account.FullName}";
 
-            // Generate QRCode
-            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(shortInfo, QRCodeGenerator.ECCLevel.Q);
-            BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
-            byte[] qrCodeBytes = qrCode.GetGraphic(20);
 
-            // File Path to save img
-            string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "qrcodes");
+            string adminSdkPath = Path.Combine(Directory.GetCurrentDirectory(), "adminsdk.json");
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", adminSdkPath);
 
-            // Create Path does not exist
-            if (!Directory.Exists(directoryPath))
+            try
             {
-                Directory.CreateDirectory(directoryPath);
-            }
+                // Generate QRCode
+                QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(shortInfo, QRCodeGenerator.ECCLevel.Q);
+                BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
+                byte[] qrCodeBytes = qrCode.GetGraphic(20);
 
-            // Create file name base on transactionId và donationId
-            string fileName = $"qrcode_{transactionId}_{donationId}.png";
-            string filePath = Path.Combine(directoryPath, fileName);  
+                // Create file name based on transactionId and donationId
+                string fileName = $"qrcode_{transactionId}_{donationId}.png";
 
-            // Save img file to server
-            File.WriteAllBytes(filePath, qrCodeBytes);
-
-            // Save link img to database ("images/qrcodes/")
-            transactionDetail.QRcode = $"/images/qrcodes/{fileName}";
-            _unitOfWork.GetRepository<TransactionDetail>().UpdateAsync(transactionDetail);
-
-            bool status = await _unitOfWork.CommitAsync() > 0;
-            if (status)
-            {
-                return new GiveandtakeResult
+                // Initialize Firebase Admin SDK (if not already initialized)
+                if (FirebaseApp.DefaultInstance == null)
                 {
-                    Status = 1,
-                    Message = "QR Code generated and saved as an image file successfully"
-                };
+                    FirebaseApp.Create(new AppOptions()
+                    {
+                        Credential = GoogleCredential.FromFile(adminSdkPath)
+                    });
+                }
+
+                // Create a single credential instance
+                var credential = GoogleCredential.FromFile(adminSdkPath)
+                    .CreateScoped(Google.Apis.Storage.v1.StorageService.Scope.CloudPlatform);
+
+                // Create Storage client
+                StorageClient storageClient = StorageClient.Create(credential);
+
+                // Your Google Cloud Storage bucket name
+                string bucketName = "qrcode-5543f.appspot.com";
+
+                // Upload to Google Cloud Storage
+                using (var stream = new MemoryStream(qrCodeBytes))
+                {
+                    await storageClient.UploadObjectAsync(bucketName, $"qrcodes/{fileName}", "image/png", stream);
+                }
+
+                // Generate download URL (this URL will be public and valid for a limited time)
+                var urlSigner = UrlSigner.FromCredential(credential);
+                string objectName = $"qrcodes/{fileName}";
+                string downloadUrl = urlSigner.Sign(bucketName, objectName, TimeSpan.FromHours(1), HttpMethod.Get);
+
+                // Save link to database
+                transactionDetail.Qrcode = downloadUrl;
+                _unitOfWork.GetRepository<TransactionDetail>().UpdateAsync(transactionDetail);
+                bool status = await _unitOfWork.CommitAsync() > 0;
+
+                if (status)
+                {
+                    return new GiveandtakeResult
+                    {
+                        Status = 1,
+                        Message = "QR Code generated and uploaded to Firebase successfully"
+                    };
+                }
+                else
+                {
+                    return new GiveandtakeResult
+                    {
+                        Status = -1,
+                        Message = "Failed to save QR Code URL to database"
+                    };
+                }
             }
-            else
+            catch (Exception ex)
             {
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "QR Code generation failed"
+                    Message = $"QR Code generation or upload failed: {ex.Message}"
                 };
             }
+        }
+
+        public async Task<IGiveandtakeResult> GetQrcodeByTransactionDetailId(int transactionDetailId)
+        {
+            var result = new GiveandtakeResult();
+
+            // Logic lấy thông tin chi tiết của transaction detail từ database
+            var transactionDetail = await _unitOfWork.GetRepository<TransactionDetail>()
+            .SingleOrDefaultAsync(predicate: td => td.TransactionDetailId == transactionDetailId);
+
+            if (transactionDetail != null)
+            {
+                // Check if the QR code exists
+                if (!string.IsNullOrEmpty(transactionDetail.Qrcode))
+                {
+                    result.Status = 1;
+                    result.Data = transactionDetail.Qrcode; // Return the QR code
+                    result.Message = "QR code found.";
+                }
+                else
+                {
+                    result.Status = 0;
+                    result.Message = "QR code not found.";
+                }
+            }
+            else
+            {
+                result.Status = 0;
+                result.Message = "Transaction detail not found.";
+            }
+
+            return result;
         }
     }
 }
