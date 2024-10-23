@@ -38,17 +38,17 @@ namespace Giveandtake_Business.Utils
             var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
             List<Claim> claims = new List<Claim>()
-                            {
-                                new Claim("AccountId", account.AccountId.ToString()),
-                                new Claim("FullName", account.FullName),
-                                new Claim("Email", account.Email),
-                                new Claim("Password", account.Password),
-                                new Claim(ClaimTypes.Role, account.RoleId.ToString(), ClaimValueTypes.Integer32),
-                                new Claim("IsPremium", (bool)account.IsPremium ? "true" : "false")
-                            };
+                                {
+                                    new Claim("AccountId", account.AccountId.ToString()),
+                                    new Claim("FullName", account.FullName),
+                                    new Claim("Email", account.Email),
+                                    new Claim("Password", account.Password),
+                                    new Claim(ClaimTypes.Role, account.RoleId.ToString(), ClaimValueTypes.Integer32),
+                                    new Claim("IsPremium", (bool)account.IsPremium ? "true" : "false")
+                                };
 
             // Add expiredTime of token
-            var expires = DateTime.Now.AddMinutes(30);
+            var expires = DateTime.Now.AddDays(1);
 
             // Create token
             var token = new JwtSecurityToken(issuer, audience, claims, notBefore: DateTime.Now, expires, credentials);
