@@ -30,6 +30,9 @@ namespace Giveandtake_Services.Implements
         public Task<IGiveandtakeResult> GetTransactionsByDonationForSender(int senderAccountId)
           => _transactionBusiness.GetTransactionsByDonationForSender(senderAccountId);
 
+        public Task<IGiveandtakeResult> GetTransactionStatus(int transactionId)
+            => _transactionBusiness.GetTransactionStatus(transactionId);
+
         // Specifid methods for admin and staff
 
         public Task<IGiveandtakeResult> ChangeTransactionStatusToPending(int transactionId)

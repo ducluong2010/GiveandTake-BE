@@ -49,6 +49,23 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response.Message);
         }
+
+        [HttpGet(ApiEndPointConstant.Transaction.TransactionStatusEndPoint)]
+        [SwaggerOperation(Summary = "Get Transaction Status")]
+        public async Task<IActionResult> GetTransactionStatus()
+        {
+           
+            if (!int.TryParse(RouteData.Values["id"]?.ToString(), out int id))
+            {
+                return BadRequest("Invalid transaction ID");
+            }
+
+            var response = await _transactionService.GetTransactionStatus(id);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
         #endregion
     }
 }
