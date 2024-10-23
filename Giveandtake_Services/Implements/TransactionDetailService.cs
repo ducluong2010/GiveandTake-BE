@@ -39,7 +39,7 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> GenerateQRCode(int transactionId, int transactionDetailId, int donationid)
             => _transactionDetailBusiness.GenerateQRCode(transactionId,transactionDetailId, donationid);
-        public Task<IGiveandtakeResult> GetQrcodeByTransactionDetailId(int transactionDetailId)
-            => _transactionDetailBusiness.GetQrcodeByTransactionDetailId(transactionDetailId);
+        public Task<IGiveandtakeResult> GetQrcodeByTransactionId(int transactionId)
+            => _transactionDetailBusiness.GetQrcodeByTransactionId(transactionId);
     }
 }

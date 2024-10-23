@@ -153,6 +153,8 @@ namespace Giveandtake_Business
 
         #endregion TransactionDetail
 
+
+        #region QRCode
         // Generate QRCode for transaction
         public async Task<IGiveandtakeResult> GenerateQRCode(int transactionId, int transactionDetailId, int donationId)
         {
@@ -161,13 +163,6 @@ namespace Giveandtake_Business
             if (donation == null)
             {
                 return new GiveandtakeResult { Status = -1, Message = "Donation not found" };
-            }
-
-            // Get Information form AccountId
-            var account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(predicate: a => a.AccountId == donation.AccountId);
-            if (account == null)
-            {
-                return new GiveandtakeResult { Status = -1, Message = "Account not found" };
             }
 
             // Get TransactionDetail from DonationId
@@ -179,10 +174,8 @@ namespace Giveandtake_Business
             }
 
             // Create Info in QRCode
-            string shortInfo = $"Transaction ID: {transactionId}\n" +
-                               $"Donation ID: {donationId}\n" +
-                               $"Donation Name: {donation.Name}\n" +
-                               $"Account Name: {account.FullName}";
+            string shortInfo = $"transaction_Id: {transactionId}\n" +
+                               $"donation_Id: {donationId}";
 
 
             string adminSdkPath = Path.Combine(Directory.GetCurrentDirectory(), "adminsdk.json");
@@ -227,7 +220,7 @@ namespace Giveandtake_Business
                 // Generate download URL (this URL will be public and valid for a limited time)
                 var urlSigner = UrlSigner.FromCredential(credential);
                 string objectName = $"qrcodes/{fileName}";
-                string downloadUrl = urlSigner.Sign(bucketName, objectName, TimeSpan.FromHours(1), HttpMethod.Get);
+                string downloadUrl = urlSigner.Sign(bucketName, objectName, TimeSpan.FromHours(24), HttpMethod.Get);
 
                 // Lưu link vào database
                 transactionDetail.Qrcode = downloadUrl;
@@ -262,13 +255,13 @@ namespace Giveandtake_Business
             }
         }
 
-        public async Task<IGiveandtakeResult> GetQrcodeByTransactionDetailId(int transactionDetailId)
+        public async Task<IGiveandtakeResult> GetQrcodeByTransactionId(int transactionId)
         {
             var result = new GiveandtakeResult();
 
             // Logic lấy thông tin chi tiết của transaction detail từ database
             var transactionDetail = await _unitOfWork.GetRepository<TransactionDetail>()
-            .SingleOrDefaultAsync(predicate: td => td.TransactionDetailId == transactionDetailId);
+            .SingleOrDefaultAsync(predicate: td => td.TransactionId == transactionId);
 
             if (transactionDetail != null)
             {
@@ -293,5 +286,6 @@ namespace Giveandtake_Business
 
             return result;
         }
+        #endregion QRCode
     }
 }

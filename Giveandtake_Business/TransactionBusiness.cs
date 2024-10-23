@@ -164,6 +164,29 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(transactionsList);
         }
 
+        public async Task<IGiveandtakeResult> GetTransactionStatus(int transactionId)
+        {
+            var transactionStatus = await _unitOfWork.GetRepository<Transaction>()
+                .SingleOrDefaultAsync(
+                    predicate: o => o.TransactionId == transactionId,
+                    selector: o => new
+                    {
+                        TransactionId = o.TransactionId,
+                        Status = o.Status
+                    });
+
+            if (transactionStatus == null)
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Transaction not found"
+                };
+            }
+
+            return new GiveandtakeResult(transactionStatus);
+        }
+
 
         #endregion
 

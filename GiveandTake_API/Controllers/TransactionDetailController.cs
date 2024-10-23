@@ -66,10 +66,10 @@ namespace GiveandTake_API.Controllers
 
         [HttpGet(ApiEndPointConstant.TransactionDetail.GetQRCodeByTransactionId)]
         [SwaggerOperation(Summary = "Get QRCode by TransactionId")]
-        public async Task<IActionResult> GetQRCode(int transactionDetailId)
+        public async Task<IActionResult> GetQRCode(int transactionId)
         {
             // Call the business method to get the QR code by transaction detail ID
-            var result = await _transactionDetailService.GetQrcodeByTransactionDetailId(transactionDetailId);
+            var result = await _transactionDetailService.GetQrcodeByTransactionId(transactionId);
 
             if (result.Status == 1)
             {
