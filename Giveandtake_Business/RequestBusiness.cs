@@ -101,6 +101,12 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult(-1, "Donation not found or not available for claim (not approved)");
             }
 
+            // Check if the requester is the owner of the donation
+            if (donation.AccountId == requestDTO.AccountId)
+            {
+                return new GiveandtakeResult(-1, "You cannot request your own donation.");
+            }
+
             // Check if the user already made a request for this donation
             var existingRequest = await _unitOfWork.GetRepository<Request>().SingleOrDefaultAsync(
                 predicate: r => r.DonationId == requestDTO.DonationId && r.AccountId == requestDTO.AccountId);
