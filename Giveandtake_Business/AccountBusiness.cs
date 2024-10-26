@@ -193,6 +193,9 @@ namespace Giveandtake_Business
                                           RoleId = a.RoleId,
                                           IsPremium = a.IsPremium,
                                           PremiumUnti = a.PremiumUntil,
+                                          ChatId = a.AccountId,
+                                          MessageId = a.AccountId,
+                                          Rating = a.Rating
 
                                       });
             if (acc != null) return new GiveandtakeResult(acc);
