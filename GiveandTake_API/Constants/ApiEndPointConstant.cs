@@ -36,6 +36,17 @@
             public const string RewardStatusEndPoint = RewardsEndPoint + "/{id}/status";
         }
 
+        public class Favorite
+        {
+            public const string FavoritesEndPoint = ApiEndpoint + "/favorites";
+            public const string FavoriteEndPoint = FavoritesEndPoint + "/{id}";
+            public const string FavoritesByAccountEndPoint = FavoritesEndPoint + "/account/{accountId}";
+            public const string AddFavoriteEndPoint = FavoritesEndPoint + "/add";
+            public const string DeleteFavoriteEndPoint = FavoritesEndPoint + "/delete/{id}";
+            public const string FavoriteDonationsByCategoryEndPoint = FavoritesEndPoint + "/account/current";
+        }
+
+
         public class Rewarded
         {
             public const string RewardedEndPoint = ApiEndpoint + "/rewardeds";
