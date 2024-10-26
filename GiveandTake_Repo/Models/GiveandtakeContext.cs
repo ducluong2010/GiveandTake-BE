@@ -24,6 +24,8 @@ public partial class GiveandtakeContext : DbContext
 
     public virtual DbSet<DonationImage> DonationImages { get; set; }
 
+    public virtual DbSet<Favorite> Favorites { get; set; }
+
     public virtual DbSet<Feedback> Feedbacks { get; set; }
 
     public virtual DbSet<FeedbackMedium> FeedbackMedia { get; set; }
@@ -31,6 +33,12 @@ public partial class GiveandtakeContext : DbContext
     public virtual DbSet<Membership> Memberships { get; set; }
 
     public virtual DbSet<Message> Messages { get; set; }
+
+    public virtual DbSet<Report> Reports { get; set; }
+
+    public virtual DbSet<ReportMedium> ReportMedia { get; set; }
+
+    public virtual DbSet<ReportType> ReportTypes { get; set; }
 
     public virtual DbSet<Request> Requests { get; set; }
 
@@ -122,6 +130,25 @@ public partial class GiveandtakeContext : DbContext
                 .HasConstraintName("DonationImages_ibfk_1");
         });
 
+        modelBuilder.Entity<Favorite>(entity =>
+        {
+            entity.HasKey(e => e.FavoriteId).HasName("PRIMARY");
+
+            entity.ToTable("Favorite");
+
+            entity.HasIndex(e => e.AccountId, "AccountId");
+
+            entity.HasIndex(e => e.CategoryId, "CategoryId");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.Favorites)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("Favorite_ibfk_1");
+
+            entity.HasOne(d => d.Category).WithMany(p => p.Favorites)
+                .HasForeignKey(d => d.CategoryId)
+                .HasConstraintName("Favorite_ibfk_2");
+        });
+
         modelBuilder.Entity<Feedback>(entity =>
         {
             entity.HasKey(e => e.FeedbackId).HasName("PRIMARY");
@@ -133,6 +160,7 @@ public partial class GiveandtakeContext : DbContext
             entity.HasIndex(e => e.DonationId, "DonationId");
 
             entity.Property(e => e.Content).HasColumnType("text");
+
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Account).WithMany(p => p.Feedbacks)
@@ -190,6 +218,56 @@ public partial class GiveandtakeContext : DbContext
             entity.HasOne(d => d.Account).WithMany(p => p.Messages)
                 .HasForeignKey(d => d.AccountId)
                 .HasConstraintName("Message_ibfk_1");
+        });
+
+        modelBuilder.Entity<Report>(entity =>
+        {
+            entity.HasKey(e => e.ReportId).HasName("PRIMARY");
+
+            entity.ToTable("Report");
+
+            entity.HasIndex(e => e.AccountId, "AccountId");
+
+            entity.HasIndex(e => e.ReportTypeId, "fk_report_reporttype");
+
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.Description).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .UseCollation("utf8mb3_general_ci")
+                .HasCharSet("utf8mb3");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.Reports)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("Report_ibfk_1");
+
+            entity.HasOne(d => d.ReportType).WithMany(p => p.Reports)
+                .HasForeignKey(d => d.ReportTypeId)
+                .HasConstraintName("fk_report_reporttype");
+        });
+
+        modelBuilder.Entity<ReportMedium>(entity =>
+        {
+            entity.HasKey(e => e.ReportMediaId).HasName("PRIMARY");
+
+            entity.HasIndex(e => e.ReportId, "ReportId");
+
+            entity.Property(e => e.ReportUrl).HasMaxLength(255);
+
+            entity.HasOne(d => d.Report).WithMany(p => p.ReportMedia)
+                .HasForeignKey(d => d.ReportId)
+                .HasConstraintName("ReportMedia_ibfk_1");
+        });
+
+        modelBuilder.Entity<ReportType>(entity =>
+        {
+            entity.HasKey(e => e.ReportTypeId).HasName("PRIMARY");
+
+            entity.ToTable("ReportType");
+
+            entity.Property(e => e.Description).HasMaxLength(255);
+            entity.Property(e => e.ReportTypeName).HasMaxLength(100);
+            entity.Property(e => e.Status).HasMaxLength(50);
         });
 
         modelBuilder.Entity<Request>(entity =>
