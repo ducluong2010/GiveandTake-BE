@@ -34,6 +34,8 @@ public partial class GiveandtakeContext : DbContext
 
     public virtual DbSet<Message> Messages { get; set; }
 
+    public virtual DbSet<Notification> Notifications { get; set; }
+
     public virtual DbSet<Report> Reports { get; set; }
 
     public virtual DbSet<ReportMedium> ReportMedia { get; set; }
@@ -160,7 +162,6 @@ public partial class GiveandtakeContext : DbContext
             entity.HasIndex(e => e.DonationId, "DonationId");
 
             entity.Property(e => e.Content).HasColumnType("text");
-
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Account).WithMany(p => p.Feedbacks)
@@ -218,6 +219,20 @@ public partial class GiveandtakeContext : DbContext
             entity.HasOne(d => d.Account).WithMany(p => p.Messages)
                 .HasForeignKey(d => d.AccountId)
                 .HasConstraintName("Message_ibfk_1");
+        });
+
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasKey(e => e.NotificationId).HasName("PRIMARY");
+
+            entity.ToTable("Notification");
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp");
+            entity.Property(e => e.IsRead).HasDefaultValueSql("'0'");
+            entity.Property(e => e.Note).HasMaxLength(255);
+            entity.Property(e => e.Type).HasMaxLength(45);
         });
 
         modelBuilder.Entity<Report>(entity =>
