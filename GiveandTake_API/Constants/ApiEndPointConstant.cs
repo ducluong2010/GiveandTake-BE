@@ -125,5 +125,20 @@
             public const string CancelRequestEndPoint = RequestsEndPoint + "/{id}/cancel";
             public const string DeleteRequestEndPoint = RequestsEndPoint + "/{id}";
         }
+
+        public class Report
+        {
+            public const string ReportsEndPoint = ApiEndpoint + "/report";
+            public const string ReportEndPoint = ReportsEndPoint + "/{id}";
+        }
+
+        public class ReportType
+        {
+            public const string ReportTypesEndPoint = ApiEndpoint + "/reporttype";
+            public const string ReportTypeEndPoint = ReportTypesEndPoint + "/{id}";
+            public const string ReportTypeUpdateEndPoint = ReportTypesEndPoint + "/update";
+            public const string ReportTypeDeleEndPoint = ReportTypesEndPoint + "/delete";
+            public const string ChangeStatusEndPoint = ReportTypesEndPoint + "/changestatus";
+        }
     }
 }
