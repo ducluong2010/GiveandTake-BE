@@ -73,6 +73,14 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult(-1, "Account not found");
             }
 
+            // Check if the favorite category already exists for the account
+            var existingFavorite = await _unitOfWork.GetRepository<Favorite>()
+                .SingleOrDefaultAsync(predicate: f => f.AccountId == accountId && f.CategoryId == favoriteDTO.CategoryId);
+            if (existingFavorite != null)
+            {
+                return new GiveandtakeResult(-1, "Favorite category already exists for this account");
+            }
+
             Favorite newFavorite = new Favorite
             {
                 AccountId = accountId,
