@@ -88,7 +88,7 @@ namespace Giveandtake_Business
         }
 
 
-        // Get transactions by receiver id
+        // Get transaction logged in user had received
         public async Task<IGiveandtakeResult> GetTransactionsByAccount(int id)
         {
             var transactionsList = await _unitOfWork.GetRepository<Transaction>().GetListAsync(
@@ -125,7 +125,7 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(transactionsList);
         }
 
-
+        // Get transaction contained donation of logged in user
         public async Task<IGiveandtakeResult> GetTransactionsByDonationForSender(int senderAccountId)
         {
             var transactionsList = await _unitOfWork.GetRepository<Transaction>()
@@ -164,6 +164,7 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(transactionsList);
         }
 
+        // Get transaction by status
         public async Task<IGiveandtakeResult> GetTransactionStatus(int transactionId)
         {
             var transactionStatus = await _unitOfWork.GetRepository<Transaction>()
@@ -185,6 +186,45 @@ namespace Giveandtake_Business
             }
 
             return new GiveandtakeResult(transactionStatus);
+        }
+
+        // Get completed transactions by (sender) account id
+        public async Task<IGiveandtakeResult> GetCompletedTransactionsByAccountId(int senderAccountId)
+        {
+            var transactionsList = await _unitOfWork.GetRepository<Transaction>()
+                .GetListAsync(
+                    predicate: t => t.Status == "Completed" && t.TransactionDetails.Any(td =>
+                        td.Donation != null && td.Donation.AccountId == senderAccountId),
+                    selector: t => new
+                    {
+                        Transaction = new GetTransaction()
+                        {
+                            TransactionId = t.TransactionId,
+                            TotalPoint = t.TotalPoint,
+                            CreatedDate = t.CreatedDate,
+                            UpdatedDate = t.UpdatedDate,
+                            Status = t.Status,
+                            AccountId = t.AccountId
+                        },
+                        TransactionDetails = t.TransactionDetails.Select(td => new GetTransactionDetailDTO()
+                        {
+                            TransactionDetailId = td.TransactionDetailId,
+                            TransactionId = td.TransactionId,
+                            DonationId = td.DonationId,
+                            Qrcode = null 
+                        }).ToList()
+                    });
+
+            if (transactionsList == null || !transactionsList.Any())
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "No completed transactions found"
+                };
+            }
+
+            return new GiveandtakeResult(transactionsList);
         }
 
 
@@ -483,97 +523,6 @@ namespace Giveandtake_Business
             {
                 Status = 1,
                 Message = "Transaction completed, sender's points updated, and donation status changed to Claimed"
-            };
-        }
-        #endregion
-
-        #region Unused Transaction
-        // Accept the transaction - Sender
-        public async Task<IGiveandtakeResult> ChangeTransactionStatusToAccepted(int transactionId, int senderAccountId)
-        {
-            var transaction = await _unitOfWork.GetRepository<Transaction>()
-                .SingleOrDefaultAsync(
-                    predicate: t => t.TransactionId == transactionId &&
-                                    t.TransactionDetails.Any(td => td.Donation.AccountId == senderAccountId),
-                    include: t => t.Include(tr => tr.TransactionDetails));
-
-            if (transaction == null)
-            {
-                return new GiveandtakeResult
-                {
-                    Status = -1,
-                    Message = "Transaction not found or you are not authorized to change this transaction."
-                };
-            }
-
-            if (transaction.Status == "Suspended")
-            {
-                return new GiveandtakeResult
-                {
-                    Status = -1,
-                    Message = "Cannot change status because the transaction is currently suspended."
-                };
-            }
-
-            transaction.Status = "Accepted";
-            transaction.UpdatedDate = DateTime.Now;
-            _unitOfWork.GetRepository<Transaction>().UpdateAsync(transaction);
-
-            foreach (var detail in transaction.TransactionDetails)
-            {
-                var donation = await _unitOfWork.GetRepository<Donation>().SingleOrDefaultAsync(
-                    predicate: d => d.DonationId == detail.DonationId);
-
-                if (donation != null)
-                {
-                    donation.Status = "Hiding";
-                    _unitOfWork.GetRepository<Donation>().UpdateAsync(donation);
-                }
-            }
-
-            await _unitOfWork.CommitAsync();
-
-            return new GiveandtakeResult
-            {
-                Status = 1,
-                Message = "Transaction status changed to Accepted and related donation status changed to Hiding"
-            };
-        }
-
-        // Reject the transaction - Sender
-        public async Task<IGiveandtakeResult> ChangeTransactionStatusToRejected(int transactionId, int senderAccountId)
-        {
-            var transaction = await _unitOfWork.GetRepository<Transaction>().SingleOrDefaultAsync(
-                predicate: t => t.TransactionId == transactionId &&
-                                t.TransactionDetails.Any(td => td.Donation.AccountId == senderAccountId));
-
-            if (transaction == null)
-            {
-                return new GiveandtakeResult
-                {
-                    Status = -1,
-                    Message = "Transaction not found or you are not authorized to change this transaction."
-                };
-            }
-
-            if (transaction.Status == "Suspended")
-            {
-                return new GiveandtakeResult
-                {
-                    Status = -1,
-                    Message = "Cannot change status because the transaction is currently suspended."
-                };
-            }
-
-            transaction.Status = "Rejected";
-            transaction.UpdatedDate = DateTime.Now;
-            _unitOfWork.GetRepository<Transaction>().UpdateAsync(transaction);
-            await _unitOfWork.CommitAsync();
-
-            return new GiveandtakeResult
-            {
-                Status = 1,
-                Message = "Transaction status changed to Rejected"
             };
         }
         #endregion

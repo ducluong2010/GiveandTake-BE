@@ -66,6 +66,17 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response.Message);
         }
+
+        [HttpGet(ApiEndPointConstant.Transaction.CompletedTransactionsByDonationForSenderEndPoint)]
+        [SwaggerOperation(Summary = "Get Completed Transaction By Account")]
+        public async Task<IActionResult> GetCompletedTransactionsByDonationForSender(int accountId)
+        {
+            var response = await _transactionService.GetCompletedTransactionsByAccountId(accountId);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
         #endregion
     }
 }

@@ -51,5 +51,8 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> CompleteTransaction(int transactionId, int senderAccountId)
             => _transactionBusiness.CompleteTransaction(transactionId, senderAccountId);
+
+        public Task<IGiveandtakeResult> GetCompletedTransactionsByAccountId(int senderAccountId)
+            => _transactionBusiness.GetCompletedTransactionsByAccountId(senderAccountId);
     }
 }

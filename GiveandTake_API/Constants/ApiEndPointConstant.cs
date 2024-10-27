@@ -74,6 +74,8 @@
             public const string TransactionStatusEndPoint = TransactionsEndPoint + "/{id}/status";
             public const string TransactionByAccountEndPoint = TransactionsEndPoint + "/account/{accountId}";
             public const string TransactionByAccountForCurrentUserEndPoint = TransactionsEndPoint + "/account/current";
+            public const string CompletedTransactionsByDonationForSenderEndPoint = TransactionsEndPoint + "/donation/sender/completed";
+
 
 
             public const string TransactionByDonationForAdminEndPoint = TransactionsEndPoint + "/donation/sender/{senderAccountId}";
@@ -85,9 +87,6 @@
             public const string DeleteSuspendedTransactionEndPoint = TransactionsEndPoint + "/suspended/{id}";
             public const string ChangeTransactionStatusToSuspendedEndPoint = TransactionsEndPoint + "/{id}/suspend";
             public const string ChangeTransactionStatusToPendingEndPoint = TransactionsEndPoint + "/{id}/pending";
-
-            public const string ChangeTransactionStatusToAcceptedEndPoint = TransactionsEndPoint + "/{id}/accept";
-            public const string ChangeTransactionStatusToRejectedEndPoint = TransactionsEndPoint + "/{id}/reject";
             public const string CompleteTransactionEndPoint = TransactionsEndPoint + "/{id}/complete";
         }
 
