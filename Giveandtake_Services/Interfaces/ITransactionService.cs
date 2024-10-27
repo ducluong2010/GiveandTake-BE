@@ -15,6 +15,7 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> GetTransactionById(int id);
         Task<IGiveandtakeResult> GetTransactionByAccount (int accountId);
         Task<IGiveandtakeResult> GetTransactionsByDonationForSender(int senderAccountId);
+        Task<IGiveandtakeResult> GetCompletedTransactionsByAccountId(int senderAccountId);
         Task<IGiveandtakeResult> GetTransactionStatus(int transactionId);
 
         // Specifid methods for admin and staff
@@ -24,8 +25,6 @@ namespace Giveandtake_Services.Interfaces
 
         // Specifid methods for user
         Task<IGiveandtakeResult> CreateTransactionWithDetail(CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto, int senderAccountId);
-        //Task<IGiveandtakeResult> ChangeTransactionStatusToAccepted(int transactionId, int senderAccountId);
-        //Task<IGiveandtakeResult> ChangeTransactionStatusToRejected(int transactionId, int senderAccountId);
         Task<IGiveandtakeResult> CompleteTransaction(int transactionId, int senderAccountId);
     }
 }
