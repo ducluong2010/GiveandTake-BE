@@ -29,13 +29,23 @@ public partial class Account
 
     public DateTime? PremiumUntil { get; set; }
 
+    public int? Rating { get; set; }
+
+    public int? ChatId { get; set; }
+
+    public int? MessageId { get; set; }
+
     public virtual ICollection<Donation> Donations { get; set; } = new List<Donation>();
+
+    public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
 
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 
     public virtual ICollection<Membership> Memberships { get; set; } = new List<Membership>();
 
     public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
+
+    public virtual ICollection<Report> Reports { get; set; } = new List<Report>();
 
     public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
 

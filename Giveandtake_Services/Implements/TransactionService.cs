@@ -30,6 +30,9 @@ namespace Giveandtake_Services.Implements
         public Task<IGiveandtakeResult> GetTransactionsByDonationForSender(int senderAccountId)
           => _transactionBusiness.GetTransactionsByDonationForSender(senderAccountId);
 
+        public Task<IGiveandtakeResult> GetTransactionStatus(int transactionId)
+            => _transactionBusiness.GetTransactionStatus(transactionId);
+
         // Specifid methods for admin and staff
 
         public Task<IGiveandtakeResult> ChangeTransactionStatusToPending(int transactionId)
@@ -45,12 +48,6 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> CreateTransactionWithDetail(TransactionDTO.CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto, int senderAccountId)
             => _transactionBusiness.CreateTransactionWithDetail(createTransaction, transactionDetailDto, senderAccountId);
-
-        //public Task<IGiveandtakeResult> ChangeTransactionStatusToAccepted(int transactionId, int senderAccountId)
-        //    => _transactionBusiness.ChangeTransactionStatusToAccepted(transactionId, senderAccountId);
-
-        //public Task<IGiveandtakeResult> ChangeTransactionStatusToRejected(int transactionId, int senderAccountId)
-        //    => _transactionBusiness.ChangeTransactionStatusToRejected(transactionId, senderAccountId);
 
         public Task<IGiveandtakeResult> CompleteTransaction(int transactionId, int senderAccountId)
             => _transactionBusiness.CompleteTransaction(transactionId, senderAccountId);

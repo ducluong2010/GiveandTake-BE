@@ -31,6 +31,12 @@ namespace GiveandTake_Repo.DTOs.Account
         public bool? IsPremium { get; set; }
 
         public DateTime? PremiumUnti { get; set; }
+
+        public int? Rating { get; set; }
+
+        public int? ChatId { get; set; }
+
+        public int? MessageId { get; set; }
     }
 
     public class AccountDTO
@@ -56,5 +62,11 @@ namespace GiveandTake_Repo.DTOs.Account
         public bool? IsPremium { get; set; }
 
         public DateTime? PremiumUnti { get; set; }
+
+        public int? Rating { get; set; }
+
+        public int? ChatId { get; set; }
+
+        public int? MessageId { get; set; }
     }
 }

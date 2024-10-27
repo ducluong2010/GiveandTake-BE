@@ -18,4 +18,6 @@ public partial class Category
     public int Point { get; set; }
 
     public virtual ICollection<Donation> Donations { get; set; } = new List<Donation>();
+
+    public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
 }

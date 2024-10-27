@@ -98,9 +98,24 @@ namespace Giveandtake_Business
                 d => d.DonationId == requestDTO.DonationId && d.Status == "Approved");
             if (donation == null)
             {
-                return new GiveandtakeResult(-1, "Donation not found or not avaiable for claim (not approved)");
+                return new GiveandtakeResult(-1, "Donation not found or not available for claim (not approved)");
             }
 
+            // Check if the requester is the owner of the donation
+            if (donation.AccountId == requestDTO.AccountId)
+            {
+                return new GiveandtakeResult(-1, "You cannot request your own donation.");
+            }
+
+            // Check if the user already made a request for this donation
+            var existingRequest = await _unitOfWork.GetRepository<Request>().SingleOrDefaultAsync(
+                predicate: r => r.DonationId == requestDTO.DonationId && r.AccountId == requestDTO.AccountId);
+            if (existingRequest != null)
+            {
+                return new GiveandtakeResult(-1, "You have already made a request for this donation.");
+            }
+
+            // If not, create the request
             Request request = new Request
             {
                 AccountId = requestDTO.AccountId,
@@ -108,6 +123,7 @@ namespace Giveandtake_Business
                 RequestDate = DateTime.Now,
                 Status = "Pending"
             };
+
             await _unitOfWork.GetRepository<Request>().InsertAsync(request);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
 
@@ -122,6 +138,7 @@ namespace Giveandtake_Business
             }
             return result;
         }
+
 
         // Cancel request
         public async Task<IGiveandtakeResult> CancelRequest(int requestId, int receiverId)
