@@ -147,7 +147,8 @@
             public const string NotiEndPoint = NotisEndPoint + "/{id}";
             public const string NotiCreateEndPoint = NotisEndPoint + "/create";
             public const string NotiUpdateEndPoint = NotisEndPoint + "/update/{id}";
-            public const string NotiDeleteEndPoint = NotiEndPoint + "/delete";
+            public const string NotiDeleteEndPoint = NotisEndPoint + "/delete/{id}";
+            public const string NotiChangeEndPoint = NotisEndPoint + "/change/{id}";
         }
     }
 }

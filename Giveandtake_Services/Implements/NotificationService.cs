@@ -28,9 +28,11 @@ namespace Giveandtake_Services.Implements
             => _notificationBusiness.CreateNotification(notificationInfo);
 
         public Task<IGiveandtakeResult> UpdateNotification(int notificationId, NotificationUpdateDTO notificationInfo)
-        => _notificationBusiness.UpdateNotification(notificationId, notificationInfo);
+            => _notificationBusiness.UpdateNotification(notificationId, notificationInfo);
 
         public Task<IGiveandtakeResult> DeleteNotification(int notificationId)
             => _notificationBusiness.DeleteNotification(notificationId);
+        public Task<IGiveandtakeResult> ToggleIsReadStatus(int notificationId)
+            => _notificationBusiness.ToggleIsReadStatus(notificationId);
     }
 }
