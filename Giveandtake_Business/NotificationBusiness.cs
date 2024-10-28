@@ -247,5 +247,24 @@ namespace Giveandtake_Business
                 ? new GiveandtakeResult(1, "Notification deleted successfully")
                 : new GiveandtakeResult(-1, "Delete unsuccessfully");
         }
+
+        public async Task<IGiveandtakeResult> ToggleIsReadStatus(int id)
+        {
+            var existingNotification = await _unitOfWork.GetRepository<Notification>()
+                .SingleOrDefaultAsync(predicate: n => n.NotificationId == id);
+
+            if (existingNotification == null)
+            {
+                return new GiveandtakeResult(-1, "Notification not found");
+            }
+            existingNotification.IsRead = !existingNotification.IsRead;
+
+            _unitOfWork.GetRepository<Notification>().UpdateAsync(existingNotification);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+
+            return isSuccessful
+                ? new GiveandtakeResult(1, "Notification read status updated successfully")
+                : new GiveandtakeResult(-1, "Update unsuccessfully");
+        }
     }
 }

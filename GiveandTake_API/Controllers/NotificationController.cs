@@ -74,5 +74,15 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response);
         }
+        [HttpPatch(ApiEndPointConstant.Notification.NotiChangeEndPoint)]
+        [SwaggerOperation(Summary = "Toggle status of a Notification")]
+        public async Task<IActionResult> ToggleIsReadStatus([FromRoute] int id)
+        {
+            var response = await _notificationService.ToggleIsReadStatus(id);
+            if (response.Status >= 0)
+                return Ok(response.Message);
+            else
+                return BadRequest(response);
+        }
     }
 }
