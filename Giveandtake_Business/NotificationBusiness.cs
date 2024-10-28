@@ -279,7 +279,7 @@ namespace Giveandtake_Business
             var donationDict = allDonations.ToDictionary(d => d.DonationId, d => d.Name);
 
             var allNotifications = await notificationRepository.GetListAsync(
-                predicate: n => n.AccountId == accountId && n.Type == "Pending",
+                predicate: n => n.AccountId == accountId && n.Type == "Cancel" && n.IsRead == false,
                 selector: n => new NotificationDTO
                 {
                     NotificationId = n.NotificationId,
@@ -321,18 +321,26 @@ namespace Giveandtake_Business
 
         public async Task<IGiveandtakeResult> GetAllNotificationsByStaffId(int staffId, int page = 1, int pageSize = 8)
         {
-            var notificationRepository = _unitOfWork.GetRepository<Notification>();
             var accountRepository = _unitOfWork.GetRepository<Account>();
+            var allAccounts = await accountRepository.GetAllAsync();
+            var staffAccount = allAccounts.FirstOrDefault(a => a.AccountId == staffId);
+            if (staffAccount == null || staffAccount.RoleId != 2)
+            {
+                return new GiveandtakeResult
+                {
+                    Message = "Invalid role,try again."
+                };
+            }
+
+            var notificationRepository = _unitOfWork.GetRepository<Notification>();
             var donationRepository = _unitOfWork.GetRepository<Donation>();
 
-            var allAccounts = await accountRepository.GetAllAsync();
             var allDonations = await donationRepository.GetAllAsync();
-
-            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
             var donationDict = allDonations.ToDictionary(d => d.DonationId, d => d.Name);
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
 
             var allNotifications = await notificationRepository.GetListAsync(
-                predicate: n => n.StaffId == staffId && n.Type == "Cancel",
+                predicate: n => n.StaffId == staffId && n.Type == "Pending" && n.IsRead == false ,
                 selector: n => new NotificationDTO
                 {
                     NotificationId = n.NotificationId,

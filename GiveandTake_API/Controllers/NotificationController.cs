@@ -3,6 +3,8 @@ using GiveandTake_Repo.DTOs.Notification;
 using GiveandTake_Repo.Models;
 using Giveandtake_Services.Implements;
 using Giveandtake_Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -53,7 +55,7 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response.Message);
         }
-
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "2")]
         [HttpGet(ApiEndPointConstant.Notification.NotiStaffEndPoint)]
         [SwaggerOperation(Summary = "Get all Notifications by Staff Id")]
         public async Task<IActionResult> GetAllNotificationsByStaffId([FromRoute] int id, [FromQuery] int page = 1, [FromQuery] int pageSize = 8)
