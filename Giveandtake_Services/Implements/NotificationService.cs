@@ -32,7 +32,14 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> DeleteNotification(int notificationId)
             => _notificationBusiness.DeleteNotification(notificationId);
+
         public Task<IGiveandtakeResult> ToggleIsReadStatus(int notificationId)
             => _notificationBusiness.ToggleIsReadStatus(notificationId);
+
+        public Task<IGiveandtakeResult> GetAllNotificationsByAccountId(int accountId, int page = 1, int pageSize = 8)
+           => _notificationBusiness.GetAllNotificationsByAccountId(accountId, page, pageSize);
+
+        public Task<IGiveandtakeResult> GetAllNotificationsByStaffId(int staffId, int page = 1, int pageSize = 8)
+            => _notificationBusiness.GetAllNotificationsByStaffId(staffId, page, pageSize);
     }
 }

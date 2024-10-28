@@ -16,6 +16,8 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> UpdateNotification(int notificationId, NotificationUpdateDTO notificationInfo);
         Task<IGiveandtakeResult> DeleteNotification(int notificationId);
         Task<IGiveandtakeResult> ToggleIsReadStatus(int notificationId);
+        Task<IGiveandtakeResult> GetAllNotificationsByAccountId(int accountId, int page = 1, int pageSize = 8);
+        Task<IGiveandtakeResult> GetAllNotificationsByStaffId(int staffId, int page = 1, int pageSize = 8);
     }
 }
 

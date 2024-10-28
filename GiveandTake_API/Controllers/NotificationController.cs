@@ -43,7 +43,27 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response); 
             }
         }
+        [HttpGet(ApiEndPointConstant.Notification.NotiAccEndPoint)]
+        [SwaggerOperation(Summary = "Get all Notifications by Account Id")]
+        public async Task<IActionResult> GetAllNotificationsByAccountId([FromRoute] int id, [FromQuery] int page = 1, [FromQuery] int pageSize = 8)
+        {
+            var response = await _notificationService.GetAllNotificationsByAccountId(id, page, pageSize);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
 
+        [HttpGet(ApiEndPointConstant.Notification.NotiStaffEndPoint)]
+        [SwaggerOperation(Summary = "Get all Notifications by Staff Id")]
+        public async Task<IActionResult> GetAllNotificationsByStaffId([FromRoute] int id, [FromQuery] int page = 1, [FromQuery] int pageSize = 8)
+        {
+            var response = await _notificationService.GetAllNotificationsByStaffId(id, page, pageSize);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
         [HttpPost(ApiEndPointConstant.Notification.NotiCreateEndPoint)]
         [SwaggerOperation(Summary = "Create a new Notification")]
         public async Task<IActionResult> CreateNotification([FromBody] NotificationCreateDTO notificationInfo)
@@ -74,7 +94,7 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response);
         }
-        [HttpPatch(ApiEndPointConstant.Notification.NotiChangeEndPoint)]
+        [HttpPut(ApiEndPointConstant.Notification.NotiChangeEndPoint)]
         [SwaggerOperation(Summary = "Toggle status of a Notification")]
         public async Task<IActionResult> ToggleIsReadStatus([FromRoute] int id)
         {

@@ -38,11 +38,52 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response.Message);
         }
 
-        [HttpPost(ApiEndPointConstant.Report.ReportsEndPoint)] 
+        [HttpPost(ApiEndPointConstant.Report.ReportCreateEndPoint)] 
         [SwaggerOperation(Summary = "Create a new Report")]
         public async Task<IActionResult> CreateReport([FromBody] ReportCreateDTO reportCreateDto)
         {
             var response = await _reportService.CreateReport(reportCreateDto);
+            if (response.Status >= 0)
+                return Ok(response.Message);
+            else
+                return BadRequest(response.Message);
+        }
+        [HttpPut(ApiEndPointConstant.Report.ReportUpdateEndPoint)] 
+        [SwaggerOperation(Summary = "Update an existing Report")]
+        public async Task<IActionResult> UpdateReport(int id, [FromBody] ReportUpdateDTO reportUpdateDto) 
+        {
+            var response = await _reportService.UpdateReport(id, reportUpdateDto);
+            if (response.Status >= 0)
+                return Ok(response.Message);
+            else
+                return BadRequest(response.Message);
+        }
+        [HttpDelete(ApiEndPointConstant.Report.ReportDeleteEndPoint)] 
+        [SwaggerOperation(Summary = "Delete a Report by id")]
+        public async Task<IActionResult> DeleteReport(int id)
+        {
+            var response = await _reportService.DeleteReport(id);
+            if (response.Status >= 0)
+                return Ok(response.Message);
+            else
+                return BadRequest(response.Message);
+        }
+        [HttpPut(ApiEndPointConstant.Report.ReportChangeEndPoint)]
+        [SwaggerOperation(Summary = "Change report status from Pending to Processing")]
+        public async Task<IActionResult> ChangeStatusToProcessing(int id)
+        {
+            var response = await _reportService.ChangeStatusToProcessing(id);
+            if (response.Status >= 0)
+                return Ok(response.Message);
+            else
+                return BadRequest(response.Message);
+        }
+
+        [HttpPut(ApiEndPointConstant.Report.ReportCompleteEndPoint)]
+        [SwaggerOperation(Summary = "Toggle report status between Processing and Processed")]
+        public async Task<IActionResult> ToggleProcessingStatus(int id)
+        {
+            var response = await _reportService.ToggleProcessingStatus(id);
             if (response.Status >= 0)
                 return Ok(response.Message);
             else
