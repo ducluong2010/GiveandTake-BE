@@ -44,6 +44,7 @@
             public const string AddFavoriteEndPoint = FavoritesEndPoint + "/add";
             public const string DeleteFavoriteEndPoint = FavoritesEndPoint + "/delete/{id}";
             public const string FavoriteDonationsByCategoryEndPoint = FavoritesEndPoint + "/account/current";
+            public const string AddMultipleFavoritesEndPoint = FavoritesEndPoint + "/multiple";
         }
 
 

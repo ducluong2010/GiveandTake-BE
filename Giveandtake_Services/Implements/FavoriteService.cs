@@ -20,6 +20,9 @@ namespace Giveandtake_Services.Implements
         public Task<IGiveandtakeResult> AddFavorite(int accountId, FavoriteDTO favoriteDTO)
             => _favoriteBusiness.AddFavorite(accountId, favoriteDTO);
 
+        public Task<IGiveandtakeResult> AddMultipleFavorites(int accountId, List<FavoriteDTO> favoriteDTOs)
+            => _favoriteBusiness.AddMultipleFavorites(accountId, favoriteDTOs);
+
         public Task<IGiveandtakeResult> DeleteFavorite(int id)
             => _favoriteBusiness.DeleteFavorite(id);
 

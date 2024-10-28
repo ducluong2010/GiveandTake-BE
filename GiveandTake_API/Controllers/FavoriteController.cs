@@ -84,5 +84,19 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response);
         }
+
+        [HttpPost(ApiEndPointConstant.Favorite.AddMultipleFavoritesEndPoint)]
+        [SwaggerOperation(Summary = "Add multiple Favorites")]
+        public async Task<IActionResult> AddMultipleFavorites(List<FavoriteDTO> favoriteDTOs)
+        {
+            int accountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
+
+            var response = await _favoriteService.AddMultipleFavorites(accountId, favoriteDTOs);
+            if (response.Status >= 0)
+                return Ok(response);
+            else
+                return BadRequest(response);
+        }
+
     }
 }

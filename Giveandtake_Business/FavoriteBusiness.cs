@@ -205,5 +205,59 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(donationDTOs);
         }
 
+        public async Task<IGiveandtakeResult> AddMultipleFavorites(int accountId, List<FavoriteDTO> favoriteDTOs)
+        {
+            GiveandtakeResult result = new GiveandtakeResult();
+
+            // Kiểm tra xem tài khoản có tồn tại không
+            var account = await _unitOfWork.GetRepository<Account>()
+                .SingleOrDefaultAsync(predicate: a => a.AccountId == accountId);
+            if (account == null)
+            {
+                return new GiveandtakeResult(-1, "Account not found");
+            }
+
+            // Danh sách để lưu các mục yêu thích mới
+            List<Favorite> newFavorites = new List<Favorite>();
+
+            foreach (var favoriteDTO in favoriteDTOs)
+            {
+                // Kiểm tra xem danh mục yêu thích đã tồn tại chưa
+                var existingFavorite = await _unitOfWork.GetRepository<Favorite>()
+                    .SingleOrDefaultAsync(predicate: f => f.AccountId == accountId && f.CategoryId == favoriteDTO.CategoryId);
+
+                if (existingFavorite == null)
+                {
+                    // Thêm mục yêu thích mới vào danh sách
+                    newFavorites.Add(new Favorite
+                    {
+                        AccountId = accountId,
+                        CategoryId = favoriteDTO.CategoryId
+                    });
+                }
+
+                else if (existingFavorite != null)
+                {
+                    return new GiveandtakeResult(-1, "Favorite category already exists for this account");
+                }
+            }
+
+            // Chèn các mục yêu thích mới
+            await _unitOfWork.GetRepository<Favorite>().InsertRangeAsync(newFavorites);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+
+            if (isSuccessful)
+            {
+                result = new GiveandtakeResult(1, $"{newFavorites.Count} favorites added successfully");
+            }
+            else
+            {
+                result.Status = -1;
+                result.Message = "Failed to add new favorites";
+            }
+
+            return result;
+        }
+
     }
 }
