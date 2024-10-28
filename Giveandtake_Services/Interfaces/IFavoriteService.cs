@@ -16,5 +16,6 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> AddFavorite(int accountId, FavoriteDTO favoriteDTO);
         Task<IGiveandtakeResult> DeleteFavorite(int id);
         Task<IGiveandtakeResult> GetFavoriteDonationsByCategory(int accountId);
+        Task<IGiveandtakeResult> AddMultipleFavorites(int accountId, List<FavoriteDTO> favoriteDTOs);
     }
 }
