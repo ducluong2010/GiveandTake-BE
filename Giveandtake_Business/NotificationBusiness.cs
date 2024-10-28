@@ -279,7 +279,7 @@ namespace Giveandtake_Business
             var donationDict = allDonations.ToDictionary(d => d.DonationId, d => d.Name);
 
             var allNotifications = await notificationRepository.GetListAsync(
-                predicate: n => n.AccountId == accountId && n.Type == "Cancel" && n.IsRead == false,
+                predicate: n => n.AccountId == accountId && n.Type == "Cancel",
                 selector: n => new NotificationDTO
                 {
                     NotificationId = n.NotificationId,
@@ -340,7 +340,7 @@ namespace Giveandtake_Business
             var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
 
             var allNotifications = await notificationRepository.GetListAsync(
-                predicate: n => n.StaffId == staffId && n.Type == "Pending" && n.IsRead == false ,
+                predicate: n => n.StaffId == staffId && n.Type == "Pending",
                 selector: n => new NotificationDTO
                 {
                     NotificationId = n.NotificationId,
