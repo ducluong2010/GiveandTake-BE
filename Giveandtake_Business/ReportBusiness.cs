@@ -133,7 +133,7 @@ namespace Giveandtake_Business
                 AccountId = reportCreateDTO.AccountId,
                 Description = reportCreateDTO.Description,
                 ReportTypeId = reportCreateDTO.ReportTypeId,
-                Status = reportCreateDTO.Status,
+                Status = "Pending",
                 CreatedDate = reportCreateDTO.CreatedDate ?? DateTime.UtcNow,
                 ReportMedia = reportCreateDTO.ReportMediaUrls?.Select(url => new ReportMedium
                 {
@@ -151,6 +151,127 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(1, "Report created successfully");
         }
+        public async Task<IGiveandtakeResult> UpdateReport(int reportId, ReportUpdateDTO reportUpdateDTO)
+        {
+            var reportRepository = _unitOfWork.GetRepository<Report>();
+            var report = await reportRepository.SingleOrDefaultAsync(
+                predicate: r => r.ReportId == reportId,
+                include: source => source
+                    .Include(r => r.Account)
+                    .Include(r => r.ReportType)
+                    .Include(r => r.ReportMedia)
+            );
+            if (report == null)
+            {
+                return new GiveandtakeResult(-1, "Report not found");
+            }
+            if (report.Status != "Pending")
+            {
+                return new GiveandtakeResult(-1, "Only reports with 'Pending' status can be updated.");
+            }
+            report.Description = reportUpdateDTO.Description ?? report.Description; 
+            report.ReportTypeId = reportUpdateDTO.ReportTypeId ?? report.ReportTypeId; 
 
+            report.ReportMedia = reportUpdateDTO.ReportMediaUrls?.Select(url => new ReportMedium
+            {
+                ReportUrl = url
+            }).ToList() ?? new List<ReportMedium>();
+
+            reportRepository.UpdateAsync(report);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+
+            if (!isSuccessful)
+            {
+                return new GiveandtakeResult(-1, "Update report unsuccessfully");
+            }
+
+            return new GiveandtakeResult(1, "Report updated successfully");
+        }
+        public async Task<IGiveandtakeResult> DeleteReport(int reportId)
+        {
+            var reportRepository = _unitOfWork.GetRepository<Report>();
+
+            var report = await reportRepository.SingleOrDefaultAsync(
+                predicate: r => r.ReportId == reportId,
+                include: source => source.Include(r => r.ReportMedia)
+            );
+
+            if (report == null)
+            {
+                return new GiveandtakeResult(-1, "Report not found");
+            }
+
+            if (report.Status != "Pending")
+            {
+                return new GiveandtakeResult(-1, "Only reports with status 'Pending' can be deleted.");
+            }
+            var reportMediumRepository = _unitOfWork.GetRepository<ReportMedium>();
+
+            if (report.ReportMedia != null && report.ReportMedia.Any())
+            {
+                foreach (var media in report.ReportMedia)
+                {
+                    reportMediumRepository.DeleteAsync(media); 
+                }
+            }
+
+
+            reportRepository.DeleteAsync(report);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+
+            if (!isSuccessful)
+            {
+                return new GiveandtakeResult(-1, "Delete report unsuccessfully");
+            }
+
+            return new GiveandtakeResult(1, "Report deleted successfully");
+        }
+        public async Task<IGiveandtakeResult> ChangeStatusToProcessing(int reportId)
+        {
+            var reportRepository = _unitOfWork.GetRepository<Report>();
+            var report = await reportRepository.SingleOrDefaultAsync(
+                predicate: r => r.ReportId == reportId, 
+                orderBy: null, 
+                include: null  
+            );
+
+            if (report == null)
+            {
+                return new GiveandtakeResult(-1, "Report not found");
+            }
+
+            if (report.Status != "Pending")
+            {
+                return new GiveandtakeResult(-1, "Only reports with status 'Pending' can be changed to 'Processing'");
+            }
+
+            report.Status = "Processing";
+            reportRepository.UpdateAsync(report);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            return isSuccessful
+                ? new GiveandtakeResult(1, "Status changed to 'Processing' successfully")
+                : new GiveandtakeResult(-1, "Failed to change status");
+        }
+        public async Task<IGiveandtakeResult> ToggleProcessingStatus(int reportId)
+        {
+            var reportRepository = _unitOfWork.GetRepository<Report>();
+            var report = await reportRepository.SingleOrDefaultAsync(
+                predicate: r => r.ReportId == reportId,
+                orderBy: null,
+                include: null
+            );
+
+            if (report == null)
+            {
+                return new GiveandtakeResult(-1, "Report not found");
+            }
+
+            report.Status = report.Status == "Processing" ? "Processed" : "Processing";
+            reportRepository.UpdateAsync(report);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            return isSuccessful
+                ? new GiveandtakeResult(1, $"Status changed to '{report.Status}' successfully")
+                : new GiveandtakeResult(-1, "Failed to change status");
+        }
     }
 }
