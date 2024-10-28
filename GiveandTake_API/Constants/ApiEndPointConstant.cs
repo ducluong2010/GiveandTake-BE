@@ -140,5 +140,14 @@
             public const string ReportTypeDeleEndPoint = ReportTypesEndPoint + "/delete";
             public const string ChangeStatusEndPoint = ReportTypesEndPoint + "/changestatus";
         }
+
+        public class Notification
+        {
+            public const string NotisEndPoint = ApiEndpoint + "/notification";
+            public const string NotiEndPoint = NotisEndPoint + "/{id}";
+            public const string NotiCreateEndPoint = NotisEndPoint + "/create";
+            public const string NotiUpdateEndPoint = NotisEndPoint + "/update/{id}";
+            public const string NotiDeleteEndPoint = NotiEndPoint + "/delete";
+        }
     }
 }
