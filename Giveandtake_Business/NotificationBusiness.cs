@@ -162,25 +162,6 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult(-1, "Account not found");
             }
 
-            var notificationExists = await notificationRepository.SingleOrDefaultAsync(
-                predicate: n => n.Note == notificationInfo.Note && n.AccountId == notificationInfo.AccountId
-            );
-
-            if (notificationExists != null)
-            {
-                return new GiveandtakeResult(-1, "A notification with the same note already exists for this account");
-            }
-
-            var existingDonationNotification = await notificationRepository.SingleOrDefaultAsync(
-                predicate: n => n.DonationId == notificationInfo.DonationId
-            );
-
-            if (existingDonationNotification != null)
-            {
-                return new GiveandtakeResult(-1, "A notification for this donation already exists");
-            }
-
-
             var newNotification = new Notification
             {
                 DonationId = notificationInfo.DonationId,
