@@ -54,5 +54,8 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> GetCompletedTransactionsByAccountId(int senderAccountId)
             => _transactionBusiness.GetCompletedTransactionsByAccountId(senderAccountId);
+
+        public Task<IGiveandtakeResult> ToggleIsFeedbackStatus(int transactionId)
+            => _transactionBusiness.ToggleIsFeedbackStatus(transactionId);
     }
 }

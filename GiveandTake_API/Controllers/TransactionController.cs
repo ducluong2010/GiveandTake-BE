@@ -1,5 +1,7 @@
 ﻿using GiveandTake_API.Constants;
+using Giveandtake_Business;
 using GiveandTake_Repo.DTOs.Transaction;
+using GiveandTake_Repo.Repository.Implements;
 using Giveandtake_Services.Implements;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -76,6 +78,17 @@ namespace GiveandTake_API.Controllers
                 return Ok(response.Data);
             else
                 return BadRequest(response.Message);
+        }
+
+        [HttpPut(ApiEndPointConstant.Transaction.FeedbackChangeEndPoint)]
+        [SwaggerOperation(Summary = "Toggle feedback status of a Transaction")]
+        public async Task<IActionResult> ToggleIsFeedbackStatus([FromRoute] int transactionId)
+        {
+            var response = await _transactionService.ToggleIsFeedbackStatus(transactionId);
+            if (response.Status >= 0)
+                return Ok(response.Message);
+            else
+                return BadRequest(response);
         }
         #endregion
     }

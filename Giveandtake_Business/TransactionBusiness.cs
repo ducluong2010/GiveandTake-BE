@@ -40,7 +40,8 @@ namespace Giveandtake_Business
                     CreatedDate = o.CreatedDate,
                     UpdatedDate = o.UpdatedDate,
                     Status = o.Status,
-                    AccountId = o.AccountId
+                    AccountId = o.AccountId,
+                    IsFeedback = o.IsFeedback
                 });
             return new GiveandtakeResult(transactionsList);
         }
@@ -60,7 +61,8 @@ namespace Giveandtake_Business
                             CreatedDate = o.CreatedDate,
                             UpdatedDate = o.UpdatedDate,
                             Status = o.Status,
-                            AccountId = o.AccountId
+                            AccountId = o.AccountId,
+                            IsFeedback = o.IsFeedback
                         },
                         TransactionDetails = o.TransactionDetails.Select(td => new GetTransactionDetailDTO()
                         {
@@ -102,7 +104,8 @@ namespace Giveandtake_Business
                          CreatedDate = o.CreatedDate,
                          UpdatedDate = o.UpdatedDate,
                          Status = o.Status,
-                         AccountId = o.AccountId
+                         AccountId = o.AccountId,
+                         IsFeedback = o.IsFeedback
                      },
                      TransactionDetails = o.TransactionDetails.Select(td => new GetTransactionDetailDTO()
                      {
@@ -524,6 +527,25 @@ namespace Giveandtake_Business
                 Status = 1,
                 Message = "Transaction completed, sender's points updated, and donation status changed to Claimed"
             };
+        }
+
+        public async Task<IGiveandtakeResult> ToggleIsFeedbackStatus(int transactionId)
+        {
+            var existingTransaction = await _unitOfWork.GetRepository<Transaction>()
+                .SingleOrDefaultAsync(predicate: t => t.TransactionId == transactionId);
+
+            if (existingTransaction == null)
+            {
+                return new GiveandtakeResult(-1, "Transaction not found");
+            }
+
+            existingTransaction.IsFeedback = !existingTransaction.IsFeedback;
+            _unitOfWork.GetRepository<Transaction>().UpdateAsync(existingTransaction);
+
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+            return isSuccessful
+                ? new GiveandtakeResult(1, "Feedback status updated successfully")
+                : new GiveandtakeResult(-1, "Update unsuccessfully");
         }
         #endregion
     }

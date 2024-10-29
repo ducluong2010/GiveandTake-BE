@@ -48,6 +48,8 @@ namespace GiveandTake_Repo.DTOs.Transaction
 
             public int? AccountId { get; set; }
 
+            public bool? IsFeedback { get; set; }
+
         }
     }
 }
