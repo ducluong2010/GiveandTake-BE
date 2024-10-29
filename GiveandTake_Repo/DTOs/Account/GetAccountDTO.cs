@@ -32,7 +32,7 @@ namespace GiveandTake_Repo.DTOs.Account
 
         public DateTime? PremiumUnti { get; set; }
 
-        public int? Rating { get; set; }
+        public Double? Rating { get; set; }
 
         public int? ChatId { get; set; }
 
@@ -63,7 +63,7 @@ namespace GiveandTake_Repo.DTOs.Account
 
         public DateTime? PremiumUnti { get; set; }
 
-        public int? Rating { get; set; }
+        public Double? Rating { get; set; }
 
         public int? ChatId { get; set; }
 

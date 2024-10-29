@@ -178,38 +178,38 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult(-1, "Create feedback unsuccessfully");
             }
 
-            //if (donation.AccountId.HasValue)
-            //{
-            //    await UpdateAccountRating(donation.AccountId.Value);
-            //}
+            if (donation.AccountId.HasValue)
+            {
+                await UpdateAccountRating(donation.AccountId.Value);
+            }
 
 
             return new GiveandtakeResult(1, "Feedback created successfully");
         }
-        //private async Task UpdateAccountRating(int accountId)
-        //{
-        //    // Thay đổi cách gọi GetListAsync
-        //    var feedbacks = await _unitOfWork.GetRepository<Feedback>()
-        //        .GetListAsync(f => f.AccountId == accountId, null, null);
+        private async Task UpdateAccountRating(int accountId)
+        {
+            // Thay đổi cách gọi GetListAsync
+            var feedbacks = await _unitOfWork.GetRepository<Feedback>()
+                .GetListAsync(f => f.AccountId == accountId, null, null);
 
-        //    if (feedbacks.Any())
-        //    {
-        //        // Tính toán rating trung bình
-        //        var averageRating = feedbacks.Average(f => f.Rating);
+            if (feedbacks.Any())
+            {
+                // Tính toán rating trung bình
+                var averageRating = feedbacks.Average(f => f.Rating);
 
-        //        // Cập nhật rating vào bảng Account
-        //        var accountRepository = _unitOfWork.GetRepository<Account>();
+                // Cập nhật rating vào bảng Account
+                var accountRepository = _unitOfWork.GetRepository<Account>();
 
-        //        // Sử dụng phương thức tương ứng để lấy account
-        //        var account = await accountRepository.FirstOrDefaultAsync(a => a.AccountId == accountId);
-        //        if (account != null)
-        //        {
-        //            account.Rating = averageRating; // Cập nhật rating
-        //            accountRepository.UpdateAsync(account);
-        //            await _unitOfWork.CommitAsync();
-        //        }
-        //    }
-        //}
+                // Sử dụng phương thức tương ứng để lấy account
+                var account = await accountRepository.FirstOrDefaultAsync(a => a.AccountId == accountId);
+                if (account != null)
+                {
+                    account.Rating = averageRating; // Cập nhật rating
+                    accountRepository.UpdateAsync(account);
+                    await _unitOfWork.CommitAsync();
+                }
+            }
+        }
         public async Task<IGiveandtakeResult> UpdateFeedback(int id, UpdateFeedbackDTO feedbackInfo)
         {
             var feedbackRepository = _unitOfWork.GetRepository<Feedback>();
