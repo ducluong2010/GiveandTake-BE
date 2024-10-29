@@ -17,6 +17,8 @@ public partial class Feedback
 
     public DateTime? CreatedDate { get; set; }
 
+    public int? SenderId { get; set; }
+
     public virtual Account? Account { get; set; }
 
     public virtual Donation? Donation { get; set; }
