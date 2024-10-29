@@ -29,7 +29,7 @@ public partial class Account
 
     public DateTime? PremiumUntil { get; set; }
 
-    public double Rating { get; set; }
+    public double? Rating { get; set; }
 
     public int? ChatId { get; set; }
 
