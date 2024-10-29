@@ -357,6 +357,7 @@ public partial class GiveandtakeContext : DbContext
             entity.HasKey(e => e.TransactionId).HasName("PRIMARY");
 
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.IsFeedback).HasDefaultValueSql("'0'");
             entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
         });
