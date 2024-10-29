@@ -115,7 +115,7 @@ namespace Giveandtake_Business
 
             if (donation == null)
             {
-                return new GiveandtakeResult(404, "Donation not found");
+                return new GiveandtakeResult(-1, "Donation not found");
             }
 
             string approverName = null;
@@ -160,37 +160,6 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(donationDTO);
         }
-
-        //public async Task<IGiveandtakeResult> UpdateDonation(int id, CreateUpdateDonationDTO donationInfo)
-        //{
-        //    var category = await _unitOfWork.GetRepository<Category>()
-        //        .FirstOrDefaultAsync(c => c.CategoryId == donationInfo.CategoryId);
-
-        //    if (category == null)
-        //    {
-        //        return new GiveandtakeResult(-1, "Category not found");
-        //    }
-
-        //    var donation = await _unitOfWork.GetRepository<Donation>()
-        //        .SingleOrDefaultAsync(predicate: d => d.DonationId == id);
-
-        //    if (donation == null)
-        //    {
-        //        return new GiveandtakeResult(-1, "Donation not found");
-        //    }
-
-        //    donation.Name = !string.IsNullOrEmpty(donationInfo.Name) ? donationInfo.Name : donation.Name;
-        //    donation.Description = !string.IsNullOrEmpty(donationInfo.Description) ? donationInfo.Description : donation.Description;
-        //    donation.Point = category.Point;
-        //    donation.ApprovedBy = donationInfo.ApprovedBy ?? donation.ApprovedBy;
-        //    donation.TotalRating = donationInfo.TotalRating ?? donation.TotalRating;
-        //    donation.Status = !string.IsNullOrEmpty(donationInfo.Status) ? donationInfo.Status : donation.Status;
-        //    donation.UpdatedAt = DateTime.Now;
-
-        //    _unitOfWork.GetRepository<Donation>().UpdateAsync(donation);
-        //    await _unitOfWork.CommitAsync();
-        //    return new GiveandtakeResult(1, "Donation updated successfully");
-        //}
         public async Task<IGiveandtakeResult> UpdateDonation(int id, CreateUpdateDonationDTO donationInfo)
         {
             var donationRepository = _unitOfWork.GetRepository<Donation>();

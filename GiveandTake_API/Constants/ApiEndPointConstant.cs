@@ -131,6 +131,11 @@
         {
             public const string ReportsEndPoint = ApiEndpoint + "/report";
             public const string ReportEndPoint = ReportsEndPoint + "/{id}";
+            public const string ReportCreateEndPoint = ReportsEndPoint + "/create";
+            public const string ReportUpdateEndPoint = ReportsEndPoint + "/update/{id}";
+            public const string ReportDeleteEndPoint = ReportsEndPoint + "/delete/{id}";
+            public const string ReportChangeEndPoint = ReportsEndPoint + "/changepending/{id}";
+            public const string ReportCompleteEndPoint = ReportsEndPoint + "/changeprocess/{id}";
         }
 
         public class ReportType
@@ -140,6 +145,18 @@
             public const string ReportTypeUpdateEndPoint = ReportTypesEndPoint + "/update";
             public const string ReportTypeDeleEndPoint = ReportTypesEndPoint + "/delete";
             public const string ChangeStatusEndPoint = ReportTypesEndPoint + "/changestatus";
+        }
+
+        public class Notification
+        {
+            public const string NotisEndPoint = ApiEndpoint + "/notification";
+            public const string NotiEndPoint = NotisEndPoint + "/{id}";
+            public const string NotiCreateEndPoint = NotisEndPoint + "/create";
+            public const string NotiUpdateEndPoint = NotisEndPoint + "/update/{id}";
+            public const string NotiDeleteEndPoint = NotisEndPoint + "/delete/{id}";
+            public const string NotiChangeEndPoint = NotisEndPoint + "/change/{id}";
+            public const string NotiAccEndPoint = NotisEndPoint + "/getbyacc/{id}";
+            public const string NotiStaffEndPoint = NotisEndPoint + "/getbystaff/{id}";
         }
     }
 }

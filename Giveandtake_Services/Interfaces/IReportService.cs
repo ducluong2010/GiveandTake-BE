@@ -13,5 +13,9 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> GetAllReports(int page = 1, int pageSize = 8);
         Task<IGiveandtakeResult> GetReportById(int reportId);
         Task<IGiveandtakeResult> CreateReport(ReportCreateDTO reportCreateDto);
+        Task<IGiveandtakeResult> UpdateReport(int reportId, ReportUpdateDTO reportUpdateDto);
+        Task<IGiveandtakeResult> DeleteReport(int reportId);
+        Task<IGiveandtakeResult> ChangeStatusToProcessing(int reportId);
+        Task<IGiveandtakeResult> ToggleProcessingStatus(int reportId);
     }
 }

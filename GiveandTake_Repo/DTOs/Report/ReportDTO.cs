@@ -35,10 +35,15 @@ namespace GiveandTake_Repo.DTOs.Report
 
         public int? ReportTypeId { get; set; }
 
-        public string? Status { get; set; }
-
         public DateTime? CreatedDate { get; set; }
 
         public List<string> ReportMediaUrls { get; set; } = new List<string>();
+    }
+
+    public class ReportUpdateDTO
+    {
+        public string? Description { get; set; } 
+        public int? ReportTypeId { get; set; } 
+        public List<string> ReportMediaUrls { get; set; } = new List<string>(); 
     }
 }

@@ -20,10 +20,17 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> GetAllReports(int page = 1, int pageSize = 8)
             => _reportBusiness.GetAllReports(page, pageSize);
-
         public Task<IGiveandtakeResult> GetReportById(int reportId)
             => _reportBusiness.GetReportById(reportId);
         public Task<IGiveandtakeResult> CreateReport(ReportCreateDTO reportCreateDto) 
             => _reportBusiness.CreateReport(reportCreateDto);
+        public Task<IGiveandtakeResult> UpdateReport(int reportId, ReportUpdateDTO reportUpdateDto) 
+            => _reportBusiness.UpdateReport(reportId, reportUpdateDto);
+        public Task<IGiveandtakeResult> DeleteReport(int reportId)
+            => _reportBusiness.DeleteReport(reportId);
+        public Task<IGiveandtakeResult> ChangeStatusToProcessing(int reportId)
+            => _reportBusiness.ChangeStatusToProcessing(reportId);
+        public Task<IGiveandtakeResult> ToggleProcessingStatus(int reportId)
+            => _reportBusiness.ToggleProcessingStatus(reportId);
     }
 }
