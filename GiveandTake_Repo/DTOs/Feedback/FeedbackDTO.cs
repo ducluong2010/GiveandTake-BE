@@ -10,6 +10,10 @@ namespace GiveandTake_Repo.DTOs.Feedback
     {
         public int FeedbackId { get; set; }
 
+        public int? SenderId { get; set; }
+
+        public string? SenderName { get; set; }
+
         public int? AccountId { get; set; }
 
         public string? AccountName { get; set; }  
@@ -29,7 +33,7 @@ namespace GiveandTake_Repo.DTOs.Feedback
 
     public class CreateFeedbackDTO
     {
-        public int? AccountId { get; set; }
+        public int? SenderId { get; set; }
 
         public int? DonationId { get; set; }
 

@@ -41,5 +41,8 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> GetAllNotificationsByStaffId(int staffId, int page = 1, int pageSize = 8)
             => _notificationBusiness.GetAllNotificationsByStaffId(staffId, page, pageSize);
+
+        public Task<IGiveandtakeResult> GetNotiApprovedAccount(int id, int page = 1, int pageSize = 8)
+            => _notificationBusiness.GetNotiApprovedAccount(id, page, pageSize);
     }
 }
