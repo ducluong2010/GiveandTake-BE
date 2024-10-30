@@ -16,5 +16,7 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> CreateFeedback(CreateFeedbackDTO feedbackInfo);
         Task<IGiveandtakeResult> UpdateFeedback(int id, UpdateFeedbackDTO feedbackInfo);
         Task<IGiveandtakeResult> DeleteFeedback(int id);
+        Task<IGiveandtakeResult> GetFeedbacksBySenderId(int senderId, int page = 1, int pageSize = 8);
+        Task<IGiveandtakeResult> GetFeedbacksByAccountId(int accountId, int page = 1, int pageSize = 8);
     }
 }

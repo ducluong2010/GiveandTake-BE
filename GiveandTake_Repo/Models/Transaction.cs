@@ -17,5 +17,7 @@ public partial class Transaction
 
     public int? AccountId { get; set; }
 
+    public bool? IsFeedback { get; set; }
+
     public virtual ICollection<TransactionDetail> TransactionDetails { get; set; } = new List<TransactionDetail>();
 }

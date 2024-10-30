@@ -26,6 +26,26 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response.Message);
         }
+        [HttpGet(ApiEndPointConstant.Feedback.FeedbackSenEndPoint)]
+        [SwaggerOperation(Summary = "Get all Feedbacks by SenderId")]
+        public async Task<IActionResult> GetFeedbacksBySenderId(int id, [FromQuery] int page = 1, [FromQuery] int pageSize = 8)
+        {
+            var response = await _feedbackService.GetFeedbacksBySenderId(id, page, pageSize);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
+        [HttpGet(ApiEndPointConstant.Feedback.FeedbackAccEndPoint)]
+        [SwaggerOperation(Summary = "Get all Feedbacks by AccountId")]
+        public async Task<IActionResult> GetFeedbacksByAccountId(int id, [FromQuery] int page = 1, [FromQuery] int pageSize = 8)
+        {
+            var response = await _feedbackService.GetFeedbacksByAccountId(id, page, pageSize);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
 
         [HttpGet(ApiEndPointConstant.Feedback.FeedbackEndPoint)]
         [SwaggerOperation(Summary = "Get Feedback by its id")]

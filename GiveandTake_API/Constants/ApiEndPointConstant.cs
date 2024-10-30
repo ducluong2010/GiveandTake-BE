@@ -76,6 +76,7 @@
             public const string TransactionByAccountEndPoint = TransactionsEndPoint + "/account/{accountId}";
             public const string TransactionByAccountForCurrentUserEndPoint = TransactionsEndPoint + "/account/current";
             public const string CompletedTransactionsByDonationForSenderEndPoint = TransactionsEndPoint + "/donation/sender/completed";
+            public const string FeedbackChangeEndPoint = TransactionsEndPoint + "/change/{transactionId}";
 
 
 
@@ -114,6 +115,8 @@
         {
             public const string FeedbacksEndPoint = ApiEndpoint + "/feedbacks";
             public const string FeedbackEndPoint = FeedbacksEndPoint + "/{id}";
+            public const string FeedbackAccEndPoint = FeedbacksEndPoint + "/account/{id}";
+            public const string FeedbackSenEndPoint = FeedbacksEndPoint + "/sender/{id}";
         }
 
         public class Request
@@ -157,6 +160,7 @@
             public const string NotiChangeEndPoint = NotisEndPoint + "/change/{id}";
             public const string NotiAccEndPoint = NotisEndPoint + "/getbyacc/{id}";
             public const string NotiStaffEndPoint = NotisEndPoint + "/getbystaff/{id}";
+            public const string NotiAppEndPoint = NotisEndPoint + "/getapproved/{id}";
         }
     }
 }

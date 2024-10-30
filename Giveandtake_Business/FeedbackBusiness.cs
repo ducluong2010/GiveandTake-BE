@@ -23,33 +23,48 @@ namespace Giveandtake_Business
         {
             var feedbackRepository = _unitOfWork.GetRepository<Feedback>();
             var accountRepository = _unitOfWork.GetRepository<Account>();
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
 
             var allAccounts = await accountRepository.GetAllAsync();
             var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
+
+            var allDonations = await donationRepository.GetAllAsync();
+            var donationDict = allDonations.ToDictionary(d => d.DonationId, d => d.AccountId);
 
             var allFeedbacks = await feedbackRepository.GetListAsync(
                 predicate: f => true,
                 selector: f => new FeedbackDTO
                 {
                     FeedbackId = f.FeedbackId,
-                    AccountId = f.AccountId,
-                    AccountName = f.Account.FullName,
+                    SenderId = f.SenderId,
+                    SenderName = f.SenderId.HasValue && accountDict.ContainsKey(f.SenderId.Value)
+                        ? accountDict[f.SenderId.Value]
+                        : null,
+
+                    AccountId = f.DonationId.HasValue && donationDict.ContainsKey(f.DonationId.Value)
+                        ? donationDict[f.DonationId.Value]: null,
+
+                    AccountName = f.DonationId != null && donationDict.ContainsKey(f.DonationId.Value)
+                                  && donationDict[f.DonationId.Value].HasValue && accountDict.ContainsKey(donationDict[f.DonationId.Value].Value)
+                                  ? accountDict[donationDict[f.DonationId.Value].Value]: null,
+
                     DonationId = f.DonationId,
-                    DonationName = f.Donation.Name,
+                    DonationName = f.Donation != null ? f.Donation.Name : null,
                     Rating = f.Rating,
                     Content = f.Content,
                     CreatedDate = f.CreatedDate,
                     FeedbackMediaUrls = f.FeedbackMedia.Select(m => m.MediaUrl).ToList()
                 },
                 include: source => source
-                    .Include(f => f.Account)
+                    .Include(f => f.Account) 
                     .Include(f => f.Donation)
-                    .Include(f => f.FeedbackMedia)
+                    .Include(f => f.FeedbackMedia) 
             );
 
             int totalItems = allFeedbacks.Count();
             int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
             if (page > totalPages) page = totalPages;
+
             if (totalItems == 0)
             {
                 return new GiveandtakeResult(new PaginatedResult<FeedbackDTO>
@@ -82,26 +97,31 @@ namespace Giveandtake_Business
         {
             var feedbackRepository = _unitOfWork.GetRepository<Feedback>();
             var accountRepository = _unitOfWork.GetRepository<Account>();
-
-            // Fetch the feedback with related entities
             var feedback = await feedbackRepository.SingleOrDefaultAsync(
                 predicate: f => f.FeedbackId == feedbackId,
                 include: source => source
-                    .Include(f => f.Account)
                     .Include(f => f.Donation)
+                    .ThenInclude(d => d.Account) 
                     .Include(f => f.FeedbackMedia)
             );
 
             if (feedback == null)
             {
-                return new GiveandtakeResult(404, "Feedback not found");
+                return new GiveandtakeResult(-1, "Feedback not found");
             }
-
+            string? senderName = null;
+            if (feedback.SenderId.HasValue)
+            {
+                var senderAccount = await accountRepository.FirstOrDefaultAsync(a => a.AccountId == feedback.SenderId.Value);
+                senderName = senderAccount?.FullName;
+            }
             var feedbackDTO = new FeedbackDTO
             {
                 FeedbackId = feedback.FeedbackId,
-                AccountId = feedback.AccountId,
-                AccountName = feedback.Account?.FullName,
+                SenderId = feedback.SenderId,
+                SenderName = senderName,
+                AccountId = feedback.Donation?.AccountId,
+                AccountName = feedback.Donation?.Account?.FullName,
                 DonationId = feedback.DonationId,
                 DonationName = feedback.Donation?.Name,
                 Rating = feedback.Rating,
@@ -114,11 +134,11 @@ namespace Giveandtake_Business
         }
         public async Task<IGiveandtakeResult> CreateFeedback(CreateFeedbackDTO createFeedbackDto)
         {
-            var account = await _unitOfWork.GetRepository<Account>()
-                .FirstOrDefaultAsync(a => a.AccountId == createFeedbackDto.AccountId);
-            if (account == null)
+            var senderAccount = await _unitOfWork.GetRepository<Account>()
+                .FirstOrDefaultAsync(a => a.AccountId == createFeedbackDto.SenderId);
+            if (senderAccount == null)
             {
-                return new GiveandtakeResult(-1, "Account not found");
+                return new GiveandtakeResult(-1, "Sender account not found");
             }
 
             var donation = await _unitOfWork.GetRepository<Donation>()
@@ -128,10 +148,19 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult(-1, "Donation not found");
             }
 
+            var existingFeedbacks = await _unitOfWork.GetRepository<Feedback>()
+                .GetListAsync(predicate: f => f.DonationId == createFeedbackDto.DonationId && f.SenderId == createFeedbackDto.SenderId);
+
+            if (existingFeedbacks.Any())
+            {
+                return new GiveandtakeResult(-1, "Feedback already exists for this donation by the sender");
+            }
+            // Tạo mới feedback
             var newFeedback = new Feedback
             {
-                AccountId = createFeedbackDto.AccountId,
+                SenderId = createFeedbackDto.SenderId,
                 DonationId = createFeedbackDto.DonationId,
+                AccountId = donation.AccountId,
                 Rating = createFeedbackDto.Rating,
                 Content = createFeedbackDto.Content,
                 CreatedDate = createFeedbackDto.CreateTime ?? DateTime.Now,
@@ -149,7 +178,37 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult(-1, "Create feedback unsuccessfully");
             }
 
+            if (donation.AccountId.HasValue)
+            {
+                await UpdateAccountRating(donation.AccountId.Value);
+            }
+
+
             return new GiveandtakeResult(1, "Feedback created successfully");
+        }
+        private async Task UpdateAccountRating(int accountId)
+        {
+            // Thay đổi cách gọi GetListAsync
+            var feedbacks = await _unitOfWork.GetRepository<Feedback>()
+                .GetListAsync(f => f.AccountId == accountId, null, null);
+
+            if (feedbacks.Any())
+            {
+                // Tính toán rating trung bình
+                var averageRating = feedbacks.Average(f => f.Rating);
+
+                // Cập nhật rating vào bảng Account
+                var accountRepository = _unitOfWork.GetRepository<Account>();
+
+                // Sử dụng phương thức tương ứng để lấy account
+                var account = await accountRepository.FirstOrDefaultAsync(a => a.AccountId == accountId);
+                if (account != null)
+                {
+                    account.Rating = averageRating; // Cập nhật rating
+                    accountRepository.UpdateAsync(account);
+                    await _unitOfWork.CommitAsync();
+                }
+            }
         }
         public async Task<IGiveandtakeResult> UpdateFeedback(int id, UpdateFeedbackDTO feedbackInfo)
         {
@@ -238,6 +297,154 @@ namespace Giveandtake_Business
             await _unitOfWork.CommitAsync();
 
             return new GiveandtakeResult(1, "Feedback deleted successfully");
+        }
+        public async Task<IGiveandtakeResult> GetFeedbacksBySenderId(int senderId, int page = 1, int pageSize = 8)
+        {
+            var feedbackRepository = _unitOfWork.GetRepository<Feedback>();
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+
+            var allAccounts = await accountRepository.GetAllAsync();
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
+
+            var allDonations = await donationRepository.GetAllAsync();
+            var donationDict = allDonations.ToDictionary(d => d.DonationId, d => d.AccountId);
+
+            var feedbacksBySenderId = await feedbackRepository.GetListAsync(
+                predicate: f => f.SenderId == senderId,
+                selector: f => new FeedbackDTO
+                {
+                    FeedbackId = f.FeedbackId,
+                    SenderId = f.SenderId,
+                    SenderName = f.SenderId.HasValue && accountDict.ContainsKey(f.SenderId.Value)
+                        ? accountDict[f.SenderId.Value]
+                        : null,
+                    AccountId = f.DonationId.HasValue && donationDict.ContainsKey(f.DonationId.Value)
+                        ? donationDict[f.DonationId.Value]
+                        : null,
+                    AccountName = f.DonationId != null && donationDict.ContainsKey(f.DonationId.Value)
+                                  && donationDict[f.DonationId.Value].HasValue
+                                  && accountDict.ContainsKey(donationDict[f.DonationId.Value].Value)
+                                  ? accountDict[donationDict[f.DonationId.Value].Value]
+                                  : null,
+                    DonationId = f.DonationId,
+                    DonationName = f.Donation != null ? f.Donation.Name : null,
+                    Rating = f.Rating,
+                    Content = f.Content,
+                    CreatedDate = f.CreatedDate,
+                    FeedbackMediaUrls = f.FeedbackMedia.Select(m => m.MediaUrl).ToList()
+                },
+                include: source => source
+                    .Include(f => f.Account)
+                    .Include(f => f.Donation)
+                    .Include(f => f.FeedbackMedia)
+            );
+
+            int totalItems = feedbacksBySenderId.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            if (page > totalPages) page = totalPages;
+
+            if (totalItems == 0)
+            {
+                return new GiveandtakeResult(new PaginatedResult<FeedbackDTO>
+                {
+                    Items = new List<FeedbackDTO>(),
+                    TotalItems = totalItems,
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalPages = totalPages
+                });
+            }
+
+            var paginatedFeedbacks = feedbacksBySenderId
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var paginatedResult = new PaginatedResult<FeedbackDTO>
+            {
+                Items = paginatedFeedbacks,
+                TotalItems = totalItems,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
+
+            return new GiveandtakeResult(paginatedResult);
+        }
+        public async Task<IGiveandtakeResult> GetFeedbacksByAccountId(int accountId, int page = 1, int pageSize = 8)
+        {
+            var feedbackRepository = _unitOfWork.GetRepository<Feedback>();
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+
+            var allAccounts = await accountRepository.GetAllAsync();
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
+
+            var allDonations = await donationRepository.GetAllAsync();
+            var donationDict = allDonations.ToDictionary(d => d.DonationId, d => d.AccountId);
+
+            var feedbacksByAccountId = await feedbackRepository.GetListAsync(
+                predicate: f => f.Donation.AccountId == accountId,
+                selector: f => new FeedbackDTO
+                {
+                    FeedbackId = f.FeedbackId,
+                    SenderId = f.SenderId,
+                    SenderName = f.SenderId.HasValue && accountDict.ContainsKey(f.SenderId.Value)
+                        ? accountDict[f.SenderId.Value]
+                        : null,
+                    AccountId = f.DonationId.HasValue && donationDict.ContainsKey(f.DonationId.Value)
+                        ? donationDict[f.DonationId.Value]
+                        : null,
+                    AccountName = f.DonationId != null && donationDict.ContainsKey(f.DonationId.Value)
+                                  && donationDict[f.DonationId.Value].HasValue
+                                  && accountDict.ContainsKey(donationDict[f.DonationId.Value].Value)
+                                  ? accountDict[donationDict[f.DonationId.Value].Value]
+                                  : null,
+                    DonationId = f.DonationId,
+                    DonationName = f.Donation != null ? f.Donation.Name : null,
+                    Rating = f.Rating,
+                    Content = f.Content,
+                    CreatedDate = f.CreatedDate,
+                    FeedbackMediaUrls = f.FeedbackMedia.Select(m => m.MediaUrl).ToList()
+                },
+                include: source => source
+                    .Include(f => f.Account)
+                    .Include(f => f.Donation)
+                    .Include(f => f.FeedbackMedia)
+            );
+
+            int totalItems = feedbacksByAccountId.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            if (page > totalPages) page = totalPages;
+
+            if (totalItems == 0)
+            {
+                return new GiveandtakeResult(new PaginatedResult<FeedbackDTO>
+                {
+                    Items = new List<FeedbackDTO>(),
+                    TotalItems = totalItems,
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalPages = totalPages
+                });
+            }
+
+            var paginatedFeedbacks = feedbacksByAccountId
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var paginatedResult = new PaginatedResult<FeedbackDTO>
+            {
+                Items = paginatedFeedbacks,
+                TotalItems = totalItems,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
+
+            return new GiveandtakeResult(paginatedResult);
         }
     }
 }

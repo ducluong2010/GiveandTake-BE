@@ -31,6 +31,10 @@ namespace Giveandtake_Services.Implements
             => _feedbackBusiness.UpdateFeedback(id, feedbackInfo);
         public Task<IGiveandtakeResult> DeleteFeedback(int id)
             => _feedbackBusiness.DeleteFeedback(id);
+        public Task<IGiveandtakeResult> GetFeedbacksBySenderId(int senderId, int page = 1, int pageSize = 8)
+            => _feedbackBusiness.GetFeedbacksBySenderId(senderId, page, pageSize);
 
+        public Task<IGiveandtakeResult> GetFeedbacksByAccountId(int accountId, int page = 1, int pageSize = 8)
+            => _feedbackBusiness.GetFeedbacksByAccountId(accountId, page, pageSize);
     }
 }
