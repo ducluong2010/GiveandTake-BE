@@ -42,8 +42,6 @@ namespace Giveandtake_Services.Implements
         public Task<IGiveandtakeResult> PromoteToPremium(int accountId)
             => _accountBusiness.PromoteToPremium(accountId);
 
-        public Task<IGiveandtakeResult> Register(string email, string password)
-            => _accountBusiness.Register(email, password);
 
         public Task<IGiveandtakeResult> UnbanAccount(int accountId)
             => _accountBusiness.UnbanAccount(accountId);
@@ -53,5 +51,8 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> ChangePassword(int accountId, string oldPassword, string newPassword)
             => _accountBusiness.ChangePassword(accountId, oldPassword, newPassword);
+
+        public Task<IGiveandtakeResult> Register(UserRegisterDTO registerDto)
+            => _accountBusiness.Register(registerDto);
     }
 }

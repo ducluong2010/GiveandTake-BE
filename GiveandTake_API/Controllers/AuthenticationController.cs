@@ -1,4 +1,5 @@
 ﻿using GiveandTake_API.Constants;
+using GiveandTake_Repo.DTOs.Account;
 using Giveandtake_Services.Implements;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -31,9 +32,9 @@ namespace GiveandTake_API.Controllers
         // Endpoint for user registration
         [HttpPost(ApiEndPointConstant.Authentication.RegisterEndpoint)]
         [SwaggerOperation(Summary = "Register")]
-        public async Task<IActionResult> Register(string email, string password)
+        public async Task<IActionResult> Register(UserRegisterDTO registerDto)
         {
-            var response = await _accountService.Register(email, password);
+            var response = await _accountService.Register(registerDto);
             if (response.Status >= 0)
                 return Ok(response);
             else

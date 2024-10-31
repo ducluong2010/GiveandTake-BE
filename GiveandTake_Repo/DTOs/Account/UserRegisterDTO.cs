@@ -20,6 +20,11 @@ namespace GiveandTake_Repo.DTOs.Account
         [Required]
         public string? Password { get; set; }
 
+        [Required]
+        [Phone]
         public string? Phone { get; set; }
+
+        public string? Address { get; set; }
+
     }
 }

@@ -37,6 +37,9 @@ namespace GiveandTake_Repo.DTOs.Account
         public int? ChatId { get; set; }
 
         public int? MessageId { get; set; }
+
+        public int? ActiveTime { get; set; }
+
     }
 
     public class AccountDTO
@@ -68,5 +71,8 @@ namespace GiveandTake_Repo.DTOs.Account
         public int? ChatId { get; set; }
 
         public int? MessageId { get; set; }
+
+        public int? ActiveTime { get; set; }
+
     }
 }
