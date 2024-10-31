@@ -21,97 +21,84 @@ namespace Giveandtake_Business
         }
 
         #region Authentication
+
+        // Login method
         public async Task<IGiveandtakeResult> Login(string email, string password)
         {
-            Account account = await _unitOfWork.GetRepository<Account>()
+            var account = await _unitOfWork.GetRepository<Account>()
                 .SingleOrDefaultAsync(predicate: a => a.Email.Equals(email) && a.Password.Equals(password));
 
-            GiveandtakeResult result = new GiveandtakeResult();
-
-            if (account == null)
+            if (account == null || !(bool)account.IsActive)
             {
-                result.Status = -1;
-                result.Message = "Incorrect Email or Password";
-                return result;
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = account == null ? "Incorrect Email or Password" : "Your account is currently inactive (banned)"
+                };
             }
 
-            if (!(bool)account.IsActive)
+            return new GiveandtakeResult
             {
-                result.Status = -1;
-                result.Message = "Your account is currently inactive (banned)";
-                return result;
-            }
-
-            result.Data = new
-            {
-                AccountId = account.AccountId,
-                JwtToken = JwtUtils.GenerateJwtToken(account)
+                Status = 1,
+                Message = "Login successfully",
+                Data = new
+                {
+                    AccountId = account.AccountId,
+                    JwtToken = JwtUtils.GenerateJwtToken(account)
+                }
             };
-            result.Status = 1;
-            result.Message = "Login successfully";
-            return result;
         }
 
-        // Method for user registration
-        public async Task<IGiveandtakeResult> Register(string email, string password)
+
+        // Register method
+        public async Task<IGiveandtakeResult> Register(UserRegisterDTO registerDto)
         {
-            Account account = await _unitOfWork.GetRepository<Account>()
-                .SingleOrDefaultAsync(predicate: a => a.Email.Equals(email));
+            var repo = _unitOfWork.GetRepository<Account>();
+            var existingAccountByEmail = await repo.SingleOrDefaultAsync(predicate: a => a.Email.Equals(registerDto.Email));
+            var existingAccountByPhone = await repo.SingleOrDefaultAsync(predicate: a => a.Phone != null && a.Phone.Equals(registerDto.Phone));
 
-            GiveandtakeResult result = new GiveandtakeResult();
+            if (existingAccountByEmail != null)
+                return new GiveandtakeResult { Status = -1, Message = "Email has already been used" };
 
-            if (account != null)
+            if (existingAccountByPhone != null)
+                return new GiveandtakeResult { Status = -1, Message = "Phone number has already been used" };
+
+            var newAccount = new Account
             {
-                result.Status = -1;
-                result.Message = "Email has already used";
-                return result;
-            }
-
-            Account newAccount = new Account
-            {
-                AccountId = 0,
-                FullName = String.Empty,
-                Password = password,
-                Email = email,
-                Phone = String.Empty,
-                Address = String.Empty,
+                FullName = registerDto.FullName,
+                Password = registerDto.Password,
+                Email = registerDto.Email,
+                Phone = registerDto.Phone,
+                Address = registerDto.Address,
                 Point = 0,
                 AvatarUrl = String.Empty,
                 RoleId = 3,
                 IsActive = true,
                 IsPremium = false,
-                PremiumUntil = null
+                PremiumUntil = null,
+                ActiveTime = null
             };
 
-            await _unitOfWork.GetRepository<Account>().InsertAsync(newAccount);
+            await repo.InsertAsync(newAccount);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
 
-            if (!isSuccessful)
+            return new GiveandtakeResult
             {
-                result.Status = -1;
-                result.Message = "Register unsuccessfully";
-            }
-            else
-            {
-                result.Data = JwtUtils.GenerateJwtToken(newAccount);
-                result.Status = 1;
-                result.Message = "Register successfully";
-            }
-
-            return result;
+                Status = isSuccessful ? 1 : -1,
+                Message = isSuccessful ? "Register successfully" : "Register unsuccessfully",
+                Data = isSuccessful ? JwtUtils.GenerateJwtToken(newAccount) : null
+            };
         }
-
         #endregion
 
-
         #region Account
+
         // Method to get all active accounts
         public async Task<IGiveandtakeResult> GetAllAccount(int page = 1, int pageSize = 8)
         {
-            var repository = _unitOfWork.GetRepository<Account>();
+            var repo = _unitOfWork.GetRepository<Account>();
 
-            
-            var allAccounts = await repository.GetListAsync(
+            var allAccounts = await repo.GetListAsync(
                 predicate: a => (bool)a.IsActive,
                 selector: a => new GetAccountDTO
                 {
@@ -129,38 +116,18 @@ namespace Giveandtake_Business
                     PremiumUnti = a.PremiumUntil,
                     ChatId = a.AccountId,
                     MessageId = a.AccountId,
-                    Rating = a.Rating
+                    Rating = a.Rating,
+                    ActiveTime = a.ActiveTime
                 }
             );
 
-            
             int totalItems = allAccounts.Count;
             int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
-
-            
-            if (page > totalPages) page = totalPages;
-
-            
-            if (totalItems == 0 || totalPages == 0)
-            {
-                return new GiveandtakeResult(new PaginatedResult<GetAccountDTO>
-                {
-                    Items = new List<GetAccountDTO>(),
-                    TotalItems = totalItems,
-                    Page = page,
-                    PageSize = pageSize,
-                    TotalPages = totalPages
-                });
-            }
-
-            var paginatedAccounts = allAccounts
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList(); 
+            page = Math.Min(page, totalPages);
 
             var paginatedResult = new PaginatedResult<GetAccountDTO>
             {
-                Items = paginatedAccounts, 
+                Items = allAccounts.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
                 TotalItems = totalItems,
                 Page = page,
                 PageSize = pageSize,
@@ -171,84 +138,85 @@ namespace Giveandtake_Business
         }
 
 
-
         // Method to get account information by account ID
         public async Task<IGiveandtakeResult> GetAccountInfo(int accountId)
         {
             var acc = await _unitOfWork.GetRepository<Account>()
-                                //.SingleOrDefaultAsync(predicate: a => a.AccountId == accountId && (bool)a.IsActive,
-                                .SingleOrDefaultAsync(predicate: a => a.AccountId == accountId,
+                .SingleOrDefaultAsync(
+                    predicate: a => a.AccountId == accountId,
+                    selector: a => new GetAccountDTO
+                    {
+                        AccountId = a.AccountId,
+                        Address = a.Address,
+                        AvatarUrl = a.AvatarUrl,
+                        IsActive = a.IsActive,
+                        Email = a.Email,
+                        FullName = a.FullName,
+                        Password = a.Password,
+                        Phone = a.Phone,
+                        Point = a.Point,
+                        RoleId = a.RoleId,
+                        IsPremium = a.IsPremium,
+                        PremiumUnti = a.PremiumUntil,
+                        ChatId = a.AccountId,
+                        MessageId = a.AccountId,
+                        Rating = a.Rating,
+                        ActiveTime = a.ActiveTime
+                    });
 
-                                      selector: a => new GetAccountDTO
-                                      {
-                                          AccountId = a.AccountId,
-                                          Address = a.Address,
-                                          AvatarUrl = a.AvatarUrl,
-                                          IsActive = a.IsActive,
-                                          Email = a.Email,
-                                          FullName = a.FullName,
-                                          Password = a.Password,
-                                          Phone = a.Phone,
-                                          Point = a.Point,
-                                          RoleId = a.RoleId,
-                                          IsPremium = a.IsPremium,
-                                          PremiumUnti = a.PremiumUntil,
-                                          ChatId = a.AccountId,
-                                          MessageId = a.AccountId,
-                                          Rating = a.Rating
-
-                                      });
-            if (acc != null) return new GiveandtakeResult(acc);
-            return new GiveandtakeResult();
+            return acc != null ? new GiveandtakeResult(acc) : new GiveandtakeResult();
         }
+
 
         // Method to get account information by email
         public async Task<IGiveandtakeResult> GetAccountInfoByEmail(string email)
         {
             var acc = await _unitOfWork.GetRepository<Account>()
-                                //.SingleOrDefaultAsync(predicate: a => a.Email.Equals(email) && (bool)a.IsActive,
-                                .SingleOrDefaultAsync(predicate: a => a.Email.Equals(email),
+                .SingleOrDefaultAsync(
+                    predicate: a => a.Email.Equals(email),
+                    selector: a => new GetAccountDTO
+                    {
+                        AccountId = a.AccountId,
+                        Address = a.Address,
+                        AvatarUrl = a.AvatarUrl,
+                        IsActive = a.IsActive,
+                        Email = a.Email,
+                        FullName = a.FullName,
+                        Password = a.Password,
+                        Phone = a.Phone,
+                        Point = a.Point,
+                        RoleId = a.RoleId,
+                        IsPremium = a.IsPremium,
+                        PremiumUnti = a.PremiumUntil,
+                        ChatId = a.AccountId,
+                        MessageId = a.AccountId,
+                        Rating = a.Rating,
+                        ActiveTime = a.ActiveTime
+                    });
 
-                                      selector: a => new GetAccountDTO
-                                      {
-                                          AccountId = a.AccountId,
-                                          Address = a.Address,
-                                          AvatarUrl = a.AvatarUrl,
-                                          IsActive = a.IsActive,
-                                          Email = a.Email,
-                                          FullName = a.FullName,
-                                          Password = a.Password,
-                                          Phone = a.Phone,
-                                          Point = a.Point,
-                                          RoleId = a.RoleId,
-                                          IsPremium = a.IsPremium,
-                                          PremiumUnti = a.PremiumUntil,
-                                          ChatId = a.AccountId,
-                                          MessageId = a.AccountId,
-                                          Rating = a.Rating
-                                      });
-            if (acc != null) return new GiveandtakeResult(acc);
-            return new GiveandtakeResult();
+            return acc != null ? new GiveandtakeResult(acc) : new GiveandtakeResult();
         }
-
 
 
         // Method to create a new account (used by admin)
         public async Task<IGiveandtakeResult> CreateAccount(AccountDTO inputedAccount)
         {
-            Account account = await _unitOfWork.GetRepository<Account>()
-                .SingleOrDefaultAsync(predicate: a => a.Email.Equals(inputedAccount.Email));
+            var repo = _unitOfWork.GetRepository<Account>();
 
-            GiveandtakeResult result = new GiveandtakeResult();
+            var existingAccountByEmail = await repo.SingleOrDefaultAsync(predicate: a => a.Email.Equals(inputedAccount.Email));
+            var existingAccountByPhone = await repo.SingleOrDefaultAsync(predicate: a => a.Phone != null && a.Phone.Equals(inputedAccount.Phone));
+            var existingTimeExists = await repo.SingleOrDefaultAsync(predicate: a => a.ActiveTime == inputedAccount.ActiveTime);
 
-            if (account != null)
-            {
-                result.Status = -1;
-                result.Message = "Email has already used";
-                return result;
-            }
+            if (existingAccountByEmail != null)
+                return new GiveandtakeResult { Status = -1, Message = "Email has already used" };
 
-            Account newAccount = new Account
+            if (existingAccountByPhone != null)
+                return new GiveandtakeResult { Status = -1, Message = "Phone number has already been used" };
+
+            if (existingTimeExists != null)
+                return new GiveandtakeResult { Status = -1, Message = "Active time already assigned to another staff member" };
+
+            var newAccount = new Account
             {
                 FullName = inputedAccount.FullName,
                 Password = inputedAccount.Password,
@@ -261,30 +229,30 @@ namespace Giveandtake_Business
                 IsActive = true,
                 IsPremium = false,
                 PremiumUntil = null,
+                ActiveTime = inputedAccount.ActiveTime
             };
 
-            await _unitOfWork.GetRepository<Account>().InsertAsync(newAccount);
+            await repo.InsertAsync(newAccount);
             bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
 
-            if (!isSuccessful)
+            return new GiveandtakeResult
             {
-                result.Status = -1;
-                result.Message = "Create unsuccessfully";
-            }
-            else
-            {
-                result = new GiveandtakeResult(1, "Create Susscessfull");
-            }
-
-            return result;
+                Status = isSuccessful ? 1 : -1,
+                Message = isSuccessful ? "Create Successful" : "Create unsuccessfully"
+            };
         }
+
 
         // Method to update account information
         public async Task<IGiveandtakeResult> UpdateAccountInfo(int id, AccountDTO accInfo)
         {
             Account currentAcc = await _unitOfWork.GetRepository<Account>()
                 .SingleOrDefaultAsync(predicate: a => a.AccountId == id);
-            if (currentAcc == null) return new GiveandtakeResult(-1, "Account cannot be found");
+
+            if (currentAcc == null)
+            {
+                return new GiveandtakeResult(-1, "Account cannot be found");
+            }
             else
             {
                 currentAcc.FullName = String.IsNullOrEmpty(accInfo.FullName) ? currentAcc.FullName : accInfo.FullName;
@@ -298,6 +266,7 @@ namespace Giveandtake_Business
                 currentAcc.IsActive = accInfo.IsActive;
                 currentAcc.IsPremium = accInfo.IsPremium;
                 currentAcc.PremiumUntil = accInfo.PremiumUnti;
+                currentAcc.ActiveTime = accInfo.ActiveTime;
 
                 _unitOfWork.GetRepository<Account>().UpdateAsync(currentAcc);
                 await _unitOfWork.CommitAsync();
@@ -306,32 +275,41 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(accInfo);
         }
 
+
         // Method to delete an account
         public async Task<IGiveandtakeResult> DeleteAccount(int id)
         {
             Account currentAcc = await _unitOfWork.GetRepository<Account>()
-               .SingleOrDefaultAsync(predicate: a => a.AccountId == id);
-            if (currentAcc == null) return new GiveandtakeResult(-1, "Account cannot be found");
+                .SingleOrDefaultAsync(predicate: a => a.AccountId == id);
+
+            if (currentAcc == null)
+            {
+                return new GiveandtakeResult(-1, "Account cannot be found");
+            }
             else
             {
                 _unitOfWork.GetRepository<Account>().DeleteAsync(currentAcc);
                 await _unitOfWork.CommitAsync();
             }
 
-            return new GiveandtakeResult("Delete Successfull");
+            return new GiveandtakeResult("Delete Successful");
         }
+
 
         // Method to ban an account
         public async Task<IGiveandtakeResult> BanAccount(int accountId)
         {
-            Account account = await _unitOfWork.GetRepository<Account>()
+            Account currentAcc = await _unitOfWork.GetRepository<Account>()
                 .SingleOrDefaultAsync(predicate: a => a.AccountId == accountId);
-            if (account == null) return new GiveandtakeResult();
+            if (currentAcc == null)
+            {
+                return new GiveandtakeResult(-1, "Account cannot be found");
+            }
             else
             {
-                account.IsActive = false;
+                currentAcc.IsActive = false;
 
-                _unitOfWork.GetRepository<Account>().UpdateAsync(account);
+                _unitOfWork.GetRepository<Account>().UpdateAsync(currentAcc);
                 await _unitOfWork.CommitAsync();
             }
             return new GiveandtakeResult("Banned");
@@ -340,14 +318,17 @@ namespace Giveandtake_Business
         // Method to unban an account
         public async Task<IGiveandtakeResult> UnbanAccount(int accountId)
         {
-            Account account = await _unitOfWork.GetRepository<Account>()
-            .SingleOrDefaultAsync(predicate: a => a.AccountId == accountId);
-            if (account == null) return new GiveandtakeResult();
+            Account currentAcc = await _unitOfWork.GetRepository<Account>()
+                .SingleOrDefaultAsync(predicate: a => a.AccountId == accountId);
+            if (currentAcc == null)
+            {
+                return new GiveandtakeResult(-1, "Account cannot be found");
+            }
             else
             {
-                account.IsActive = true;
+                currentAcc.IsActive = true;
 
-                _unitOfWork.GetRepository<Account>().UpdateAsync(account);
+                _unitOfWork.GetRepository<Account>().UpdateAsync(currentAcc);
                 await _unitOfWork.CommitAsync();
             }
             return new GiveandtakeResult("Unbanned");
@@ -405,6 +386,4 @@ namespace Giveandtake_Business
         public int TotalPages { get; set; }
     }
     #endregion
-
-
 }

@@ -10,7 +10,7 @@ namespace Giveandtake_Services.Interfaces
 {
     public interface IAccountService
     {
-        Task<IGiveandtakeResult> Register(string email, string password);
+        Task<IGiveandtakeResult> Register(UserRegisterDTO registerDto);
 
         Task<IGiveandtakeResult> Login(string email, string password);
 
