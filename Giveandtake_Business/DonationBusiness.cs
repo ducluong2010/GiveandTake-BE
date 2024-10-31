@@ -99,6 +99,117 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(paginatedResult);
         }
+
+        public async Task<IGiveandtakeResult> GetAllByStaff(int accountId, int page = 1, int pageSize = 8)
+        {
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+            var account = await accountRepository.GetAllAsync(a => a.AccountId == accountId && a.RoleId == 2)
+                                                 .ContinueWith(t => t.Result.FirstOrDefault());
+            if (account == null)
+            {
+                return new GiveandtakeResult(-1, "Account not found or not a staff member");
+            }
+
+            // Lấy ActiveTime từ account và xử lý trường hợp nullable
+            int accountActiveTime = account.ActiveTime ?? -1; // Giá trị mặc định là -1 nếu ActiveTime không có giá trị
+            TimeSpan startTime, endTime;
+
+            // Thiết lập điều kiện thời gian dựa trên ActiveTime
+            if (accountActiveTime == 1)
+            {
+                startTime = TimeSpan.Zero; // 0h
+                endTime = new TimeSpan(12, 0, 0); // 12h
+            }
+            else if (accountActiveTime == 2)
+            {
+                startTime = new TimeSpan(12, 0, 0); // 12h
+                endTime = new TimeSpan(24, 0, 0); // 24h
+            }
+            else
+            {
+                return new GiveandtakeResult(-1, "Invalid ActiveTime value in account");
+            }
+
+            // Lấy tất cả các account để sử dụng cho ApprovedByName
+            var allAccounts = await accountRepository.GetAllAsync();
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
+
+            // Lấy các donation thỏa điều kiện về thời gian
+            var allDonations = await donationRepository.GetListAsync(
+                predicate: d => d.CreatedAt.HasValue &&
+                                d.CreatedAt.Value.TimeOfDay >= startTime &&
+                                d.CreatedAt.Value.TimeOfDay < endTime,
+                selector: d => new DonationDTO
+                {
+                    DonationId = d.DonationId,
+                    AccountId = d.AccountId,
+                    AccountName = d.Account.FullName,
+                    CategoryId = d.CategoryId,
+                    CategoryName = d.Category.CategoryName,
+                    Name = d.Name,
+                    Description = d.Description,
+                    Point = d.Point,
+                    CreatedAt = d.CreatedAt,
+                    UpdatedAt = d.UpdatedAt,
+                    ApprovedBy = d.ApprovedBy,
+                    ApprovedByName = d.ApprovedBy.HasValue && accountDict.ContainsKey(d.ApprovedBy.Value)
+                        ? accountDict[d.ApprovedBy.Value]
+                        : null,
+                    TotalRating = d.TotalRating,
+                    Status = d.Status,
+                    DonationImages = d.DonationImages.Select(di => di.Url).ToList(),
+                    Feedbacks = d.Feedbacks.Select(f => new FeedbackDTO
+                    {
+                        FeedbackId = f.FeedbackId,
+                        AccountId = f.AccountId,
+                        AccountName = f.Account.FullName,
+                        DonationId = d.DonationId,
+                        DonationName = d.Name,
+                        Rating = f.Rating,
+                        Content = f.Content,
+                        CreatedDate = f.CreatedDate,
+                        FeedbackMediaUrls = f.FeedbackMedia.Select(fm => fm.MediaUrl).ToList()
+                    }).ToList()
+                },
+                include: source => source
+                    .Include(d => d.Account)
+                    .Include(d => d.Category)
+                    .Include(d => d.Feedbacks)
+            );
+
+            int totalItems = allDonations.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            if (page > totalPages) page = totalPages;
+            if (totalItems == 0)
+            {
+                return new GiveandtakeResult(new PaginatedResult<DonationDTO>
+                {
+                    Items = new List<DonationDTO>(),
+                    TotalItems = totalItems,
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalPages = totalPages
+                });
+            }
+
+            var paginatedDonations = allDonations
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var paginatedResult = new PaginatedResult<DonationDTO>
+            {
+                Items = paginatedDonations,
+                TotalItems = totalItems,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
+
+            return new GiveandtakeResult(paginatedResult);
+        }
+
         public async Task<IGiveandtakeResult> GetDonationById(int donationId)
         {
             var donationRepository = _unitOfWork.GetRepository<Donation>();
@@ -160,6 +271,7 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(donationDTO);
         }
+
         public async Task<IGiveandtakeResult> UpdateDonation(int id, CreateUpdateDonationDTO donationInfo)
         {
             var donationRepository = _unitOfWork.GetRepository<Donation>();
@@ -309,7 +421,6 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(1, "Donation deleted successfully");
         }
-
 
         public async Task<IGiveandtakeResult> ToggleDonationStatus(int donationId)
         {
