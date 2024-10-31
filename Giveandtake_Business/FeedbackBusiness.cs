@@ -132,6 +132,8 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(feedbackDTO);
         }
+
+
         public async Task<IGiveandtakeResult> CreateFeedback(CreateFeedbackDTO createFeedbackDto)
         {
             var senderAccount = await _unitOfWork.GetRepository<Account>()
@@ -155,6 +157,7 @@ namespace Giveandtake_Business
             {
                 return new GiveandtakeResult(-1, "Feedback already exists for this donation by the sender");
             }
+
             // Tạo mới feedback
             var newFeedback = new Feedback
             {
@@ -183,9 +186,15 @@ namespace Giveandtake_Business
                 await UpdateAccountRating(donation.AccountId.Value);
             }
 
+            senderAccount.Point += 5;
+            _unitOfWork.GetRepository<Account>().UpdateAsync(senderAccount);
+            await _unitOfWork.CommitAsync();
 
             return new GiveandtakeResult(1, "Feedback created successfully");
         }
+
+
+
         private async Task UpdateAccountRating(int accountId)
         {
             // Thay đổi cách gọi GetListAsync
@@ -210,6 +219,8 @@ namespace Giveandtake_Business
                 }
             }
         }
+
+
         public async Task<IGiveandtakeResult> UpdateFeedback(int id, UpdateFeedbackDTO feedbackInfo)
         {
             var feedbackRepository = _unitOfWork.GetRepository<Feedback>();
@@ -241,6 +252,8 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(1, "Feedback updated successfully");
         }
+
+
         private async Task UpdateFeedbackMedia(int feedbackId, IEnumerable<string> feedbackMediaUrls)
         {
             var feedbackMediaRepository = _unitOfWork.GetRepository<FeedbackMedium>();
@@ -267,6 +280,8 @@ namespace Giveandtake_Business
             }
             await _unitOfWork.CommitAsync();
         }
+
+
         public async Task<IGiveandtakeResult> DeleteFeedback(int id)
         {
             var feedbackRepository = _unitOfWork.GetRepository<Feedback>();
@@ -298,6 +313,8 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(1, "Feedback deleted successfully");
         }
+
+
         public async Task<IGiveandtakeResult> GetFeedbacksBySenderId(int senderId, int page = 1, int pageSize = 8)
         {
             var feedbackRepository = _unitOfWork.GetRepository<Feedback>();
@@ -372,6 +389,8 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(paginatedResult);
         }
+
+
         public async Task<IGiveandtakeResult> GetFeedbacksByAccountId(int accountId, int page = 1, int pageSize = 8)
         {
             var feedbackRepository = _unitOfWork.GetRepository<Feedback>();
