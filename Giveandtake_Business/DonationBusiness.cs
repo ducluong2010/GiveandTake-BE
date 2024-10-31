@@ -178,7 +178,9 @@ namespace Giveandtake_Business
                     .Include(d => d.Feedbacks)
             );
 
-            int totalItems = allDonations.Count();
+            var sortedDonations = allDonations.OrderByDescending(d => d.CreatedAt).ToList();
+
+            int totalItems = sortedDonations.Count();
             int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
             if (page > totalPages) page = totalPages;
             if (totalItems == 0)
@@ -193,7 +195,7 @@ namespace Giveandtake_Business
                 });
             }
 
-            var paginatedDonations = allDonations
+            var paginatedDonations = sortedDonations
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
