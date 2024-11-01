@@ -29,6 +29,17 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response.Message);
         }
 
+        [HttpGet(ApiEndPointConstant.Donation.DonationStaEndPoint)]
+        [SwaggerOperation(Summary = "Get Donations by Staff")]
+        public async Task<IActionResult> GetAllByStaff([FromQuery] int id, [FromQuery] int page = 1, [FromQuery] int pageSize = 8)
+        {
+            var response = await _donationService.GetAllByStaff(id, page, pageSize);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
+
         [HttpGet(ApiEndPointConstant.Donation.DonationEndPoint)]
         [SwaggerOperation(Summary = "Get Donation by its id")]
         public async Task<IActionResult> GetDonationById(int id)

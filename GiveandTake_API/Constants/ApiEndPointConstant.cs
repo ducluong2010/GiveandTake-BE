@@ -66,6 +66,7 @@
             public const string CheckBannedAccountDonationsEndPoint = DonationsEndPoint + "/checkban";
             public const string CheckHidingDonationsEndPoint = DonationsEndPoint + "/checkactived";
             public const string SearchDonationsEndPoint = DonationsEndPoint + "/search";
+            public const string DonationStaEndPoint = DonationsEndPoint + "/bystaff";
         }
 
         public class Transaction
