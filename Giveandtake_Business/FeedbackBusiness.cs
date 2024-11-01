@@ -158,7 +158,6 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult(-1, "Feedback already exists for this donation by the sender");
             }
 
-            // Tạo mới feedback
             var newFeedback = new Feedback
             {
                 SenderId = createFeedbackDto.SenderId,
@@ -193,6 +192,60 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(1, "Feedback created successfully");
         }
 
+        public async Task<IGiveandtakeResult> CreateFeedbackWithoutPoints(CreateFeedbackDTO createFeedbackDto)
+        {
+            var senderAccount = await _unitOfWork.GetRepository<Account>()
+                .FirstOrDefaultAsync(a => a.AccountId == createFeedbackDto.SenderId);
+            if (senderAccount == null)
+            {
+                return new GiveandtakeResult(-1, "Sender account not found");
+            }
+
+            var donation = await _unitOfWork.GetRepository<Donation>()
+                .FirstOrDefaultAsync(d => d.DonationId == createFeedbackDto.DonationId);
+            if (donation == null)
+            {
+                return new GiveandtakeResult(-1, "Donation not found");
+            }
+
+            var existingFeedbacks = await _unitOfWork.GetRepository<Feedback>()
+                .GetListAsync(predicate: f => f.DonationId == createFeedbackDto.DonationId && f.SenderId == createFeedbackDto.SenderId);
+
+            if (existingFeedbacks.Any())
+            {
+                return new GiveandtakeResult(-1, "Feedback already exists for this donation by the sender");
+            }
+
+            // Create new feedback
+            var newFeedback = new Feedback
+            {
+                SenderId = createFeedbackDto.SenderId,
+                DonationId = createFeedbackDto.DonationId,
+                AccountId = donation.AccountId,
+                Rating = createFeedbackDto.Rating,
+                Content = createFeedbackDto.Content,
+                CreatedDate = createFeedbackDto.CreateTime ?? DateTime.Now,
+                FeedbackMedia = createFeedbackDto.FeedbackMediaUrls?.Select(url => new FeedbackMedium
+                {
+                    MediaUrl = url
+                }).ToList() ?? new List<FeedbackMedium>()
+            };
+
+            await _unitOfWork.GetRepository<Feedback>().InsertAsync(newFeedback);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+
+            if (!isSuccessful)
+            {
+                return new GiveandtakeResult(-1, "Create feedback unsuccessfully");
+            }
+
+            if (donation.AccountId.HasValue)
+            {
+                await UpdateAccountRating(donation.AccountId.Value);
+            }
+
+            return new GiveandtakeResult(1, "Feedback created successfully");
+        }
 
 
         private async Task UpdateAccountRating(int accountId)

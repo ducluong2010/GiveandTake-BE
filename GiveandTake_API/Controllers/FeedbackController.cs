@@ -74,6 +74,22 @@ namespace GiveandTake_API.Controllers
             }
         }
 
+        [HttpPost(ApiEndPointConstant.Feedback.FeedbackWithoutPointsEndPoint)]
+        [SwaggerOperation(Summary = "Create new Feedback without points")]
+        public async Task<IActionResult> CreateFeedbackWithoutPoints([FromBody] CreateFeedbackDTO createFeedbackDto)
+        {
+            var response = await _feedbackService.CreateFeedbackWithoutPoints(createFeedbackDto);
+
+            if (response.Status >= 0)
+            {
+                return Ok(response.Message);
+            }
+            else
+            {
+                return BadRequest(response.Message);
+            }
+        }
+
         [HttpPut(ApiEndPointConstant.Feedback.FeedbackEndPoint)]
         [SwaggerOperation(Summary = "Update Feedback")]
         public async Task<IActionResult> UpdateFeedback(int id, [FromBody] UpdateFeedbackDTO feedbackInfo)
