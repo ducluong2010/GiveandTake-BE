@@ -52,6 +52,10 @@ namespace Giveandtake_Business
                     Feedbacks = d.Feedbacks.Select(f => new FeedbackDTO
                     {
                         FeedbackId = f.FeedbackId,
+                        SenderId = f.SenderId,
+                        SenderName = f.SenderId.HasValue && accountDict.ContainsKey(f.SenderId.Value)
+                                    ? accountDict[f.SenderId.Value] 
+                                    : null,
                         AccountId = f.AccountId,
                         AccountName = f.Account.FullName,
                         DonationId = d.DonationId,
@@ -111,35 +115,32 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult(-1, "Account not found or not a staff member");
             }
 
-            // Lấy ActiveTime từ account và xử lý trường hợp nullable
-            int accountActiveTime = account.ActiveTime ?? -1; // Giá trị mặc định là -1 nếu ActiveTime không có giá trị
+            int accountActiveTime = account.ActiveTime ?? -1; 
             TimeSpan startTime, endTime;
 
-            // Thiết lập điều kiện thời gian dựa trên ActiveTime
             if (accountActiveTime == 1)
             {
-                startTime = TimeSpan.Zero; // 0h
-                endTime = new TimeSpan(12, 0, 0); // 12h
+                startTime = TimeSpan.Zero; 
+                endTime = new TimeSpan(12, 0, 0); 
             }
             else if (accountActiveTime == 2)
             {
-                startTime = new TimeSpan(12, 0, 0); // 12h
-                endTime = new TimeSpan(24, 0, 0); // 24h
+                startTime = new TimeSpan(12, 0, 0);
+                endTime = new TimeSpan(24, 0, 0); 
             }
             else
             {
                 return new GiveandtakeResult(-1, "Invalid ActiveTime value in account");
             }
 
-            // Lấy tất cả các account để sử dụng cho ApprovedByName
             var allAccounts = await accountRepository.GetAllAsync();
             var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
 
-            // Lấy các donation thỏa điều kiện về thời gian
             var allDonations = await donationRepository.GetListAsync(
                 predicate: d => d.CreatedAt.HasValue &&
                                 d.CreatedAt.Value.TimeOfDay >= startTime &&
-                                d.CreatedAt.Value.TimeOfDay < endTime,
+                                d.CreatedAt.Value.TimeOfDay < endTime &&
+                                !d.ApprovedBy.HasValue,
                 selector: d => new DonationDTO
                 {
                     DonationId = d.DonationId,
@@ -162,6 +163,94 @@ namespace Giveandtake_Business
                     Feedbacks = d.Feedbacks.Select(f => new FeedbackDTO
                     {
                         FeedbackId = f.FeedbackId,
+                        SenderId = f.SenderId,
+                        SenderName = f.SenderId.HasValue && accountDict.ContainsKey(f.SenderId.Value)
+                                    ? accountDict[f.SenderId.Value]
+                                    : null,
+                        AccountId = f.AccountId,
+                        AccountName = f.Account.FullName,
+                        DonationId = d.DonationId,
+                        DonationName = d.Name,
+                        Rating = f.Rating,
+                        Content = f.Content,
+                        CreatedDate = f.CreatedDate,
+                        FeedbackMediaUrls = f.FeedbackMedia.Select(fm => fm.MediaUrl).ToList()
+                    }).ToList()
+                },
+                include: source => source
+                    .Include(d => d.Account)
+                    .Include(d => d.Category)
+                    .Include(d => d.Feedbacks)
+            );
+
+            var sortedDonations = allDonations.OrderByDescending(d => d.CreatedAt).ToList();
+
+            int totalItems = sortedDonations.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            if (page > totalPages) page = totalPages;
+            if (totalItems == 0)
+            {
+                return new GiveandtakeResult(new PaginatedResult<DonationDTO>
+                {
+                    Items = new List<DonationDTO>(),
+                    TotalItems = totalItems,
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalPages = totalPages
+                });
+            }
+
+            var paginatedDonations = sortedDonations
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var paginatedResult = new PaginatedResult<DonationDTO>
+            {
+                Items = paginatedDonations,
+                TotalItems = totalItems,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
+
+            return new GiveandtakeResult(paginatedResult);
+        }
+
+        public async Task<IGiveandtakeResult> GetAllApproved(int page = 1, int pageSize = 8)
+        {
+            var repository = _unitOfWork.GetRepository<Donation>();
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+            var allAccounts = await accountRepository.GetAllAsync();
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
+            var allDonations = await repository.GetListAsync(
+                predicate: d => d.ApprovedBy.HasValue, 
+                selector: d => new DonationDTO
+                {
+                    DonationId = d.DonationId,
+                    AccountId = d.AccountId,
+                    AccountName = d.Account.FullName,
+                    CategoryId = d.CategoryId,
+                    CategoryName = d.Category.CategoryName,
+                    Name = d.Name,
+                    Description = d.Description,
+                    Point = d.Point,
+                    CreatedAt = d.CreatedAt,
+                    UpdatedAt = d.UpdatedAt,
+                    ApprovedBy = d.ApprovedBy,
+                    ApprovedByName = d.ApprovedBy.HasValue && accountDict.ContainsKey(d.ApprovedBy.Value)
+                        ? accountDict[d.ApprovedBy.Value]
+                        : null,
+                    TotalRating = d.TotalRating,
+                    Status = d.Status,
+                    DonationImages = d.DonationImages.Select(di => di.Url).ToList(),
+                    Feedbacks = d.Feedbacks.Select(f => new FeedbackDTO
+                    {
+                        FeedbackId = f.FeedbackId,
+                        SenderId = f.SenderId,
+                        SenderName = f.SenderId.HasValue && accountDict.ContainsKey(f.SenderId.Value)
+                                    ? accountDict[f.SenderId.Value]
+                                    : null,
                         AccountId = f.AccountId,
                         AccountName = f.Account.FullName,
                         DonationId = d.DonationId,
@@ -225,11 +314,22 @@ namespace Giveandtake_Business
                     .Include(d => d.DonationImages)
                     .Include(d => d.Feedbacks) 
             );
+            var feedbackAccountIds = donation.Feedbacks
+                    .Where(f => f.AccountId.HasValue)
+                    .Select(f => f.AccountId.Value)
+                    .Distinct()
+                    .ToList();
+
+            var accounts = await accountRepository.GetAllAsync(
+                predicate: a => feedbackAccountIds.Contains(a.AccountId)
+            );
 
             if (donation == null)
             {
                 return new GiveandtakeResult(-1, "Donation not found");
             }
+            var allAccounts = await accountRepository.GetAllAsync();
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
 
             string approverName = null;
             if (donation.ApprovedBy.HasValue)
@@ -260,8 +360,14 @@ namespace Giveandtake_Business
                 Feedbacks = donation.Feedbacks.Select(f => new FeedbackDTO
                 {
                     FeedbackId = f.FeedbackId,
-                    AccountId = f.AccountId, 
-                    AccountName = f.Account?.FullName,
+                    SenderId = f.SenderId, 
+                    SenderName = f.SenderId.HasValue && accountDict.ContainsKey(f.SenderId.Value)
+                                ? accountDict[f.SenderId.Value] 
+                                : null,
+                    AccountId = f.AccountId,
+                    AccountName = f.AccountId.HasValue && accountDict.ContainsKey(f.AccountId.Value)
+                                 ? accountDict[f.AccountId.Value]
+                                 : "",
                     DonationId = f.DonationId, 
                     DonationName = f.Donation.Name,
                     Rating = f.Rating,

@@ -44,5 +44,17 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> GetNotiApprovedAccount(int id, int page = 1, int pageSize = 8)
             => _notificationBusiness.GetNotiApprovedAccount(id, page, pageSize);
+
+        public Task<IGiveandtakeResult> GetNotiBonusAccount(int id, int page = 1, int pageSize = 8)
+            => _notificationBusiness.GetNotiBonusAccount(id, page, pageSize);
+
+        public Task<IGiveandtakeResult> GetNotiPointAccount(int id, int page = 1, int pageSize = 8)
+            => _notificationBusiness.GetNotiPointAccount(id, page, pageSize);
+
+        public Task<IGiveandtakeResult> GetNotiRejectAccount(int id, int page = 1, int pageSize = 8)
+            => _notificationBusiness.GetNotiRejectAccount(id, page, pageSize);
+
+        public Task<IGiveandtakeResult> GetNotiAcceptAccount(int id, int page = 1, int pageSize = 8)
+            => _notificationBusiness.GetNotiAcceptAccount(id, page, pageSize);
     }
 }
