@@ -1,5 +1,7 @@
 using GiveandTake_API.Extensions;
 using Giveandtake_Business.Utils;
+using Giveandtake_Services.Implements;
+using Giveandtake_Services.Interfaces;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +17,8 @@ builder.Services.AddServices(builder.Configuration);
 builder.Services.AddJwtValidation(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddConfigSwagger();
-builder.Services.AddHttpContextAccessor(); 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 
 builder.Services.AddCors(o =>
