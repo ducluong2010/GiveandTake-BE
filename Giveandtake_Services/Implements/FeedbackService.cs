@@ -36,5 +36,8 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> GetFeedbacksByAccountId(int accountId, int page = 1, int pageSize = 8)
             => _feedbackBusiness.GetFeedbacksByAccountId(accountId, page, pageSize);
+
+        public Task<IGiveandtakeResult> CreateFeedbackWithoutPoints(CreateFeedbackDTO createFeedbackDto)
+            => _feedbackBusiness.CreateFeedbackWithoutPoints(createFeedbackDto);
     }
 }

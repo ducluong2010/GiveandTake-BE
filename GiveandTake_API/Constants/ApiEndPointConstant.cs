@@ -119,6 +119,7 @@
             public const string FeedbackEndPoint = FeedbacksEndPoint + "/{id}";
             public const string FeedbackAccEndPoint = FeedbacksEndPoint + "/account/{id}";
             public const string FeedbackSenEndPoint = FeedbacksEndPoint + "/sender/{id}";
+            public const string FeedbackWithoutPointsEndPoint = FeedbacksEndPoint + "/without-points";
         }
 
         public class Request
