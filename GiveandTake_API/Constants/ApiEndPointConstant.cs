@@ -58,6 +58,7 @@
         public class Donation
         {
             public const string DonationsEndPoint = ApiEndpoint + "/donations";
+            public const string DonationsAppEndPoint = ApiEndpoint + "/donations/approved";
             public const string DonationEndPoint = DonationsEndPoint + "/{id}";
             public const string DonationStatusEndPoint = DonationsEndPoint + "/{id}/status";
             public const string ToggleDonationStatusEndPoint = DonationsEndPoint +"/{id}/toggle";
@@ -162,6 +163,10 @@
             public const string NotiAccEndPoint = NotisEndPoint + "/getbyacc/{id}";
             public const string NotiStaffEndPoint = NotisEndPoint + "/getbystaff/{id}";
             public const string NotiAppEndPoint = NotisEndPoint + "/getapproved/{id}";
+            public const string NotiBonusEndPoint = NotisEndPoint + "/getbonus/{id}";
+            public const string NotiPointEndPoint = NotisEndPoint + "/getpoint/{id}";
+            public const string NotiRejectEndPoint = NotisEndPoint + "/getreject/{id}";
+            public const string NotiAcceptEndPoint = NotisEndPoint + "/getaccept/{id}";
         }
     }
 }
