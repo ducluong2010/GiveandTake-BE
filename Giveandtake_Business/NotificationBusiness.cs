@@ -146,8 +146,6 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(notificationDTO);
         }
 
-
-
         public async Task<IGiveandtakeResult> CreateNotification(NotificationCreateDTO notificationInfo)
         {
             var accountRepository = _unitOfWork.GetRepository<Account>();
@@ -210,6 +208,7 @@ namespace Giveandtake_Business
                 ? new GiveandtakeResult(1, "Notification updated successfully")
                 : new GiveandtakeResult(-1, "Update unsuccessfully");
         }
+
         public async Task<IGiveandtakeResult> DeleteNotification(int id)
         {
             var existingNotification = await _unitOfWork.GetRepository<Notification>()
@@ -247,6 +246,7 @@ namespace Giveandtake_Business
                 ? new GiveandtakeResult(1, "Notification read status updated successfully")
                 : new GiveandtakeResult(-1, "Update unsuccessfully");
         }
+
         public async Task<IGiveandtakeResult> GetAllNotificationsByAccountId(int accountId, int page = 1, int pageSize = 8)
         {
             var notificationRepository = _unitOfWork.GetRepository<Notification>();
@@ -374,6 +374,214 @@ namespace Giveandtake_Business
 
             var allNotifications = await notificationRepository.GetListAsync(
                 predicate: n => n.AccountId == id && n.Type == "Approved",
+                selector: n => new NotificationDTO
+                {
+                    NotificationId = n.NotificationId,
+                    DonationId = n.DonationId,
+                    DonationName = n.DonationId != null && donationDict.ContainsKey(n.DonationId.Value)
+                        ? donationDict[n.DonationId.Value]
+                        : null,
+                    AccountId = n.AccountId,
+                    AccountName = accountDict.GetValueOrDefault(n.AccountId ?? 0),
+                    StaffId = n.StaffId,
+                    StaffName = accountDict.GetValueOrDefault(n.StaffId ?? 0),
+                    Note = n.Note,
+                    Type = n.Type,
+                    CreatedAt = n.CreatedAt,
+                    IsRead = n.IsRead
+                }
+            );
+
+            var paginatedNotifications = allNotifications
+                .OrderByDescending(n => n.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var totalItems = allNotifications.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var paginatedResult = new PaginatedResult<NotificationDTO>
+            {
+                Items = paginatedNotifications,
+                TotalItems = totalItems,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
+
+            return new GiveandtakeResult(paginatedResult);
+        }
+
+        public async Task<IGiveandtakeResult> GetNotiBonusAccount(int id, int page = 1, int pageSize = 8)
+        {
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+            var allAccounts = await accountRepository.GetAllAsync();
+            var notificationRepository = _unitOfWork.GetRepository<Notification>();
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+
+            var allDonations = await donationRepository.GetAllAsync();
+            var donationDict = allDonations.ToDictionary(d => d.DonationId, d => d.Name);
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
+
+            var allNotifications = await notificationRepository.GetListAsync(
+                predicate: n => n.AccountId == id && n.Type == "Bonus",
+                selector: n => new NotificationDTO
+                {
+                    NotificationId = n.NotificationId,
+                    DonationId = n.DonationId,
+                    DonationName = n.DonationId != null && donationDict.ContainsKey(n.DonationId.Value)
+                        ? donationDict[n.DonationId.Value]
+                        : null,
+                    AccountId = n.AccountId,
+                    AccountName = accountDict.GetValueOrDefault(n.AccountId ?? 0),
+                    StaffId = n.StaffId,
+                    StaffName = accountDict.GetValueOrDefault(n.StaffId ?? 0),
+                    Note = n.Note,
+                    Type = n.Type,
+                    CreatedAt = n.CreatedAt,
+                    IsRead = n.IsRead
+                }
+            );
+
+            var paginatedNotifications = allNotifications
+                .OrderByDescending(n => n.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var totalItems = allNotifications.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var paginatedResult = new PaginatedResult<NotificationDTO>
+            {
+                Items = paginatedNotifications,
+                TotalItems = totalItems,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
+
+            return new GiveandtakeResult(paginatedResult);
+        }
+
+        public async Task<IGiveandtakeResult> GetNotiPointAccount(int id, int page = 1, int pageSize = 8)
+        {
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+            var allAccounts = await accountRepository.GetAllAsync();
+            var notificationRepository = _unitOfWork.GetRepository<Notification>();
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+
+            var allDonations = await donationRepository.GetAllAsync();
+            var donationDict = allDonations.ToDictionary(d => d.DonationId, d => d.Name);
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
+
+            var allNotifications = await notificationRepository.GetListAsync(
+                predicate: n => n.AccountId == id && n.Type == "Point",
+                selector: n => new NotificationDTO
+                {
+                    NotificationId = n.NotificationId,
+                    DonationId = n.DonationId,
+                    DonationName = n.DonationId != null && donationDict.ContainsKey(n.DonationId.Value)
+                        ? donationDict[n.DonationId.Value]
+                        : null,
+                    AccountId = n.AccountId,
+                    AccountName = accountDict.GetValueOrDefault(n.AccountId ?? 0),
+                    StaffId = n.StaffId,
+                    StaffName = accountDict.GetValueOrDefault(n.StaffId ?? 0),
+                    Note = n.Note,
+                    Type = n.Type,
+                    CreatedAt = n.CreatedAt,
+                    IsRead = n.IsRead
+                }
+            );
+
+            var paginatedNotifications = allNotifications
+                .OrderByDescending(n => n.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var totalItems = allNotifications.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var paginatedResult = new PaginatedResult<NotificationDTO>
+            {
+                Items = paginatedNotifications,
+                TotalItems = totalItems,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
+
+            return new GiveandtakeResult(paginatedResult);
+        }
+
+        public async Task<IGiveandtakeResult> GetNotiRejectAccount(int id, int page = 1, int pageSize = 8)
+        {
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+            var allAccounts = await accountRepository.GetAllAsync();
+            var notificationRepository = _unitOfWork.GetRepository<Notification>();
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+
+            var allDonations = await donationRepository.GetAllAsync();
+            var donationDict = allDonations.ToDictionary(d => d.DonationId, d => d.Name);
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
+
+            var allNotifications = await notificationRepository.GetListAsync(
+                predicate: n => n.AccountId == id && n.Type == "Reject",
+                selector: n => new NotificationDTO
+                {
+                    NotificationId = n.NotificationId,
+                    DonationId = n.DonationId,
+                    DonationName = n.DonationId != null && donationDict.ContainsKey(n.DonationId.Value)
+                        ? donationDict[n.DonationId.Value]
+                        : null,
+                    AccountId = n.AccountId,
+                    AccountName = accountDict.GetValueOrDefault(n.AccountId ?? 0),
+                    StaffId = n.StaffId,
+                    StaffName = accountDict.GetValueOrDefault(n.StaffId ?? 0),
+                    Note = n.Note,
+                    Type = n.Type,
+                    CreatedAt = n.CreatedAt,
+                    IsRead = n.IsRead
+                }
+            );
+
+            var paginatedNotifications = allNotifications
+                .OrderByDescending(n => n.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var totalItems = allNotifications.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var paginatedResult = new PaginatedResult<NotificationDTO>
+            {
+                Items = paginatedNotifications,
+                TotalItems = totalItems,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
+
+            return new GiveandtakeResult(paginatedResult);
+        }
+
+        public async Task<IGiveandtakeResult> GetNotiAcceptAccount(int id, int page = 1, int pageSize = 8)
+        {
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+            var allAccounts = await accountRepository.GetAllAsync();
+            var notificationRepository = _unitOfWork.GetRepository<Notification>();
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+
+            var allDonations = await donationRepository.GetAllAsync();
+            var donationDict = allDonations.ToDictionary(d => d.DonationId, d => d.Name);
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
+
+            var allNotifications = await notificationRepository.GetListAsync(
+                predicate: n => n.AccountId == id && n.Type == "Accept",
                 selector: n => new NotificationDTO
                 {
                     NotificationId = n.NotificationId,

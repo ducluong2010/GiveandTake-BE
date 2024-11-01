@@ -65,6 +65,50 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response.Message);
         }
+
+        [HttpGet(ApiEndPointConstant.Notification.NotiBonusEndPoint)]
+        [SwaggerOperation(Summary = "Get all Notifications Bonus")]
+        public async Task<IActionResult> GetNotiBonusAccount([FromRoute] int id, [FromQuery] int page = 1, [FromQuery] int pageSize = 8)
+        {
+            var response = await _notificationService.GetNotiBonusAccount(id, page, pageSize);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
+
+        [HttpGet(ApiEndPointConstant.Notification.NotiPointEndPoint)]
+        [SwaggerOperation(Summary = "Get all Notifications Point")]
+        public async Task<IActionResult> GetNotiPointAccount([FromRoute] int id, [FromQuery] int page = 1, [FromQuery] int pageSize = 8)
+        {
+            var response = await _notificationService.GetNotiPointAccount(id, page, pageSize);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
+
+        [HttpGet(ApiEndPointConstant.Notification.NotiRejectEndPoint)]
+        [SwaggerOperation(Summary = "Get all Notifications Reject")]
+        public async Task<IActionResult> GetNotiRejectAccount([FromRoute] int id, [FromQuery] int page = 1, [FromQuery] int pageSize = 8)
+        {
+            var response = await _notificationService.GetNotiRejectAccount(id, page, pageSize);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
+
+        [HttpGet(ApiEndPointConstant.Notification.NotiAcceptEndPoint)]
+        [SwaggerOperation(Summary = "Get all Notifications Accept")]
+        public async Task<IActionResult> GetNotiAcceptAccount([FromRoute] int id, [FromQuery] int page = 1, [FromQuery] int pageSize = 8)
+        {
+            var response = await _notificationService.GetNotiAcceptAccount(id, page, pageSize);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "2")]
         [HttpGet(ApiEndPointConstant.Notification.NotiStaffEndPoint)]
         [SwaggerOperation(Summary = "Get all Notifications by Staff Id")]

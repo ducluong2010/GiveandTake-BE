@@ -19,6 +19,10 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> GetAllNotificationsByAccountId(int accountId, int page = 1, int pageSize = 8);
         Task<IGiveandtakeResult> GetAllNotificationsByStaffId(int staffId, int page = 1, int pageSize = 8);
         Task<IGiveandtakeResult> GetNotiApprovedAccount(int id, int page = 1, int pageSize = 8);
+        Task<IGiveandtakeResult> GetNotiBonusAccount(int id, int page = 1, int pageSize = 8);
+        Task<IGiveandtakeResult> GetNotiPointAccount(int id, int page = 1, int pageSize = 8);
+        Task<IGiveandtakeResult> GetNotiRejectAccount(int id, int page = 1, int pageSize = 8);
+        Task<IGiveandtakeResult> GetNotiAcceptAccount(int id, int page = 1, int pageSize = 8);
     }
 }
 
