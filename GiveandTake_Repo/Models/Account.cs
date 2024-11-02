@@ -37,6 +37,8 @@ public partial class Account
 
     public int? ActiveTime { get; set; }
 
+    public string? Otp { get; set; }
+
     public virtual ICollection<Donation> Donations { get; set; } = new List<Donation>();
 
     public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
