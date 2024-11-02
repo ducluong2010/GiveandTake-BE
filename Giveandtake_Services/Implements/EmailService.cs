@@ -14,7 +14,7 @@ namespace Giveandtake_Services.Implements
             _emailBusiness = new EmailBusiness();
         }
 
-        public async Task SendVerificationEmail(string email)
+        public async Task SendVerificationEmail(int accountId, string email)
         {
             if (await _emailBusiness.IsAccountActive(email))
             {
@@ -23,7 +23,7 @@ namespace Giveandtake_Services.Implements
 
             var otp = _emailBusiness.GenerateOtp();
             var hashedOtp = _emailBusiness.HashOtp(otp);
-            await _emailBusiness.UpdateOtp(email, hashedOtp);
+            await _emailBusiness.UpdateOtp(accountId, email, hashedOtp);
 
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("Give&Take", "givetakesharing@gmail.com"));
@@ -119,9 +119,9 @@ namespace Giveandtake_Services.Implements
             }
         }
 
-        public async Task<string> ConfirmOtp(string email, string otp)
+        public async Task<string> ConfirmOtp(int accountId, string email, string otp)
         {
-            return await _emailBusiness.ConfirmOtp(email, otp);
+            return await _emailBusiness.ConfirmOtp(accountId, email, otp);
         }
     }
 }

@@ -42,41 +42,51 @@ namespace Giveandtake_Business
              }
          }
 
-         public async Task UpdateOtp(string email, string hashedOtp)
-         {
+        public async Task UpdateOtp(int accountId, string email, string hashedOtp)
+        {
             Account currentAcc = await _unitOfWork.GetRepository<Account>()
-                    .SingleOrDefaultAsync(predicate: a => a.Email == email);
+                .SingleOrDefaultAsync(predicate: a => a.AccountId == accountId && a.Email == email);
 
             if (currentAcc == null)
             {
-               throw new Exception("Account not found"); 
+                throw new Exception("Account not found");
             }
 
-             currentAcc.Otp = hashedOtp;
+            currentAcc.Otp = hashedOtp;
 
-             _unitOfWork.GetRepository<Account>().UpdateAsync(currentAcc);
-             await _unitOfWork.CommitAsync();
-         }
+            _unitOfWork.GetRepository<Account>().UpdateAsync(currentAcc);
+            await _unitOfWork.CommitAsync();
+        }
 
-        public async Task<string> ConfirmOtp(string email, string otp)
+
+        public async Task<string> ConfirmOtp(int accountId, string email, string otp)
         {
             Account currentAcc = await _unitOfWork.GetRepository<Account>()
-                    .SingleOrDefaultAsync(predicate: a => a.Email == email);
+                .SingleOrDefaultAsync(predicate: a => a.AccountId == accountId && a.Email == email);
 
             if (currentAcc == null)
             {
                 return "Tài khoản không tồn tại";
             }
 
-            if (currentAcc.IsActive == true) 
+            Account activatedAccount = await _unitOfWork.GetRepository<Account>()
+                .SingleOrDefaultAsync(predicate: a => a.Email == email && a.IsActive == true && a.AccountId != accountId);
+
+            if (activatedAccount != null)
+            {
+                _unitOfWork.GetRepository<Account>().DeleteAsync(currentAcc);
+                await _unitOfWork.CommitAsync();
+                return "Email đã được đăng ký, vui lòng sử dụng email khác";
+            }
+
+            if (currentAcc.IsActive == true)
             {
                 return "Tài khoản đã được kích hoạt";
             }
-
             string hashedOtp = HashOtp(otp);
             if (hashedOtp == currentAcc.Otp)
             {
-                currentAcc.IsActive = true; 
+                currentAcc.IsActive = true;
                 _unitOfWork.GetRepository<Account>().UpdateAsync(currentAcc);
                 await _unitOfWork.CommitAsync();
                 return "Kích hoạt tài khoản thành công";
@@ -86,6 +96,7 @@ namespace Giveandtake_Business
                 return "Mã OTP không đúng";
             }
         }
+
 
         public async Task<bool> IsAccountActive(string email)
         {
