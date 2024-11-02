@@ -73,7 +73,7 @@ namespace Giveandtake_Business
                 Point = 0,
                 AvatarUrl = String.Empty,
                 RoleId = 3,
-                IsActive = false,
+                IsActive = true,
                 IsPremium = false,
                 PremiumUntil = null,
                 ActiveTime = null
@@ -85,7 +85,7 @@ namespace Giveandtake_Business
             return new GiveandtakeResult
             {
                 Status = isSuccessful ? 1 : -1,
-                Message = isSuccessful ? "Register successfully, please active your account via email" : "Register unsuccessfully",
+                Message = isSuccessful ? "Register successfully" : "Register unsuccessfully",
                 Data = isSuccessful ? JwtUtils.GenerateJwtToken(newAccount) : null
             };
         }
