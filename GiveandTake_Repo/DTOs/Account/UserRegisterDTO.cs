@@ -26,5 +26,7 @@ namespace GiveandTake_Repo.DTOs.Account
 
         public string? Address { get; set; }
 
+        public string? AvatarUrl { get; set; }
+
     }
 }

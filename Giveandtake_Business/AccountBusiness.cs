@@ -54,11 +54,11 @@ namespace Giveandtake_Business
         public async Task<IGiveandtakeResult> Register(UserRegisterDTO registerDto)
         {
             var repo = _unitOfWork.GetRepository<Account>();
-            var existingAccountByEmail = await repo.SingleOrDefaultAsync(predicate: a => a.Email.Equals(registerDto.Email));
+            var existingAccountByEmail = await repo.SingleOrDefaultAsync(predicate: a => a.Email.Equals(registerDto.Email) && a.IsActive == true);
             var existingAccountByPhone = await repo.SingleOrDefaultAsync(predicate: a => a.Phone != null && a.Phone.Equals(registerDto.Phone));
 
             if (existingAccountByEmail != null)
-                return new GiveandtakeResult { Status = -1, Message = "Email has already been used" };
+                return new GiveandtakeResult { Status = -1, Message = "Email has already been used by an active account" };
 
             if (existingAccountByPhone != null)
                 return new GiveandtakeResult { Status = -1, Message = "Phone number has already been used" };
@@ -71,9 +71,9 @@ namespace Giveandtake_Business
                 Phone = registerDto.Phone,
                 Address = registerDto.Address,
                 Point = 0,
-                AvatarUrl = String.Empty,
+                AvatarUrl = registerDto.AvatarUrl,
                 RoleId = 3,
-                IsActive = true,
+                IsActive = false,
                 IsPremium = false,
                 PremiumUntil = null,
                 ActiveTime = null
