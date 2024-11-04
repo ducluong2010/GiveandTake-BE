@@ -28,7 +28,7 @@ namespace Giveandtake_Services.Implements
         {
             try
             {
-                var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"] ?? "SE Asia Standard Time");
+                var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById("UTC");
                 var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
                 var tick = DateTime.Now.Ticks.ToString();
                 var pay = new VnPayLibrary();
@@ -52,7 +52,9 @@ namespace Giveandtake_Services.Implements
             }
             catch (Exception ex)
             {
-                // Log error
+                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
+
                 throw new Exception("Error creating payment URL", ex);
             }
         }
