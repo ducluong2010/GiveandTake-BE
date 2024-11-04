@@ -49,12 +49,18 @@ namespace GiveandTake_API.Controllers
             }
             catch (Exception ex)
             {
-                // Log error
-                return StatusCode(500, new
+                var detailedError = new
                 {
                     Message = "Có lỗi xảy ra khi tạo URL thanh toán",
-                    Error = ex.Message
-                });
+                    Error = ex.Message,
+                    StackTrace = ex.StackTrace // Thêm StackTrace để có thông tin chi tiết
+                };
+
+                // In ra console để dễ theo dõi khi debug (chỉ dùng khi cần thiết)
+                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
+
+                return StatusCode(500, detailedError);
             }
         }
 
