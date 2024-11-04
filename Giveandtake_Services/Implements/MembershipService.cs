@@ -40,7 +40,10 @@ namespace Giveandtake_Services.Implements
                 Console.WriteLine($"Amount: {(int)model.Amount * 100}");
                 Console.WriteLine($"CreateDate: {timeNow.ToString("yyyyMMddHHmmss")}");
                 Console.WriteLine($"CurrCode: {_configuration["Vnpay:CurrCode"]}");
-                Console.WriteLine($"IpAddr: {pay.GetIpAddress(context)}");
+                Console.WriteLine($"Model OrderDescription: {model.OrderDescription}");
+                Console.WriteLine($"Model Amount: {model.Amount}");
+                Console.WriteLine($"Model AccountId: {model.AccountId}");
+                Console.WriteLine($"Model OrderType: {model.OrderType}");
 
                 pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
                 pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
@@ -62,6 +65,16 @@ namespace Giveandtake_Services.Implements
                 Console.WriteLine($"Error: {ex.Message}");
                 Console.WriteLine($"StackTrace: {ex.StackTrace}");
                 Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+
+                Console.WriteLine($"TmnCode: {_configuration["Vnpay:TmnCode"]}");
+                Console.WriteLine($"Amount: {(int)model.Amount * 100}");
+                Console.WriteLine($"CreateDate: {DateTime.UtcNow.ToString("yyyyMMddHHmmss")}");
+                Console.WriteLine($"CurrCode: {_configuration["Vnpay:CurrCode"]}");;
+                Console.WriteLine($"Model OrderDescription: {model.OrderDescription}");
+                Console.WriteLine($"Model AccountId: {model.AccountId}");
+                Console.WriteLine($"Model AccountId: {model.AccountId}");
+                Console.WriteLine($"Model OrderType: {model.OrderType}");
+
 
                 throw new Exception("Error creating payment URL", ex);
             }
