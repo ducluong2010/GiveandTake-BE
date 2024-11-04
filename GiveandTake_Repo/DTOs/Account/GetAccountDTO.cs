@@ -40,6 +40,8 @@ namespace GiveandTake_Repo.DTOs.Account
 
         public int? ActiveTime { get; set; }
 
+        public string? Otp {  get; set; }
+
     }
 
     public class AccountDTO
@@ -75,6 +77,8 @@ namespace GiveandTake_Repo.DTOs.Account
         public int? MessageId { get; set; }
 
         public int? ActiveTime { get; set; }
+
+        public string? Otp { get; set; }
 
     }
 }

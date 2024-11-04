@@ -75,6 +75,9 @@ public partial class GiveandtakeContext : DbContext
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.FullName).HasMaxLength(50);
             entity.Property(e => e.IsActive).HasColumnType("bit(1)");
+            entity.Property(e => e.Otp)
+                .HasColumnType("text")
+                .HasColumnName("OTP");
             entity.Property(e => e.Password).HasMaxLength(20);
             entity.Property(e => e.Phone).HasMaxLength(20);
             entity.Property(e => e.PremiumUntil).HasColumnType("datetime");
