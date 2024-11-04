@@ -44,6 +44,8 @@ namespace GiveandTake_Repo.DTOs.Account
 
     public class AccountDTO
     {
+        public int AccountId { get; set; }
+
         public int? RoleId { get; set; }
 
         public string? FullName { get; set; }
