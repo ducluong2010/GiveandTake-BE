@@ -61,7 +61,7 @@ namespace Giveandtake_Services.Implements
             {
                 Console.WriteLine($"Error: {ex.Message}");
                 Console.WriteLine($"StackTrace: {ex.StackTrace}");
-
+                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
 
                 throw new Exception("Error creating payment URL", ex);
             }

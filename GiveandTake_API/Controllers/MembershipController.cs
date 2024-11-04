@@ -2,6 +2,7 @@
 using GiveandTake_Repo.Models;
 using Giveandtake_Services.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace GiveandTake_API.Controllers
 {
@@ -53,12 +54,14 @@ namespace GiveandTake_API.Controllers
                 {
                     Message = "Có lỗi xảy ra khi tạo URL thanh toán",
                     Error = ex.Message,
-                    StackTrace = ex.StackTrace // Thêm StackTrace để có thông tin chi tiết
+                    StackTrace = ex.StackTrace,
+                    InnerException = ex.InnerException?.Message // Thêm Inner Exception
                 };
 
                 // In ra console để dễ theo dõi khi debug (chỉ dùng khi cần thiết)
                 Console.WriteLine($"Error: {ex.Message}");
                 Console.WriteLine($"StackTrace: {ex.StackTrace}");
+                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}"); // In Inner Exception
 
                 return StatusCode(500, detailedError);
             }
