@@ -68,6 +68,12 @@
             public const string CheckHidingDonationsEndPoint = DonationsEndPoint + "/checkactived";
             public const string SearchDonationsEndPoint = DonationsEndPoint + "/search";
             public const string DonationStaEndPoint = DonationsEndPoint + "/bystaff";
+            public const string DonationAccEndPoint = DonationsEndPoint + "/byaccount";
+            public const string DonationClaimEndPoint = DonationsEndPoint + "/byclaim";
+            public const string DonationTypeEndPoint = DonationsEndPoint + "/bytype";
+            public const string ToggleTypeEndPoint = DonationsEndPoint + "/{id}/toggletype";
+            public const string ToggleType2EndPoint = DonationsEndPoint + "/{id}/typettoggle";
+            public const string ToggleType3EndPoint = DonationsEndPoint + "/{id}/changetype";
         }
 
         public class Transaction
