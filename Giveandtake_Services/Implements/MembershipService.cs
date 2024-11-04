@@ -35,6 +35,13 @@ namespace Giveandtake_Services.Implements
                 var urlCallBack = _configuration["PaymentCallBack:ReturnUrl"];
                 if (string.IsNullOrEmpty(urlCallBack))
                     throw new InvalidOperationException("PaymentCallBack:ReturnUrl configuration is required");
+
+                Console.WriteLine($"TmnCode: {_configuration["Vnpay:TmnCode"]}");
+                Console.WriteLine($"Amount: {(int)model.Amount * 100}");
+                Console.WriteLine($"CreateDate: {timeNow.ToString("yyyyMMddHHmmss")}");
+                Console.WriteLine($"CurrCode: {_configuration["Vnpay:CurrCode"]}");
+                Console.WriteLine($"IpAddr: {pay.GetIpAddress(context)}");
+
                 pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
                 pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
                 pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
@@ -54,6 +61,7 @@ namespace Giveandtake_Services.Implements
             {
                 Console.WriteLine($"Error: {ex.Message}");
                 Console.WriteLine($"StackTrace: {ex.StackTrace}");
+
 
                 throw new Exception("Error creating payment URL", ex);
             }
