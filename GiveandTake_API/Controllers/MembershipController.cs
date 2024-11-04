@@ -59,7 +59,7 @@ namespace GiveandTake_API.Controllers
         }
 
         [HttpGet("payment-callback")]
-        public IActionResult PaymentCallback()
+        public async Task<IActionResult> PaymentCallback()
         {
             try
             {
@@ -67,6 +67,9 @@ namespace GiveandTake_API.Controllers
 
                 if (response.Success)
                 {
+                    //var paymentResponse = await _membershipService.HandlePaymentCallbackAsync(Request.Query);
+                    await _membershipService.UpdateAccountIsPremiumAsync(response.AccountId);
+
                     return Ok(new
                     {
                         Success = true,
