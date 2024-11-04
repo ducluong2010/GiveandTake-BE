@@ -37,6 +37,8 @@ namespace GiveandTake_Repo.DTOs.Donation
 
         public string? Status { get; set; }
 
+        public int? Type { get; set; }
+
         public List<string>? DonationImages { get; set; }
 
         public List<FeedbackDTO>? Feedbacks { get; set; } = new List<FeedbackDTO>();
@@ -62,6 +64,7 @@ namespace GiveandTake_Repo.DTOs.Donation
         public int? TotalRating { get; set; }
 
         public string? Status { get; set; }
+
 
         public List<string>? DonationImages { get; set; }
     }

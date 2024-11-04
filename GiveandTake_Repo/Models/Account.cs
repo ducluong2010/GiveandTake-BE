@@ -58,4 +58,8 @@ public partial class Account
     public virtual ICollection<Reward> Rewards { get; set; } = new List<Reward>();
 
     public virtual UserRole? Role { get; set; }
+
+    public virtual ICollection<TradeRequest> TradeRequests { get; set; } = new List<TradeRequest>();
+
+    public virtual ICollection<TradeTransaction> TradeTransactions { get; set; } = new List<TradeTransaction>();
 }

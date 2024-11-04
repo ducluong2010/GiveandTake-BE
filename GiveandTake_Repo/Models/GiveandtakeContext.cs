@@ -48,6 +48,12 @@ public partial class GiveandtakeContext : DbContext
 
     public virtual DbSet<Rewarded> Rewardeds { get; set; }
 
+    public virtual DbSet<TradeRequest> TradeRequests { get; set; }
+
+    public virtual DbSet<TradeTransaction> TradeTransactions { get; set; }
+
+    public virtual DbSet<TradeTransactionDetail> TradeTransactionDetails { get; set; }
+
     public virtual DbSet<Transaction> Transactions { get; set; }
 
     public virtual DbSet<TransactionDetail> TransactionDetails { get; set; }
@@ -353,6 +359,81 @@ public partial class GiveandtakeContext : DbContext
             entity.HasOne(d => d.Reward).WithMany(p => p.Rewardeds)
                 .HasForeignKey(d => d.RewardId)
                 .HasConstraintName("Rewarded_ibfk_1");
+        });
+
+        modelBuilder.Entity<TradeRequest>(entity =>
+        {
+            entity.HasKey(e => e.RequestId).HasName("PRIMARY");
+
+            entity.ToTable("TradeRequest");
+
+            entity.HasIndex(e => e.AccountId, "AccountId");
+
+            entity.HasIndex(e => e.RequestDonationId, "RequestDonationId");
+
+            entity.HasIndex(e => e.TradeDonationId, "TradeDonationId");
+
+            entity.Property(e => e.RequestId).ValueGeneratedNever();
+            entity.Property(e => e.RequestDate).HasColumnType("datetime");
+            entity.Property(e => e.Status).HasMaxLength(50);
+
+            entity.HasOne(d => d.Account).WithMany(p => p.TradeRequests)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("TradeRequest_ibfk_1");
+
+            entity.HasOne(d => d.RequestDonation).WithMany(p => p.TradeRequestRequestDonations)
+                .HasForeignKey(d => d.RequestDonationId)
+                .HasConstraintName("TradeRequest_ibfk_3");
+
+            entity.HasOne(d => d.TradeDonation).WithMany(p => p.TradeRequestTradeDonations)
+                .HasForeignKey(d => d.TradeDonationId)
+                .HasConstraintName("TradeRequest_ibfk_2");
+        });
+
+        modelBuilder.Entity<TradeTransaction>(entity =>
+        {
+            entity.HasKey(e => e.TradeTransactionId).HasName("PRIMARY");
+
+            entity.HasIndex(e => e.AccountId, "AccountId");
+
+            entity.HasIndex(e => e.TradeDonationId, "TradeDonationId");
+
+            entity.Property(e => e.TradeTransactionId).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.Status).HasMaxLength(50);
+            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.TradeTransactions)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("TradeTransactions_ibfk_1");
+
+            entity.HasOne(d => d.TradeDonation).WithMany(p => p.TradeTransactions)
+                .HasForeignKey(d => d.TradeDonationId)
+                .HasConstraintName("TradeTransactions_ibfk_2");
+        });
+
+        modelBuilder.Entity<TradeTransactionDetail>(entity =>
+        {
+            entity.HasKey(e => e.TransactionDetailId).HasName("PRIMARY");
+
+            entity.ToTable("TradeTransactionDetail");
+
+            entity.HasIndex(e => e.RequestDonationId, "RequestDonationId");
+
+            entity.HasIndex(e => e.TransactionId, "TransactionId");
+
+            entity.Property(e => e.TransactionDetailId).ValueGeneratedNever();
+            entity.Property(e => e.Qrcode)
+                .HasColumnType("text")
+                .HasColumnName("QRCode");
+
+            entity.HasOne(d => d.RequestDonation).WithMany(p => p.TradeTransactionDetails)
+                .HasForeignKey(d => d.RequestDonationId)
+                .HasConstraintName("TradeTransactionDetail_ibfk_2");
+
+            entity.HasOne(d => d.Transaction).WithMany(p => p.TradeTransactionDetails)
+                .HasForeignKey(d => d.TransactionId)
+                .HasConstraintName("TradeTransactionDetail_ibfk_1");
         });
 
         modelBuilder.Entity<Transaction>(entity =>
