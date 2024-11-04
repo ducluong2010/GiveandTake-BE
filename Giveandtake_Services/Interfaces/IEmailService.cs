@@ -8,7 +8,7 @@ namespace Giveandtake_Services.Interfaces
 {
     public interface IEmailService
     {
-        Task SendVerificationEmail(string email);
-        Task<string> ConfirmOtp(string email, string otp);
+        Task SendVerificationEmail(int accountId, string email);
+        Task<string> ConfirmOtp(int accountId, string email, string otp);
     }
 }

@@ -18,6 +18,7 @@ builder.Services.AddJwtValidation(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddConfigSwagger();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IMembershipService, MembershipService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
 
