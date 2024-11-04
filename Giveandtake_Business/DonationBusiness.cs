@@ -8,16 +8,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using GiveandTake_Repo.DTOs.Feedback;
+using Microsoft.AspNetCore.Http;
+
 
 namespace Giveandtake_Business
 {
     public class DonationBusiness
     {
         private readonly UnitOfWork _unitOfWork;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public DonationBusiness()
+        public DonationBusiness(IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = new UnitOfWork();
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IGiveandtakeResult> GetAllDonations(int page = 1, int pageSize = 8)
@@ -40,6 +44,7 @@ namespace Giveandtake_Business
                     Name = d.Name,
                     Description = d.Description,
                     Point = d.Point,
+                    Type = d.Type,
                     CreatedAt = d.CreatedAt,
                     UpdatedAt = d.UpdatedAt,
                     ApprovedBy = d.ApprovedBy,
@@ -151,6 +156,7 @@ namespace Giveandtake_Business
                     Name = d.Name,
                     Description = d.Description,
                     Point = d.Point,
+                    Type = d.Type,
                     CreatedAt = d.CreatedAt,
                     UpdatedAt = d.UpdatedAt,
                     ApprovedBy = d.ApprovedBy,
@@ -217,6 +223,185 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(paginatedResult);
         }
 
+        public async Task<IGiveandtakeResult> GetDonationsByAccountId(int accountId)
+        {
+            if (accountId <= 0)
+            {
+                return new GiveandtakeResult(-1, "Invalid account ID.");
+            }
+
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+
+
+            var accountExists = await accountRepository.GetAllAsync(a => a.AccountId == accountId);
+            if (!accountExists.Any())
+            {
+                return new GiveandtakeResult(-1, "Account not found.");
+            }
+            var allAccounts = await accountRepository.GetAllAsync();
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
+
+            var claimedDonations = await donationRepository.GetListAsync(
+                predicate: d => d.AccountId == accountId && d.Status == "Claimed",
+                selector: d => new DonationDTO
+                {
+                    DonationId = d.DonationId,
+                    AccountId = d.AccountId,
+                    AccountName = d.Account.FullName, 
+                    CategoryId = d.CategoryId,
+                    CategoryName = d.Category.CategoryName,
+                    Name = d.Name,
+                    Description = d.Description,
+                    Point = d.Point,
+                    Type = d.Type,
+                    CreatedAt = d.CreatedAt,
+                    UpdatedAt = d.UpdatedAt,
+                    ApprovedBy = d.ApprovedBy,
+                    ApprovedByName = d.ApprovedBy.HasValue ? d.ApprovedBy.ToString() : null,
+                    TotalRating = d.TotalRating,
+                    Status = d.Status,
+                    DonationImages = d.DonationImages.Select(di => di.Url).ToList(),
+                    Feedbacks = d.Feedbacks.Select(f => new FeedbackDTO
+                    {
+                        FeedbackId = f.FeedbackId,
+                        SenderId = f.SenderId,
+                        SenderName = f.SenderId.HasValue ? f.SenderId.ToString() : null,
+                        AccountId = f.AccountId,
+                        AccountName = f.Account.FullName,
+                        DonationId = d.DonationId,
+                        DonationName = d.Name,
+                        Rating = f.Rating,
+                        Content = f.Content,
+                        CreatedDate = f.CreatedDate,
+                        FeedbackMediaUrls = f.FeedbackMedia.Select(fm => fm.MediaUrl).ToList()
+                    }).ToList()
+                },
+                include: source => source
+                    .Include(d => d.Account)
+                    .Include(d => d.Category)
+                    .Include(d => d.Feedbacks)
+            );
+
+            var sortedDonations = claimedDonations.OrderByDescending(d => d.CreatedAt).ToList();
+
+            return new GiveandtakeResult(sortedDonations);
+        }
+
+        public async Task<IGiveandtakeResult> GetAllByAccountId(int accountId)
+        {
+            if (accountId <= 0) 
+            {
+                return new GiveandtakeResult(-1, "Invalid account ID.");
+            }
+
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+
+           
+            var accountExists = await accountRepository.GetAllAsync(a => a.AccountId == accountId);
+            if (!accountExists.Any())
+            {
+                return new GiveandtakeResult(-1, "Account not found.");
+            }
+            var allAccounts = await accountRepository.GetAllAsync();
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
+
+            var claimedDonations = await donationRepository.GetListAsync(
+                predicate: d => d.AccountId == accountId,
+                selector: d => new DonationDTO
+                {
+                    DonationId = d.DonationId,
+                    AccountId = d.AccountId,
+                    AccountName = d.Account.FullName,
+                    CategoryId = d.CategoryId,
+                    CategoryName = d.Category.CategoryName,
+                    Name = d.Name,
+                    Description = d.Description,
+                    Point = d.Point,
+                    Type = d.Type,
+                    CreatedAt = d.CreatedAt,
+                    UpdatedAt = d.UpdatedAt,
+                    ApprovedBy = d.ApprovedBy,
+                    ApprovedByName = d.ApprovedBy.HasValue ? d.ApprovedBy.ToString() : null,
+                    TotalRating = d.TotalRating,
+                    Status = d.Status,
+                    DonationImages = d.DonationImages.Select(di => di.Url).ToList(),
+                    Feedbacks = d.Feedbacks.Select(f => new FeedbackDTO
+                    {
+                        FeedbackId = f.FeedbackId,
+                        SenderId = f.SenderId,
+                        SenderName = f.SenderId.HasValue ? f.SenderId.ToString() : null,
+                        AccountId = f.AccountId,
+                        AccountName = f.Account.FullName,
+                        DonationId = d.DonationId,
+                        DonationName = d.Name,
+                        Rating = f.Rating,
+                        Content = f.Content,
+                        CreatedDate = f.CreatedDate,
+                        FeedbackMediaUrls = f.FeedbackMedia.Select(fm => fm.MediaUrl).ToList()
+                    }).ToList()
+                },
+                include: source => source
+                    .Include(d => d.Account)
+                    .Include(d => d.Category)
+                    .Include(d => d.Feedbacks)
+            );
+
+            var sortedDonations = claimedDonations.OrderByDescending(d => d.CreatedAt).ToList();
+
+            return new GiveandtakeResult(sortedDonations);
+        }
+
+        public async Task<IGiveandtakeResult> GetByAccountIdAndType(int accountId, int type)
+        {
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+            var donations = await donationRepository.GetListAsync(
+                predicate: d => d.AccountId == accountId && d.Type == type && d.Status == "Approved",
+                selector: d => new DonationDTO
+                {
+                    DonationId = d.DonationId,
+                    AccountId = d.AccountId,
+                    AccountName = d.Account.FullName, 
+                    CategoryId = d.CategoryId,
+                    CategoryName = d.Category.CategoryName,
+                    Name = d.Name,
+                    Description = d.Description,
+                    Point = d.Point,
+                    Type = d.Type,
+                    CreatedAt = d.CreatedAt,
+                    UpdatedAt = d.UpdatedAt,
+                    ApprovedBy = d.ApprovedBy,
+                    ApprovedByName = d.ApprovedBy.HasValue ? d.ApprovedBy.ToString() : null,
+                    TotalRating = d.TotalRating,
+                    Status = d.Status,
+                    DonationImages = d.DonationImages.Select(di => di.Url).ToList(),
+                    Feedbacks = d.Feedbacks.Select(f => new FeedbackDTO
+                    {
+                        FeedbackId = f.FeedbackId,
+                        SenderId = f.SenderId,
+                        SenderName = f.SenderId.HasValue ? f.SenderId.ToString() : null,
+                        AccountId = f.AccountId,
+                        AccountName = f.Account.FullName,
+                        DonationId = d.DonationId,
+                        DonationName = d.Name,
+                        Rating = f.Rating,
+                        Content = f.Content,
+                        CreatedDate = f.CreatedDate,
+                        FeedbackMediaUrls = f.FeedbackMedia.Select(fm => fm.MediaUrl).ToList()
+                    }).ToList()
+                },
+                include: source => source
+                    .Include(d => d.Account)
+                    .Include(d => d.Category)
+                    .Include(d => d.Feedbacks)
+            );
+
+            var sortedDonations = donations.OrderByDescending(d => d.CreatedAt).ToList();
+
+            return new GiveandtakeResult(sortedDonations);
+        }
+
         public async Task<IGiveandtakeResult> GetAllApproved(int page = 1, int pageSize = 8)
         {
             var repository = _unitOfWork.GetRepository<Donation>();
@@ -235,6 +420,7 @@ namespace Giveandtake_Business
                     Name = d.Name,
                     Description = d.Description,
                     Point = d.Point,
+                    Type = d.Type,
                     CreatedAt = d.CreatedAt,
                     UpdatedAt = d.UpdatedAt,
                     ApprovedBy = d.ApprovedBy,
@@ -314,6 +500,12 @@ namespace Giveandtake_Business
                     .Include(d => d.DonationImages)
                     .Include(d => d.Feedbacks) 
             );
+
+            if (donation == null)
+            {
+                return new GiveandtakeResult(-1, "Donation not found");
+            } 
+
             var feedbackAccountIds = donation.Feedbacks
                     .Where(f => f.AccountId.HasValue)
                     .Select(f => f.AccountId.Value)
@@ -324,10 +516,7 @@ namespace Giveandtake_Business
                 predicate: a => feedbackAccountIds.Contains(a.AccountId)
             );
 
-            if (donation == null)
-            {
-                return new GiveandtakeResult(-1, "Donation not found");
-            }
+           
             var allAccounts = await accountRepository.GetAllAsync();
             var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
 
@@ -350,6 +539,7 @@ namespace Giveandtake_Business
                 Name = donation.Name,
                 Description = donation.Description,
                 Point = donation.Point,
+                Type = donation.Type,
                 CreatedAt = donation.CreatedAt,
                 UpdatedAt = donation.UpdatedAt,
                 ApprovedBy = donation.ApprovedBy,
@@ -421,6 +611,9 @@ namespace Giveandtake_Business
             if (donationInfo.TotalRating.HasValue)
                 existingDonation.TotalRating = donationInfo.TotalRating.Value;
 
+            if (donationInfo.Type.HasValue)
+                existingDonation.Type = donationInfo.Type.Value;
+
             if (!string.IsNullOrEmpty(donationInfo.Status))
                 existingDonation.Status = donationInfo.Status;
 
@@ -486,6 +679,7 @@ namespace Giveandtake_Business
                 Point = category.Point,
                 CreatedAt = DateTime.Now,
                 Status = "Pending",
+                Type = donationInfo.Type,
                 DonationImages = donationInfo.DonationImages.Select(imageUrl => new DonationImage
                 {
                     Url = imageUrl,
@@ -540,18 +734,30 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult(-1, "Donation not found");
             }
 
+            
+            var accountIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("accountId");
+            if (accountIdClaim == null)
+            {
+                return new GiveandtakeResult(-1, "Account ID not found in token.");
+            }
+
+            var accountId = int.TryParse(accountIdClaim.Value, out var id) ? id : (int?)null;
+
             if (donation.Status == "Pending")
             {
                 donation.Status = "Approved";
+                donation.ApprovedBy = accountId; 
             }
             else if (donation.Status == "Approved")
             {
                 donation.Status = "Pending";
+                donation.ApprovedBy = accountId;
             }
             else
             {
                 return new GiveandtakeResult(-1, "Donation is in an invalid status.");
             }
+
             donation.UpdatedAt = DateTime.Now;
 
             _unitOfWork.GetRepository<Donation>().UpdateAsync(donation);
@@ -570,13 +776,23 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult(-1, "Donation not found");
             }
 
+            var accountIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("accountId");
+            if (accountIdClaim == null)
+            {
+                return new GiveandtakeResult(-1, "Account ID not found in token.");
+            }
+
+            var accountId = int.TryParse(accountIdClaim.Value, out var id) ? id : (int?)null;
+
             if (donation.Status == "Pending")
             {
                 donation.Status = "Cancel";
+                donation.ApprovedBy = accountId;
             }
             else if (donation.Status == "Cancel")
             {
                 donation.Status = "Pending";
+                donation.ApprovedBy = accountId;
             }
             else
             {
@@ -600,13 +816,23 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult(-1, "Donation not found");
             }
 
+            var accountIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("accountId");
+            if (accountIdClaim == null)
+            {
+                return new GiveandtakeResult(-1, "Account ID not found in token.");
+            }
+
+            var accountId = int.TryParse(accountIdClaim.Value, out var id) ? id : (int?)null;
+
             if (donation.Status == "Approved")
             {
                 donation.Status = "Cancel";
+                donation.ApprovedBy = accountId;
             }
             else if (donation.Status == "Cancel")
             {
                 donation.Status = "Approved";
+                donation.ApprovedBy = accountId;
             }
             else
             {
@@ -618,6 +844,99 @@ namespace Giveandtake_Business
             await _unitOfWork.CommitAsync();
 
             return new GiveandtakeResult(1, "Donation status toggled successfully");
+        }
+
+        public async Task<IGiveandtakeResult> ToggleType(int donationId)
+        {
+            var donation = await _unitOfWork.GetRepository<Donation>()
+                .SingleOrDefaultAsync(predicate: d => d.DonationId == donationId);
+
+            if (donation == null)
+            {
+                return new GiveandtakeResult(-1, "Donation not found");
+            }
+
+            if (donation.Type == 1)
+            {
+                donation.Type = 2;
+            }
+            else if (donation.Type == 2)
+            {
+                donation.Type = 1;
+            }
+            else
+            {
+                return new GiveandtakeResult(-1, "Donation type is invalid. Only type 1 and 2 are allowed.");
+            }
+
+            donation.UpdatedAt = DateTime.Now;
+
+            _unitOfWork.GetRepository<Donation>().UpdateAsync(donation);
+            await _unitOfWork.CommitAsync();
+
+            return new GiveandtakeResult(1, "Donation type toggled successfully");
+        }
+
+        public async Task<IGiveandtakeResult> ToggleType2(int donationId)
+        {
+            var donation = await _unitOfWork.GetRepository<Donation>()
+                .SingleOrDefaultAsync(predicate: d => d.DonationId == donationId);
+
+            if (donation == null)
+            {
+                return new GiveandtakeResult(-1, "Donation not found");
+            }
+
+            if (donation.Type == 1)
+            {
+                donation.Type = 3; 
+            }
+            else if (donation.Type == 3)
+            {
+                donation.Type = 1; 
+            }
+            else
+            {
+                return new GiveandtakeResult(-1, "Donation type is invalid. Only type 1 and 3 are allowed.");
+            }
+
+            donation.UpdatedAt = DateTime.Now;
+
+            _unitOfWork.GetRepository<Donation>().UpdateAsync(donation);
+            await _unitOfWork.CommitAsync();
+
+            return new GiveandtakeResult(1, "Donation type toggled from 1 to 3 successfully.");
+        }
+
+        public async Task<IGiveandtakeResult> ToggleType3(int donationId)
+        {
+            var donation = await _unitOfWork.GetRepository<Donation>()
+                .SingleOrDefaultAsync(predicate: d => d.DonationId == donationId);
+
+            if (donation == null)
+            {
+                return new GiveandtakeResult(-1, "Donation not found");
+            }
+
+            if (donation.Type == 2)
+            {
+                donation.Type = 3; 
+            }
+            else if (donation.Type == 3)
+            {
+                donation.Type = 2; 
+            }
+            else
+            {
+                return new GiveandtakeResult(-1, "Donation type is invalid. Only type 2 and 3 are allowed.");
+            }
+
+            donation.UpdatedAt = DateTime.Now;
+
+            _unitOfWork.GetRepository<Donation>().UpdateAsync(donation);
+            await _unitOfWork.CommitAsync();
+
+            return new GiveandtakeResult(1, "Donation type toggled from 2 to 3 successfully.");
         }
 
         public async Task<IGiveandtakeResult> CheckAndUpdateAllBannedAccountsDonations()
@@ -715,6 +1034,7 @@ namespace Giveandtake_Business
                     Name = d.Name,
                     Description = d.Description,
                     Point = d.Point,
+                    Type = d.Type,
                     CreatedAt = d.CreatedAt,
                     UpdatedAt = d.UpdatedAt,
                     ApprovedBy = d.ApprovedBy,

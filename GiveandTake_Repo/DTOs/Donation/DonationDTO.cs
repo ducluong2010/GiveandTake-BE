@@ -65,6 +65,7 @@ namespace GiveandTake_Repo.DTOs.Donation
 
         public string? Status { get; set; }
 
+        public int? Type { get; set; }
 
         public List<string>? DonationImages { get; set; }
     }
@@ -87,6 +88,8 @@ namespace GiveandTake_Repo.DTOs.Donation
         public int? ApprovedBy { get; set; }
 
         public int? TotalRating { get; set; }
+
+        public int? Type { get; set; }
 
         public List<string>? DonationImages { get; set; }
     }
