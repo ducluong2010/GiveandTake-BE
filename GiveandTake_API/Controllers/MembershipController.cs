@@ -50,20 +50,27 @@ namespace GiveandTake_API.Controllers
             }
             catch (Exception ex)
             {
-                var detailedError = new
+
+                var errorDetails = new List<string>
+        {
+            $"Message: {ex.Message}",
+            $"StackTrace: {ex.StackTrace}"
+        };
+
+
+                if (ex.InnerException != null)
+                {
+                    errorDetails.Add($"InnerException Message: {ex.InnerException.Message}");
+                    errorDetails.Add($"InnerException StackTrace: {ex.InnerException.StackTrace}");
+                }
+
+                Console.WriteLine(string.Join(Environment.NewLine, errorDetails));
+
+                return StatusCode(500, new
                 {
                     Message = "Có lỗi xảy ra khi tạo URL thanh toán",
-                    Error = ex.Message,
-                    StackTrace = ex.StackTrace,
-                    InnerException = ex.InnerException?.Message // Thêm Inner Exception
-                };
-
-                // In ra console để dễ theo dõi khi debug (chỉ dùng khi cần thiết)
-                Console.WriteLine($"Error: {ex.Message}");
-                Console.WriteLine($"StackTrace: {ex.StackTrace}");
-                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}"); // In Inner Exception
-
-                return StatusCode(500, detailedError);
+                    Details = errorDetails 
+                });
             }
         }
 
