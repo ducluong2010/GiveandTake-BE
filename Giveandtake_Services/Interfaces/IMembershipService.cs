@@ -12,5 +12,7 @@ namespace Giveandtake_Services.Interfaces
     {
         string CreatePaymentUrlAsync(PaymentInformationModel model, HttpContext context);
         PaymentResponseModel PaymentExecuteAsync(IQueryCollection collections);
+        Task UpdateAccountIsPremiumAsync(int accountId);
+        Task<PaymentResponseModel> HandlePaymentCallbackAsync(IQueryCollection collections);
     }
 }
