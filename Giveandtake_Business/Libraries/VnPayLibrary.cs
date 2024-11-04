@@ -85,9 +85,27 @@ public class VnPayLibrary
     {
         if (!string.IsNullOrEmpty(value))
         {
-            _requestData.Add(key, value);
+            try
+            {
+                // Kiểm tra khóa đã tồn tại trước khi thêm vào
+                if (!_requestData.ContainsKey(key))
+                {
+                    _requestData.Add(key, value);
+                }
+                else
+                {
+                    // Có thể thay thế giá trị nếu khóa đã tồn tại, tùy thuộc vào nhu cầu của bạn
+                    _requestData[key] = value;
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                // Ghi log hoặc xử lý ngoại lệ cụ thể nếu có lỗi
+                Console.WriteLine($"Error adding key {key} to _requestData: {ex.Message}");
+            }
         }
     }
+
 
     public void AddResponseData(string key, string value)
     {
