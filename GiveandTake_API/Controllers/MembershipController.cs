@@ -2,6 +2,7 @@
 using GiveandTake_Repo.Models;
 using Giveandtake_Services.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace GiveandTake_API.Controllers
 {
@@ -49,17 +50,32 @@ namespace GiveandTake_API.Controllers
             }
             catch (Exception ex)
             {
-                // Log error
+
+                var errorDetails = new List<string>
+        {
+            $"Message: {ex.Message}",
+            $"StackTrace: {ex.StackTrace}"
+        };
+
+
+                if (ex.InnerException != null)
+                {
+                    errorDetails.Add($"InnerException Message: {ex.InnerException.Message}");
+                    errorDetails.Add($"InnerException StackTrace: {ex.InnerException.StackTrace}");
+                }
+
+                Console.WriteLine(string.Join(Environment.NewLine, errorDetails));
+
                 return StatusCode(500, new
                 {
                     Message = "Có lỗi xảy ra khi tạo URL thanh toán",
-                    Error = ex.Message
+                    Details = errorDetails 
                 });
             }
         }
 
         [HttpGet("payment-callback")]
-        public IActionResult PaymentCallback()
+        public async Task<IActionResult> PaymentCallback()
         {
             try
             {
@@ -67,6 +83,9 @@ namespace GiveandTake_API.Controllers
 
                 if (response.Success)
                 {
+                    //var paymentResponse = await _membershipService.HandlePaymentCallbackAsync(Request.Query);
+                    await _membershipService.UpdateAccountIsPremiumAsync(response.AccountId);
+
                     return Ok(new
                     {
                         Success = true,

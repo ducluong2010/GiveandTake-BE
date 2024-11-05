@@ -13,9 +13,9 @@ namespace GiveandTake_API.Controllers
     {
         private readonly DonationService _donationService;
 
-        public DonationController()
+        public DonationController(DonationService donationService)
         {
-            _donationService = new DonationService();
+            _donationService = donationService;
         }
 
         [HttpGet(ApiEndPointConstant.Donation.DonationsEndPoint)]
@@ -46,6 +46,39 @@ namespace GiveandTake_API.Controllers
         public async Task<IActionResult> GetAllByStaff([FromQuery] int id, [FromQuery] int page = 1, [FromQuery] int pageSize = 8)
         {
             var response = await _donationService.GetAllByStaff(id, page, pageSize);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
+
+        [HttpGet(ApiEndPointConstant.Donation.DonationClaimEndPoint)]
+        [SwaggerOperation(Summary = "Get Claimed by Account")]
+        public async Task<IActionResult> GetDonationsByAccountId([FromQuery] int id)
+        {
+            var response = await _donationService.GetDonationsByAccountId(id);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
+
+        [HttpGet(ApiEndPointConstant.Donation.DonationAccEndPoint)]
+        [SwaggerOperation(Summary = "Get All Donations by Account")]
+        public async Task<IActionResult> GetAllByAccountId([FromQuery] int id)
+        {
+            var response = await _donationService.GetAllByAccountId(id);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
+
+        [HttpGet(ApiEndPointConstant.Donation.DonationTypeEndPoint)]
+        [SwaggerOperation(Summary = "Get Claimed by Account & Type")]
+        public async Task<IActionResult> GetByAccountIdAndType([FromQuery] int id, int type)
+        {
+            var response = await _donationService.GetByAccountIdAndType(id, type);
             if (response.Status >= 0)
                 return Ok(response.Data);
             else
@@ -134,6 +167,36 @@ namespace GiveandTake_API.Controllers
         public async Task<IActionResult> CheckAndUpdateAllBannedAccountsDonations()
         {
             var response = await _donationService.CheckAndUpdateAllBannedAccountsDonations();
+            if (response.Status >= 0)
+                return Ok(response);
+            else
+                return BadRequest(response);
+        }
+        [HttpPut(ApiEndPointConstant.Donation.ToggleTypeEndPoint)]
+        [SwaggerOperation(Summary = "Change type 1 to 2")]
+        public async Task<IActionResult> ToggleType(int id)
+        {
+            var response = await _donationService.ToggleType(id);
+            if (response.Status >= 0)
+                return Ok(response);
+            else
+                return BadRequest(response);
+        }
+        [HttpPut(ApiEndPointConstant.Donation.ToggleType2EndPoint)]
+        [SwaggerOperation(Summary = "Change type 1 to 3")]
+        public async Task<IActionResult> ToggleType2(int id)
+        {
+            var response = await _donationService.ToggleType2(id);
+            if (response.Status >= 0)
+                return Ok(response);
+            else
+                return BadRequest(response);
+        }
+        [HttpPut(ApiEndPointConstant.Donation.ToggleType3EndPoint)]
+        [SwaggerOperation(Summary = "Change type 2 to 3")]
+        public async Task<IActionResult> ToggleType3(int id)
+        {
+            var response = await _donationService.ToggleType3(id);
             if (response.Status >= 0)
                 return Ok(response);
             else
