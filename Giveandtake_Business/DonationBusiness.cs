@@ -145,7 +145,7 @@ namespace Giveandtake_Business
                 predicate: d => d.CreatedAt.HasValue &&
                                 d.CreatedAt.Value.TimeOfDay >= startTime &&
                                 d.CreatedAt.Value.TimeOfDay < endTime &&
-                                !d.ApprovedBy.HasValue,
+                                (!d.ApprovedBy.HasValue || d.ApprovedBy == accountId),
                 selector: d => new DonationDTO
                 {
                     DonationId = d.DonationId,
