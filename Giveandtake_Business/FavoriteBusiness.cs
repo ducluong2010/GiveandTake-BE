@@ -185,6 +185,7 @@ namespace Giveandtake_Business
                     ApprovedByName = approverName,
                     TotalRating = donation.TotalRating,
                     Status = donation.Status,
+                    Type = donation.Type,
                     DonationImages = donation.DonationImages?.Select(di => di.Url).ToList() ?? new List<string>(),
                     Feedbacks = donation.Feedbacks.Select(f => new FeedbackDTO
                     {
