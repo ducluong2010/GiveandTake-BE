@@ -17,5 +17,4 @@ public partial class Membership
     public int TransactionId { get; set; }
     public virtual Account? Account { get; set; }
     public decimal Amount { get; set; }
-    public DateTime PaymentDate { get; set; }
 }
