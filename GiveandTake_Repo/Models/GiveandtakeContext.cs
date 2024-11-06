@@ -363,7 +363,7 @@ public partial class GiveandtakeContext : DbContext
 
         modelBuilder.Entity<TradeRequest>(entity =>
         {
-            entity.HasKey(e => e.RequestId).HasName("PRIMARY");
+            entity.HasKey(e => e.TradeRequestId).HasName("PRIMARY");
 
             entity.ToTable("TradeRequest");
 
@@ -373,7 +373,7 @@ public partial class GiveandtakeContext : DbContext
 
             entity.HasIndex(e => e.TradeDonationId, "TradeDonationId");
 
-            entity.Property(e => e.RequestId).ValueGeneratedNever();
+            entity.Property(e => e.TradeRequestId).ValueGeneratedNever();
             entity.Property(e => e.RequestDate).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(50);
 
