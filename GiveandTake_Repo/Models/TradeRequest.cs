@@ -5,7 +5,7 @@ namespace GiveandTake_Repo.Models;
 
 public partial class TradeRequest
 {
-    public int RequestId { get; set; }
+    public int TradeRequestId { get; set; }
 
     public int? AccountId { get; set; }
 
