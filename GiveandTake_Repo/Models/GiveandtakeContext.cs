@@ -414,15 +414,15 @@ public partial class GiveandtakeContext : DbContext
 
         modelBuilder.Entity<TradeTransactionDetail>(entity =>
         {
-            entity.HasKey(e => e.TransactionDetailId).HasName("PRIMARY");
+            entity.HasKey(e => e.TradeTransactionDetailId).HasName("PRIMARY");
 
             entity.ToTable("TradeTransactionDetail");
 
             entity.HasIndex(e => e.RequestDonationId, "RequestDonationId");
 
-            entity.HasIndex(e => e.TransactionId, "TransactionId");
+            entity.HasIndex(e => e.TradeTransactionId, "TransactionId");
 
-            entity.Property(e => e.TransactionDetailId).ValueGeneratedNever();
+            entity.Property(e => e.TradeTransactionDetailId).ValueGeneratedOnAdd();
             entity.Property(e => e.Qrcode)
                 .HasColumnType("text")
                 .HasColumnName("QRCode");
@@ -431,8 +431,9 @@ public partial class GiveandtakeContext : DbContext
                 .HasForeignKey(d => d.RequestDonationId)
                 .HasConstraintName("TradeTransactionDetail_ibfk_2");
 
-            entity.HasOne(d => d.Transaction).WithMany(p => p.TradeTransactionDetails)
-                .HasForeignKey(d => d.TransactionId)
+            entity.HasOne(d => d.TradeTransactionDetailNavigation).WithOne(p => p.TradeTransactionDetail)
+                .HasForeignKey<TradeTransactionDetail>(d => d.TradeTransactionDetailId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("TradeTransactionDetail_ibfk_1");
         });
 
