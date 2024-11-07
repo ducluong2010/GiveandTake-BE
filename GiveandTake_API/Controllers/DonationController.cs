@@ -235,5 +235,15 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
+        [HttpGet(ApiEndPointConstant.Donation.ApprovedDonationByAccountAndTypeEndPoint)]
+        [SwaggerOperation(Summary = "Get Approved Donation by Account and Type")]
+        public async Task<IActionResult> GetApprovedDonationByAccountAndType(int accountId)
+        {
+            var response = await _donationService.GetApprovedDonationByAccountAndType(accountId);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
     }
 }

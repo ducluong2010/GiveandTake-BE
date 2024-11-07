@@ -1109,5 +1109,56 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(1, $"Donation status changed to {newStatus} successfully.");
         }
 
+        // Phần của Nguyên
+        public async Task<IGiveandtakeResult> GetApprovedDonationByAccountAndType(int accountId)
+        {
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+            var donations = await donationRepository.GetListAsync(
+                predicate: d => d.AccountId == accountId && (d.Type == 1 || d.Type == 3) && d.Status == "Approved",
+                selector: d => new DonationDTO
+                {
+                    DonationId = d.DonationId,
+                    AccountId = d.AccountId,
+                    AccountName = d.Account.FullName,
+                    CategoryId = d.CategoryId,
+                    CategoryName = d.Category.CategoryName,
+                    Name = d.Name,
+                    Description = d.Description,
+                    Point = d.Point,
+                    Type = d.Type,
+                    CreatedAt = d.CreatedAt,
+                    UpdatedAt = d.UpdatedAt,
+                    ApprovedBy = d.ApprovedBy,
+                    ApprovedByName = d.ApprovedBy.HasValue ? d.ApprovedBy.ToString() : null,
+                    TotalRating = d.TotalRating,
+                    Status = d.Status,
+                    DonationImages = d.DonationImages.Select(di => di.Url).ToList(),
+                    Feedbacks = d.Feedbacks.Select(f => new FeedbackDTO
+                    {
+                        FeedbackId = f.FeedbackId,
+                        SenderId = f.SenderId,
+                        SenderName = f.SenderId.HasValue ? f.SenderId.ToString() : null,
+                        AccountId = f.AccountId,
+                        AccountName = f.Account.FullName,
+                        DonationId = d.DonationId,
+                        DonationName = d.Name,
+                        Rating = f.Rating,
+                        Content = f.Content,
+                        CreatedDate = f.CreatedDate,
+                        FeedbackMediaUrls = f.FeedbackMedia.Select(fm => fm.MediaUrl).ToList()
+                    }).ToList()
+                },
+                include: source => source
+                    .Include(d => d.Account)
+                    .Include(d => d.Category)
+                    .Include(d => d.Feedbacks)
+            );
+
+            var sortedDonations = donations.OrderByDescending(d => d.CreatedAt).ToList();
+
+            return new GiveandtakeResult(sortedDonations);
+        }
+
+
     }
 }
