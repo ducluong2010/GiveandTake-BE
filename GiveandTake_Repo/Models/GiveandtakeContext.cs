@@ -394,22 +394,9 @@ public partial class GiveandtakeContext : DbContext
         {
             entity.HasKey(e => e.TradeTransactionId).HasName("PRIMARY");
 
-            entity.HasIndex(e => e.AccountId, "AccountId");
-
-            entity.HasIndex(e => e.TradeDonationId, "TradeDonationId");
-
-            entity.Property(e => e.TradeTransactionId).ValueGeneratedNever();
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
-
-            entity.HasOne(d => d.Account).WithMany(p => p.TradeTransactions)
-                .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("TradeTransactions_ibfk_1");
-
-            entity.HasOne(d => d.TradeDonation).WithMany(p => p.TradeTransactions)
-                .HasForeignKey(d => d.TradeDonationId)
-                .HasConstraintName("TradeTransactions_ibfk_2");
         });
 
         modelBuilder.Entity<TradeTransactionDetail>(entity =>
@@ -420,9 +407,8 @@ public partial class GiveandtakeContext : DbContext
 
             entity.HasIndex(e => e.RequestDonationId, "RequestDonationId");
 
-            entity.HasIndex(e => e.TradeTransactionId, "TransactionId");
+            entity.HasIndex(e => e.TradeTransactionId, "fk_TradeTransaction_TradeTransactionDetail");
 
-            entity.Property(e => e.TradeTransactionDetailId).ValueGeneratedOnAdd();
             entity.Property(e => e.Qrcode)
                 .HasColumnType("text")
                 .HasColumnName("QRCode");
@@ -431,10 +417,10 @@ public partial class GiveandtakeContext : DbContext
                 .HasForeignKey(d => d.RequestDonationId)
                 .HasConstraintName("TradeTransactionDetail_ibfk_2");
 
-            entity.HasOne(d => d.TradeTransactionDetailNavigation).WithOne(p => p.TradeTransactionDetail)
-                .HasForeignKey<TradeTransactionDetail>(d => d.TradeTransactionDetailId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("TradeTransactionDetail_ibfk_1");
+            entity.HasOne(d => d.TradeTransaction).WithMany(p => p.TradeTransactionDetails)
+                .HasForeignKey(d => d.TradeTransactionId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("fk_TradeTransaction_TradeTransactionDetail");
         });
 
         modelBuilder.Entity<Transaction>(entity =>
