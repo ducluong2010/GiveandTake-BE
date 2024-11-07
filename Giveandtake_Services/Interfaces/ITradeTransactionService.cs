@@ -10,6 +10,6 @@ namespace Giveandtake_Services.Interfaces
     public interface ITradeTransactionService
     {
         Task<IGiveandtakeResult> GetAllTradeTransaction();
-        Task<IGiveandtakeResult> GetTradeTransactionById(int id);
+    //    Task<IGiveandtakeResult> GetTradeTransactionById(int id);
     }
 }

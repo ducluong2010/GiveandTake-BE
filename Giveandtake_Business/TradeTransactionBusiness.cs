@@ -44,7 +44,7 @@ namespace Giveandtake_Business
         }
 
         // Get trade transaction by id
-        public async Task<IGiveandtakeResult> GetTradeTransactionById(int id)
+ /*       public async Task<IGiveandtakeResult> GetTradeTransactionById(int id)
         {
             var tradeTransaction = await _unitOfWork.GetRepository<TradeTransaction>()
                 .SingleOrDefaultAsync(
@@ -84,7 +84,7 @@ namespace Giveandtake_Business
                 TradeTransaction = tradeTransaction.TradeTransaction,
                 TradeTransactionDetail = tradeTransaction.TradeTransactionDetail
             });
-        }
+        } */
 
         #endregion
     }

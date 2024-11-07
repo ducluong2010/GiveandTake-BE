@@ -19,7 +19,7 @@ namespace Giveandtake_Services.Implements
         public Task<IGiveandtakeResult> GetAllTradeTransaction()
         => _tradeTransactionBusiness.GetAllTradeTransaction();
 
-        public Task<IGiveandtakeResult> GetTradeTransactionById(int id)
-        => _tradeTransactionBusiness.GetTradeTransactionById(id);
+    //    public Task<IGiveandtakeResult> GetTradeTransactionById(int id)
+    //    => _tradeTransactionBusiness.GetTradeTransactionById(id); 
     }
 }
