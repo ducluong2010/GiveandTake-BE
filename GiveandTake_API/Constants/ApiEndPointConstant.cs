@@ -186,5 +186,12 @@
             public const string CancelTradeRequestEndPoint = TradeRequestsEndPoint + "/{id}/cancel";
             public const string DeleteTradeRequestEndPoint = TradeRequestsEndPoint + "/{id}/delete";
         }
+
+        public class TradeTransaction
+        {
+            public const string TradeTransactionsEndPoint = ApiEndpoint + "/trade-transactions";
+            public const string TradeTransactionEndPoint = TradeTransactionsEndPoint + "/{id}";
+            public const string TradeTransactionByAccountEndPoint = TradeTransactionsEndPoint + "/account/{accountId}";
+        }
     }
 }
