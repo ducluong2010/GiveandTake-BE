@@ -5,9 +5,9 @@ namespace GiveandTake_Repo.Models;
 
 public partial class TradeTransactionDetail
 {
-    public int TransactionDetailId { get; set; }
+    public int TradeTransactionDetailId { get; set; }
 
-    public int? TransactionId { get; set; }
+    public int? TradeTransactionId { get; set; }
 
     public int? RequestDonationId { get; set; }
 
@@ -15,5 +15,5 @@ public partial class TradeTransactionDetail
 
     public virtual Donation? RequestDonation { get; set; }
 
-    public virtual TradeTransaction? Transaction { get; set; }
+    public virtual TradeTransaction TradeTransactionDetailNavigation { get; set; } = null!;
 }
