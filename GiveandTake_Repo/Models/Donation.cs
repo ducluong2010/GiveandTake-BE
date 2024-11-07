@@ -45,7 +45,5 @@ public partial class Donation
 
     public virtual ICollection<TradeTransactionDetail> TradeTransactionDetails { get; set; } = new List<TradeTransactionDetail>();
 
-    public virtual ICollection<TradeTransaction> TradeTransactions { get; set; } = new List<TradeTransaction>();
-
     public virtual ICollection<TransactionDetail> TransactionDetails { get; set; } = new List<TransactionDetail>();
 }
