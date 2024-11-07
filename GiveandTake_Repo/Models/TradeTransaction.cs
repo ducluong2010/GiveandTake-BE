@@ -21,5 +21,5 @@ public partial class TradeTransaction
 
     public virtual Donation? TradeDonation { get; set; }
 
-    public virtual ICollection<TradeTransactionDetail> TradeTransactionDetails { get; set; } = new List<TradeTransactionDetail>();
+    public virtual TradeTransactionDetail? TradeTransactionDetail { get; set; }
 }

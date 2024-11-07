@@ -14,7 +14,9 @@ public partial class Membership
     public DateTime? PremiumUntil { get; set; }
 
     public string? Status { get; set; }
-    public int TransactionId { get; set; }
+
+    public int? TransactionId { get; set; }
+
     public virtual Account? Account { get; set; }
     public decimal Amount { get; set; }
 }
