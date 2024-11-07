@@ -79,5 +79,8 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> ChangeDonationStatus(int donationId, string newStatus)
             => _donationBusiness.ChangeDonationStatus(donationId, newStatus);
+
+        public Task<IGiveandtakeResult> GetApprovedDonationByAccountAndType(int accountId)
+            => _donationBusiness.GetApprovedDonationByAccountAndType(accountId);
     }
 }
