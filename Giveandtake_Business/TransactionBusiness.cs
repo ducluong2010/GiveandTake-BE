@@ -167,7 +167,7 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(transactionsList);
         }
 
-        // Get transaction by status
+        // Get transaction status
         public async Task<IGiveandtakeResult> GetTransactionStatus(int transactionId)
         {
             var transactionStatus = await _unitOfWork.GetRepository<Transaction>()

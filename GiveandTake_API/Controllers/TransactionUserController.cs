@@ -80,34 +80,5 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response.Message);
         }
         #endregion
-
-        #region Unused Transaction
-        //[HttpPut(ApiEndPointConstant.Transaction.ChangeTransactionStatusToAcceptedEndPoint)]
-        //[SwaggerOperation(Summary = "Accept the transaction - Sender")]
-        //public async Task<IActionResult> AcceptTransaction(int id)
-        //{
-        //    int senderId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
-
-        //    var response = await _transactionService.ChangeTransactionStatusToAccepted(id, senderId);
-        //    if (response.Status >= 0)
-        //        return Ok(response);
-        //    else
-        //        return BadRequest(response.Message);
-        //}
-
-        //[HttpPut(ApiEndPointConstant.Transaction.ChangeTransactionStatusToRejectedEndPoint)]
-        //[SwaggerOperation(Summary = "Reject the transaction - Sender")]
-        //public async Task<IActionResult> RejectTransaction(int id)
-        //{
-        //    int senderId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
-
-        //    var response = await _transactionService.ChangeTransactionStatusToRejected(id, senderId);
-        //    if (response.Status >= 0)
-        //        return Ok(response);
-        //    else
-        //        return BadRequest(response.Message);
-        //}
-
-        #endregion
     }
 }
