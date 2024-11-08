@@ -60,6 +60,4 @@ public partial class Account
     public virtual UserRole? Role { get; set; }
 
     public virtual ICollection<TradeRequest> TradeRequests { get; set; } = new List<TradeRequest>();
-
-    public virtual ICollection<TradeTransaction> TradeTransactions { get; set; } = new List<TradeTransaction>();
 }

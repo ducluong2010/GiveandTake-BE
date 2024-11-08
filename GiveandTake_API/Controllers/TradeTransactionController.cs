@@ -23,7 +23,7 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response.Message);
         }
 
-        [HttpGet(ApiEndPointConstant.TradeTransaction.TradeTransactionEndPoint)]
+ /*       [HttpGet(ApiEndPointConstant.TradeTransaction.TradeTransactionEndPoint)]
         public async Task<IActionResult> GetTradeTransactionById(int id)
         {
             var response = await _tradeTransactionService.GetTradeTransactionById(id);
@@ -32,6 +32,6 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response.Message);
         }
-
+ */
     }
 }

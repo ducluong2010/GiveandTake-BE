@@ -15,5 +15,5 @@ public partial class TradeTransactionDetail
 
     public virtual Donation? RequestDonation { get; set; }
 
-    public virtual TradeTransaction TradeTransactionDetailNavigation { get; set; } = null!;
+    public virtual TradeTransaction? TradeTransaction { get; set; }
 }
