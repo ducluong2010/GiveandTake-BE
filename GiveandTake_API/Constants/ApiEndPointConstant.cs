@@ -112,6 +112,16 @@
             public const string GetQRCodeByTransactionId = QRCodeEndPoint + "/{transactionId}/{donationId}";
         }
 
+        public class TradeTransactionDetail
+        {
+            public const string TradeTransactionDetailsEndPoint = ApiEndpoint + "/trade-transaction-details";
+            public const string TradeTransactionDetailEndPoint = TradeTransactionDetailsEndPoint + "/{id}";
+            public const string TradeTransactionDetailByTradeTransactionEndPoint = TradeTransactionDetailsEndPoint + "/trade-transaction/{tradeTransactionId}";
+
+            public const string TradeQRCodeEndPoint = ApiEndpoint + "/trade-qrcode";
+            public const string GetTradeQRCodeByTradeTransactionId = TradeQRCodeEndPoint + "/{tradeTransactionId}/{requestDonationId}";
+        }
+
         public class DonationImage
         {
             public const string DonationImagesEndPoint = ApiEndpoint + "/product-images";
@@ -191,7 +201,11 @@
         {
             public const string TradeTransactionsEndPoint = ApiEndpoint + "/trade-transactions";
             public const string TradeTransactionEndPoint = TradeTransactionsEndPoint + "/{id}";
-            public const string TradeTransactionByAccountEndPoint = TradeTransactionsEndPoint + "/account/{accountId}";
+            public const string AcceptTradeRequestEndPoint = TradeTransactionsEndPoint + "/accept/{tradeRequestId}/";
+            public const string GetTradeTransactionStatusEndPoint = TradeTransactionsEndPoint + "/{id}/status";
+            public const string GetTradeTransactionByAccountIdEndPoint = TradeTransactionsEndPoint + "/account/{accountId}";
+            public const string RejectTradeRequestEndPoint = TradeTransactionsEndPoint + "/reject/{tradeRequestId}/";
+            public const string CompleteTradeTransactionEndPoint = TradeTransactionsEndPoint + "/complete/{tradeTransactionId}/";
         }
     }
 }
