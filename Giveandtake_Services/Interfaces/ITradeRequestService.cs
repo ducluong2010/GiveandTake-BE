@@ -13,6 +13,8 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> GetAllTradeRequests();
         Task<IGiveandtakeResult> GetTradeRequestById(int id);
         Task<IGiveandtakeResult> GetTradeRequestByAccountId(int accountId);
+        Task<IGiveandtakeResult> GetTradeRequestByTradeDonationId(int requestDonationId);
+
         Task<IGiveandtakeResult> CreateTradeRequest(TradeRequestDTO tradeRequestDTO);
         Task<IGiveandtakeResult> CancelTradeRequest(int requestId, int accountId);
         Task<IGiveandtakeResult> DeleteTradeRequest(int requestId);
