@@ -63,6 +63,21 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(tradeRequestList);
         }
 
+        public async Task<IGiveandtakeResult> GetTradeRequestByTradeDonationId(int requestDonationId)
+        {
+            var requestDonation = await _unitOfWork.GetRepository<TradeRequest>()
+                .GetListAsync(predicate: x => x.RequestDonationId == requestDonationId, selector: x => new GetTradeRequestDTO
+                {
+                    TradeRequestId = x.TradeRequestId,
+                    AccountId = x.AccountId,
+                    TradeDonationId = x.TradeDonationId,
+                    RequestDonationId = x.RequestDonationId,
+                    RequestDate = x.RequestDate,
+                    Status = x.Status
+                });
+            return new GiveandtakeResult(requestDonation);
+        }
+
         public async Task<IGiveandtakeResult> CreateTradeRequest(TradeRequestDTO tradeRequestDTO)
         {
             GiveandtakeResult result = new GiveandtakeResult();
@@ -193,37 +208,6 @@ namespace Giveandtake_Business
                 result.Message = "Trade request canceled successfully.";
             }
 
-            return result;
-        }
-
-        public async Task<IGiveandtakeResult> DeleteTradeRequests()
-        {
-            GiveandtakeResult result = new GiveandtakeResult();
-
-            var tradeRequests = await _unitOfWork.GetRepository<TradeRequest>()
-                .GetListAsync(predicate: r => r.Status == "Rejected" || r.Status == "Cancelled");
-
-            if (tradeRequests == null || !tradeRequests.Any())
-            {
-                return new GiveandtakeResult(-1, "No trade requests found with status 'Rejected' or 'Cancelled'.");
-            }
-
-            foreach (var request in tradeRequests)
-            {
-                _unitOfWork.GetRepository<TradeRequest>().DeleteAsync(request);
-            }
-
-            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
-            if (isSuccessful)
-            {
-                result.Status = 1;
-                result.Message = "Trade requests deleted successfully.";
-            }
-            else
-            {
-                result.Status = -1;
-                result.Message = "Delete unsuccessfully.";
-            }
             return result;
         }
 

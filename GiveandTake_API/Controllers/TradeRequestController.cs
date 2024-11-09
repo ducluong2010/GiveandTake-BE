@@ -48,6 +48,17 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
+        [HttpGet(ApiEndPointConstant.TradeRequest.TradeRequestByDonationEndPoint)]
+        [SwaggerOperation(Summary = "Get trade request by request donation id")]
+        public async Task<IActionResult> GetTradeRequestByTradeDonation(int requestDonationId)
+        {
+            var response = await _tradeRequestService.GetTradeRequestByTradeDonationId(requestDonationId);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response);
+        }
+
         [HttpPost(ApiEndPointConstant.TradeRequest.CreateTradeRequestEndPoint)]
         [SwaggerOperation(Summary = "Create trade request")]
         public async Task<IActionResult> CreateTradeRequest([FromBody] TradeRequestDTO tradeRequestDTO)

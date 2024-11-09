@@ -192,6 +192,7 @@
             public const string TradeRequestsEndPoint = ApiEndpoint + "/trade-requests";
             public const string TradeRequestEndPoint = TradeRequestsEndPoint + "/{id}";
             public const string TradeRequestByAccountEndPoint = TradeRequestsEndPoint + "/account/{accountId}";
+            public const string TradeRequestByDonationEndPoint = TradeRequestsEndPoint + "/donation/{requestDonationId}";
             public const string CreateTradeRequestEndPoint = TradeRequestsEndPoint + "/create";
             public const string CancelTradeRequestEndPoint = TradeRequestsEndPoint + "/{id}/cancel";
             public const string DeleteTradeRequestEndPoint = TradeRequestsEndPoint + "/{id}/delete";
