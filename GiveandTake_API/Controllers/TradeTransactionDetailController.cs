@@ -77,7 +77,7 @@ namespace GiveandTake_API.Controllers
         {
             var response = await _tradeTransactionDetailService.GetQrcodeByTradeTransactionId(tradeTransactionId);
             if (response.Status >= 0)
-                return Ok(response.Data);
+                return Ok(new { QrcodeUrl = response.Data });
             else
                 return BadRequest(response.Message);
         }
