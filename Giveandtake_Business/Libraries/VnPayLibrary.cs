@@ -198,12 +198,22 @@ public class VnPayLibrary
 
 public class VnPayCompare : IComparer<string>
 {
+
+    private static readonly CompareInfo CompareInfo = CultureInfo.InvariantCulture.CompareInfo;
+
     public int Compare(string x, string y)
     {
-        if (x == y) return 0;
+        if (ReferenceEquals(x, y)) return 0;  
         if (x == null) return -1;
         if (y == null) return 1;
-        var vnpCompare = CompareInfo.GetCompareInfo("en-US");
-        return vnpCompare.Compare(x, y, CompareOptions.Ordinal);
+
+        try
+        {
+            return CompareInfo.Compare(x, y, CompareOptions.Ordinal);
+        }
+        catch (ArgumentException)
+        {
+            return string.Compare(x, y, StringComparison.Ordinal);
+        }
     }
 }
