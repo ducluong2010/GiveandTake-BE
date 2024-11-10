@@ -389,6 +389,10 @@ namespace Giveandtake_Business
             requestDonation.Type = 1;
             tradeDonation.Type = 1;
 
+            requestDonation.Status = "Approved";
+            tradeDonation.Status = "Approved";
+
+
             _unitOfWork.GetRepository<Donation>().UpdateAsync(requestDonation);
             _unitOfWork.GetRepository<Donation>().UpdateAsync(tradeDonation);
 
