@@ -8,11 +8,11 @@ namespace GiveandTake_Repo.DTOs.Report
 {
     public class ReportDTO
     {
+        public int ReportId { get; set; }
+
         public int? SenderId { get; set; }
 
         public string? SenderName { get; set; }
-
-        public int ReportId { get; set; }
 
         public int? AccountId { get; set; }
 
@@ -37,9 +37,11 @@ namespace GiveandTake_Repo.DTOs.Report
 
     public class ReportCreateDTO
     {
+        public int? AccountId { get; set; }
+
         public int? SenderId { get; set; }
 
-        public int? AccountId { get; set; }
+        public int? DonationId { get; set; }
 
         public string? Description { get; set; }
 

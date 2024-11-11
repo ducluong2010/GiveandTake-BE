@@ -51,16 +51,15 @@ namespace Giveandtake_Business
                     Status = r.Status,
                     CreatedDate = r.CreatedDate,
                     ReportMediaUrls = r.ReportMedia.Select(m => m.ReportUrl).ToList(),
-                    //DonationId = r.DonationId,
-                    //DonationName = r.DonationId.HasValue && donationDict.ContainsKey(r.DonationId.Value)
-                    //    ? donationDict[r.DonationId.Value]
-                    //    : null
+                    DonationId = r.DonationId,
+                    DonationName = r.DonationId.HasValue && donationDict.ContainsKey(r.DonationId.Value)
+                        ? donationDict[r.DonationId.Value]
+                        : null
                 },
                 include: source => source
                     .Include(r => r.Account)
                     .Include(r => r.ReportType)
                     .Include(r => r.ReportMedia)
-                    //.Include(r => r.Donation)  // Bao gồm thông tin Donation nếu có
             );
 
 
@@ -97,13 +96,13 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(paginatedResult);
         }
 
-        public async Task<IGiveandtakeResult> GetReportsBySenderId(int senderId)
+        public async Task<IGiveandtakeResult> GetReportsByAccountId(int accountId)
         {
             var accountRepository = _unitOfWork.GetRepository<Account>();
             var reportRepository = _unitOfWork.GetRepository<Report>();
             var donationRepository = _unitOfWork.GetRepository<Donation>();
 
-            var accountExists = await accountRepository.GetAllAsync(a => a.AccountId == senderId)
+            var accountExists = await accountRepository.GetAllAsync(a => a.AccountId == accountId)
                                                         .ContinueWith(t => t.Result.Any());
 
             if (!accountExists)
@@ -118,7 +117,7 @@ namespace Giveandtake_Business
             var donationDict = allDonations.ToDictionary(d => d.DonationId, d => d.Name);
 
             var allReports = await reportRepository.GetListAsync(
-                predicate: r => r.SenderId == senderId,
+                predicate: r => r.AccountId == accountId,
                 selector: r => new ReportDTO
                 {
                     ReportId = r.ReportId,
@@ -138,21 +137,87 @@ namespace Giveandtake_Business
                     Status = r.Status,
                     CreatedDate = r.CreatedDate,
                     ReportMediaUrls = r.ReportMedia.Select(m => m.ReportUrl).ToList(),
-                    //DonationId = r.DonationId,
-                    //DonationName = r.DonationId.HasValue && donationDict.ContainsKey(r.DonationId.Value)
-                    //    ? donationDict[r.DonationId.Value]
-                    //    : null
+                    DonationId = r.DonationId,
+                    DonationName = r.DonationId.HasValue && donationDict.ContainsKey(r.DonationId.Value)
+                        ? donationDict[r.DonationId.Value]
+                        : null
                 },
                 include: source => source
                     .Include(r => r.Account)     
                     .Include(r => r.ReportType)  
                     .Include(r => r.ReportMedia) 
-                    //.Include(r => r.Donation)   
             );
 
             if (allReports == null || !allReports.Any())
             {
                 return new GiveandtakeResult(-1, "No reports found for the specified sender.");
+            }
+
+            var sortedReports = allReports.OrderByDescending(r => r.CreatedDate).ToList();
+
+            return new GiveandtakeResult(sortedReports);
+        }
+
+        public async Task<IGiveandtakeResult> GetReportsByApprovedBy(int approvedBy)
+        {
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+            var reportRepository = _unitOfWork.GetRepository<Report>();
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+
+            var approverExists = await accountRepository.GetAllAsync(a => a.AccountId == approvedBy)
+                                                        .ContinueWith(t => t.Result.Any());
+
+            if (!approverExists)
+            {
+                return new GiveandtakeResult(-1, "ApprovedBy does not exist.");
+            }
+
+            var allAccounts = await accountRepository.GetAllAsync();
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
+
+            var allDonations = await donationRepository.GetAllAsync();
+            var donationDict = allDonations.ToDictionary(d => d.DonationId, d => d.Name);
+
+            var approvedDonationIds = allDonations
+                                       .Where(d => d.ApprovedBy == approvedBy)
+                                       .Select(d => d.DonationId)
+                                       .ToHashSet(); 
+
+            var allReports = await reportRepository.GetListAsync(
+                predicate: r => r.DonationId.HasValue && approvedDonationIds.Contains(r.DonationId.Value),
+                selector: r => new ReportDTO
+                {
+                    ReportId = r.ReportId,
+                    SenderId = r.SenderId,
+                    SenderName = r.SenderId.HasValue && accountDict.ContainsKey(r.SenderId.Value)
+                        ? accountDict[r.SenderId.Value]
+                        : null,
+
+                    AccountId = r.AccountId,
+                    AccountName = r.AccountId.HasValue && accountDict.ContainsKey(r.AccountId.Value)
+                        ? accountDict[r.AccountId.Value]
+                        : null,
+
+                    ReportTypeId = r.ReportTypeId,
+                    ReportTypeName = r.ReportType.ReportTypeName,
+                    Description = r.Description,
+                    Status = r.Status,
+                    CreatedDate = r.CreatedDate,
+                    ReportMediaUrls = r.ReportMedia.Select(m => m.ReportUrl).ToList(),
+                    DonationId = r.DonationId,
+                    DonationName = r.DonationId.HasValue && donationDict.ContainsKey(r.DonationId.Value)
+                        ? donationDict[r.DonationId.Value]
+                        : null
+                },
+                include: source => source
+                    .Include(r => r.Account)
+                    .Include(r => r.ReportType)
+                    .Include(r => r.ReportMedia)
+            );
+
+            if (allReports == null || !allReports.Any())
+            {
+                return new GiveandtakeResult(-1, "No reports found for the specified ApprovedBy.");
             }
 
             var sortedReports = allReports.OrderByDescending(r => r.CreatedDate).ToList();
@@ -217,16 +282,15 @@ namespace Giveandtake_Business
                     Status = r.Status,
                     CreatedDate = r.CreatedDate,
                     ReportMediaUrls = r.ReportMedia.Select(m => m.ReportUrl).ToList(),
-                    //DonationId = r.DonationId,
-                    //DonationName = r.DonationId.HasValue && donationDict.ContainsKey(r.DonationId.Value)
-                    //    ? donationDict[r.DonationId.Value]
-                    //    : null
+                    DonationId = r.DonationId,
+                    DonationName = r.DonationId.HasValue && donationDict.ContainsKey(r.DonationId.Value)
+                        ? donationDict[r.DonationId.Value]
+                        : null
                 },
                 include: source => source
                     .Include(r => r.Account)
                     .Include(r => r.ReportType)
                     .Include(r => r.ReportMedia)
-                    //.Include(r => r.Donation) 
             );
 
             var sortedReports = allReports.OrderByDescending(r => r.CreatedDate).ToList();
@@ -246,7 +310,6 @@ namespace Giveandtake_Business
                     .Include(r => r.Account)
                     .Include(r => r.ReportType)
                     .Include(r => r.ReportMedia)
-                    //.Include(r => r.Donation)  
             );
 
             if (report == null)
@@ -264,10 +327,10 @@ namespace Giveandtake_Business
                     .FirstOrDefault()?.FullName
                 : null;
 
-            //var donationName = report.DonationId.HasValue
-            //    ? (await donationRepository.GetAllAsync(d => d.DonationId == report.DonationId.Value))
-            //        .FirstOrDefault()?.Name
-            //    : null;
+            var donationName = report.DonationId.HasValue
+                ? (await donationRepository.GetAllAsync(d => d.DonationId == report.DonationId.Value))
+                    .FirstOrDefault()?.Name
+                : null;
 
             var reportDTO = new ReportDTO
             {
@@ -282,8 +345,8 @@ namespace Giveandtake_Business
                 Status = report.Status,
                 CreatedDate = report.CreatedDate,
                 ReportMediaUrls = report.ReportMedia?.Select(m => m.ReportUrl).ToList() ?? new List<string>(),
-                //DonationId = report.DonationId,
-                //DonationName = donationName  
+                DonationId = report.DonationId,
+                DonationName = donationName
             };
 
             return new GiveandtakeResult(reportDTO);
@@ -305,17 +368,10 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult(-1, "Report type not found");
             }
 
-            var existingReport = await _unitOfWork.GetRepository<Report>()
-      .FirstOrDefaultAsync(r => r.Description == reportCreateDTO.Description && r.ReportTypeId == reportCreateDTO.ReportTypeId);
-            if (existingReport != null)
-            {
-                return new GiveandtakeResult(-1, "A report with the same description already exists for this report type.");
-            }
-
             var newReport = new Report
             {
                 SenderId = reportCreateDTO.SenderId,
-                //DonationId = reportCreateDTO.DonationId,
+                DonationId = reportCreateDTO.DonationId,
                 AccountId = reportCreateDTO.AccountId,
                 Description = reportCreateDTO.Description,
                 ReportTypeId = reportCreateDTO.ReportTypeId,
