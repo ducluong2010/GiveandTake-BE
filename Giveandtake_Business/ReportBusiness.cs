@@ -21,30 +21,53 @@ namespace Giveandtake_Business
         public async Task<IGiveandtakeResult> GetAllReports(int page = 1, int pageSize = 8)
         {
             var reportRepository = _unitOfWork.GetRepository<Report>();
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+
+            var allAccounts = await accountRepository.GetAllAsync();
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
+
+            var allDonations = await donationRepository.GetAllAsync();
+            var donationDict = allDonations.ToDictionary(d => d.DonationId, d => d.Name); 
 
             var allReports = await reportRepository.GetListAsync(
                 predicate: r => true,
                 selector: r => new ReportDTO
                 {
                     ReportId = r.ReportId,
+                    SenderId = r.SenderId,
+                    SenderName = r.SenderId.HasValue && accountDict.ContainsKey(r.SenderId.Value)
+                        ? accountDict[r.SenderId.Value]
+                        : null,  
+
                     AccountId = r.AccountId,
-                    AccountName = r.Account.FullName,
+                    AccountName = r.AccountId.HasValue && accountDict.ContainsKey(r.AccountId.Value)
+                        ? accountDict[r.AccountId.Value]
+                        : null,
+
                     ReportTypeId = r.ReportTypeId,
                     ReportTypeName = r.ReportType.ReportTypeName,
                     Description = r.Description,
                     Status = r.Status,
                     CreatedDate = r.CreatedDate,
-                    ReportMediaUrls = r.ReportMedia.Select(m => m.ReportUrl).ToList()
+                    ReportMediaUrls = r.ReportMedia.Select(m => m.ReportUrl).ToList(),
+                    //DonationId = r.DonationId,
+                    //DonationName = r.DonationId.HasValue && donationDict.ContainsKey(r.DonationId.Value)
+                    //    ? donationDict[r.DonationId.Value]
+                    //    : null
                 },
                 include: source => source
                     .Include(r => r.Account)
                     .Include(r => r.ReportType)
                     .Include(r => r.ReportMedia)
+                    //.Include(r => r.Donation)  // Bao gồm thông tin Donation nếu có
             );
+
 
             int totalItems = allReports.Count();
             int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
             if (page > totalPages) page = totalPages;
+
             if (totalItems == 0)
             {
                 return new GiveandtakeResult(new PaginatedResult<ReportDTO>
@@ -73,9 +96,149 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(paginatedResult);
         }
+
+        public async Task<IGiveandtakeResult> GetReportsBySenderId(int senderId)
+        {
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+            var reportRepository = _unitOfWork.GetRepository<Report>();
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+
+            var accountExists = await accountRepository.GetAllAsync(a => a.AccountId == senderId)
+                                                        .ContinueWith(t => t.Result.Any());
+
+            if (!accountExists)
+            {
+                return new GiveandtakeResult(-1, "SenderId does not exist.");
+            }
+
+            var allAccounts = await accountRepository.GetAllAsync();
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
+
+            var allDonations = await donationRepository.GetAllAsync();
+            var donationDict = allDonations.ToDictionary(d => d.DonationId, d => d.Name);
+
+            var allReports = await reportRepository.GetListAsync(
+                predicate: r => r.SenderId == senderId,
+                selector: r => new ReportDTO
+                {
+                    ReportId = r.ReportId,
+                    SenderId = r.SenderId,
+                    SenderName = r.SenderId.HasValue && accountDict.ContainsKey(r.SenderId.Value)
+                        ? accountDict[r.SenderId.Value]
+                        : null,
+
+                    AccountId = r.AccountId,
+                    AccountName = r.AccountId.HasValue && accountDict.ContainsKey(r.AccountId.Value)
+                        ? accountDict[r.AccountId.Value]
+                        : null,
+
+                    ReportTypeId = r.ReportTypeId,
+                    ReportTypeName = r.ReportType.ReportTypeName,
+                    Description = r.Description,
+                    Status = r.Status,
+                    CreatedDate = r.CreatedDate,
+                    ReportMediaUrls = r.ReportMedia.Select(m => m.ReportUrl).ToList(),
+                    //DonationId = r.DonationId,
+                    //DonationName = r.DonationId.HasValue && donationDict.ContainsKey(r.DonationId.Value)
+                    //    ? donationDict[r.DonationId.Value]
+                    //    : null
+                },
+                include: source => source
+                    .Include(r => r.Account)     
+                    .Include(r => r.ReportType)  
+                    .Include(r => r.ReportMedia) 
+                    //.Include(r => r.Donation)   
+            );
+
+            if (allReports == null || !allReports.Any())
+            {
+                return new GiveandtakeResult(-1, "No reports found for the specified sender.");
+            }
+
+            var sortedReports = allReports.OrderByDescending(r => r.CreatedDate).ToList();
+
+            return new GiveandtakeResult(sortedReports);
+        }
+
+        public async Task<IGiveandtakeResult> GetAllReportsByStaff(int accountId)
+        {
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+            var reportRepository = _unitOfWork.GetRepository<Report>();
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+
+            var account = await accountRepository.GetAllAsync(a => a.AccountId == accountId && a.RoleId == 2)
+                                                 .ContinueWith(t => t.Result.FirstOrDefault());
+            if (account == null)
+            {
+                return new GiveandtakeResult(-1, "Account not found or not a staff member");
+            }
+
+            int accountActiveTime = account.ActiveTime ?? -1;
+            TimeSpan startTime, endTime;
+
+            if (accountActiveTime == 1)
+            {
+                startTime = TimeSpan.Zero;
+                endTime = new TimeSpan(12, 0, 0);
+            }
+            else if (accountActiveTime == 2)
+            {
+                startTime = new TimeSpan(12, 0, 0);
+                endTime = new TimeSpan(24, 0, 0);
+            }
+            else
+            {
+                return new GiveandtakeResult(-1, "Invalid ActiveTime value in account");
+            }
+
+            var allDonations = await donationRepository.GetAllAsync();
+            var donationDict = allDonations.ToDictionary(d => d.DonationId, d => d.Name);
+
+            var allReports = await reportRepository.GetListAsync(
+                predicate: r => r.CreatedDate.HasValue &&
+                               r.CreatedDate.Value.TimeOfDay >= startTime &&
+                               r.CreatedDate.Value.TimeOfDay < endTime,
+                selector: r => new ReportDTO
+                {
+                    ReportId = r.ReportId,
+                    SenderId = r.SenderId,
+                    SenderName = r.SenderId.HasValue && r.SenderId.Value != 0
+                        ? r.SenderId.Value.ToString() 
+                        : null,
+
+                    AccountId = r.AccountId,
+                    AccountName = r.AccountId.HasValue && r.AccountId.Value != 0
+                        ? r.Account.FullName 
+                        : null,
+
+                    ReportTypeId = r.ReportTypeId,
+                    ReportTypeName = r.ReportType.ReportTypeName,
+                    Description = r.Description,
+                    Status = r.Status,
+                    CreatedDate = r.CreatedDate,
+                    ReportMediaUrls = r.ReportMedia.Select(m => m.ReportUrl).ToList(),
+                    //DonationId = r.DonationId,
+                    //DonationName = r.DonationId.HasValue && donationDict.ContainsKey(r.DonationId.Value)
+                    //    ? donationDict[r.DonationId.Value]
+                    //    : null
+                },
+                include: source => source
+                    .Include(r => r.Account)
+                    .Include(r => r.ReportType)
+                    .Include(r => r.ReportMedia)
+                    //.Include(r => r.Donation) 
+            );
+
+            var sortedReports = allReports.OrderByDescending(r => r.CreatedDate).ToList();
+
+            return new GiveandtakeResult(sortedReports);
+        }
+
         public async Task<IGiveandtakeResult> GetReportById(int reportId)
         {
             var reportRepository = _unitOfWork.GetRepository<Report>();
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
 
             var report = await reportRepository.SingleOrDefaultAsync(
                 predicate: r => r.ReportId == reportId,
@@ -83,6 +246,7 @@ namespace Giveandtake_Business
                     .Include(r => r.Account)
                     .Include(r => r.ReportType)
                     .Include(r => r.ReportMedia)
+                    //.Include(r => r.Donation)  
             );
 
             if (report == null)
@@ -90,21 +254,41 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult(404, "Report not found");
             }
 
+            var senderName = report.SenderId.HasValue
+                ? (await accountRepository.GetAllAsync(a => a.AccountId == report.SenderId.Value))
+                    .FirstOrDefault()?.FullName
+                : null;
+
+            var accountName = report.AccountId.HasValue
+                ? (await accountRepository.GetAllAsync(a => a.AccountId == report.AccountId.Value))
+                    .FirstOrDefault()?.FullName
+                : null;
+
+            //var donationName = report.DonationId.HasValue
+            //    ? (await donationRepository.GetAllAsync(d => d.DonationId == report.DonationId.Value))
+            //        .FirstOrDefault()?.Name
+            //    : null;
+
             var reportDTO = new ReportDTO
             {
                 ReportId = report.ReportId,
+                SenderId = report.SenderId,
+                SenderName = senderName, 
                 AccountId = report.AccountId,
-                AccountName = report.Account?.FullName,
+                AccountName = accountName,  
                 ReportTypeId = report.ReportTypeId,
                 ReportTypeName = report.ReportType?.ReportTypeName,
                 Description = report.Description,
                 Status = report.Status,
                 CreatedDate = report.CreatedDate,
-                ReportMediaUrls = report.ReportMedia?.Select(m => m.ReportUrl).ToList() ?? new List<string>()
+                ReportMediaUrls = report.ReportMedia?.Select(m => m.ReportUrl).ToList() ?? new List<string>(),
+                //DonationId = report.DonationId,
+                //DonationName = donationName  
             };
 
             return new GiveandtakeResult(reportDTO);
         }
+
         public async Task<IGiveandtakeResult> CreateReport(ReportCreateDTO reportCreateDTO)
         {
             var account = await _unitOfWork.GetRepository<Account>()
@@ -130,6 +314,8 @@ namespace Giveandtake_Business
 
             var newReport = new Report
             {
+                SenderId = reportCreateDTO.SenderId,
+                //DonationId = reportCreateDTO.DonationId,
                 AccountId = reportCreateDTO.AccountId,
                 Description = reportCreateDTO.Description,
                 ReportTypeId = reportCreateDTO.ReportTypeId,
@@ -151,6 +337,7 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(1, "Report created successfully");
         }
+
         public async Task<IGiveandtakeResult> UpdateReport(int reportId, ReportUpdateDTO reportUpdateDTO)
         {
             var reportRepository = _unitOfWork.GetRepository<Report>();

@@ -26,6 +26,27 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response.Message);
         }
+        [HttpGet(ApiEndPointConstant.Report.ReportStaffEndPoint)]
+        [SwaggerOperation(Summary = "Get all Reports by Staff")]
+        public async Task<IActionResult> GetAllReportsByStaff([FromQuery] int id)
+        {
+            var response = await _reportService.GetAllReportsByStaff(id);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
+
+        [HttpGet(ApiEndPointConstant.Report.ReportSendEndPoint)]
+        [SwaggerOperation(Summary = "Get all Reports by Sender")]
+        public async Task<IActionResult> GetReportsBySenderId([FromQuery] int id)
+        {
+            var response = await _reportService.GetReportsBySenderId(id);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
 
         [HttpGet(ApiEndPointConstant.Report.ReportEndPoint)]
         [SwaggerOperation(Summary = "Get Report by its id")]
