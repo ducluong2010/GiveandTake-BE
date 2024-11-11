@@ -37,11 +37,22 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response.Message);
         }
 
-        [HttpGet(ApiEndPointConstant.Report.ReportSendEndPoint)]
-        [SwaggerOperation(Summary = "Get all Reports by Sender")]
-        public async Task<IActionResult> GetReportsBySenderId([FromQuery] int id)
+        [HttpGet(ApiEndPointConstant.Report.ReportAByEndPoint)]
+        [SwaggerOperation(Summary = "Get all Reports by Approved")]
+        public async Task<IActionResult> GetReportsByApprovedBy([FromQuery] int id)
         {
-            var response = await _reportService.GetReportsBySenderId(id);
+            var response = await _reportService.GetReportsByApprovedBy(id);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
+
+        [HttpGet(ApiEndPointConstant.Report.ReportAccEndPoint)]
+        [SwaggerOperation(Summary = "Get all Reports by Account")]
+        public async Task<IActionResult> GetReportsByAccountId([FromQuery] int id)
+        {
+            var response = await _reportService.GetReportsByAccountId(id);
             if (response.Status >= 0)
                 return Ok(response.Data);
             else
