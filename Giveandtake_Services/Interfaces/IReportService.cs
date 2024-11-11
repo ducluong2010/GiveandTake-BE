@@ -18,6 +18,6 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> UpdateReport(int reportId, ReportUpdateDTO reportUpdateDto);
         Task<IGiveandtakeResult> DeleteReport(int reportId);
         Task<IGiveandtakeResult> ChangeStatusToProcessing(int reportId);
-        Task<IGiveandtakeResult> ToggleProcessingStatus(int reportId);
+        Task<IGiveandtakeResult> ToggleProcessingStatus(int reportId); 
     }
 }

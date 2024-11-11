@@ -35,6 +35,6 @@ namespace Giveandtake_Services.Implements
         public Task<IGiveandtakeResult> ChangeStatusToProcessing(int reportId)
             => _reportBusiness.ChangeStatusToProcessing(reportId);
         public Task<IGiveandtakeResult> ToggleProcessingStatus(int reportId)
-            => _reportBusiness.ToggleProcessingStatus(reportId);
+            => _reportBusiness.ToggleProcessingStatus(reportId); 
     }
 }
