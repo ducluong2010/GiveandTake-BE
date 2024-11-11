@@ -15,8 +15,6 @@ public partial class Membership
 
     public string? Status { get; set; }
 
-    public int? TransactionId { get; set; }
-
     public string? Amount { get; set; }
 
     public virtual Account? Account { get; set; }

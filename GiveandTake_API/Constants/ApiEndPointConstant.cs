@@ -139,6 +139,12 @@
             public const string FeedbackWithoutPointsEndPoint = FeedbacksEndPoint + "/without-points";
         }
 
+        public class Membership
+        {
+            public const string MembershipsEndPoint = ApiEndpoint + "/memberships";
+            public const string MembershipEndPoint = MembershipsEndPoint + "/{id}";
+        }
+
         public class Request
         {
             public const string RequestsEndPoint = ApiEndpoint + "/requests";
