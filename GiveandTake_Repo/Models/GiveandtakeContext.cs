@@ -262,10 +262,6 @@ public partial class GiveandtakeContext : DbContext
                 .UseCollation("utf8mb3_general_ci")
                 .HasCharSet("utf8mb3");
 
-            entity.HasOne(d => d.Account).WithMany(p => p.Reports)
-                .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("Report_ibfk_1");
-
             entity.HasOne(d => d.ReportType).WithMany(p => p.Reports)
                 .HasForeignKey(d => d.ReportTypeId)
                 .HasConstraintName("fk_report_reporttype");
