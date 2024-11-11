@@ -204,6 +204,7 @@ public partial class GiveandtakeContext : DbContext
 
             entity.HasIndex(e => e.AccountId, "AccountId");
 
+            entity.Property(e => e.Amount).HasMaxLength(45);
             entity.Property(e => e.PremiumUntil).HasColumnType("datetime");
             entity.Property(e => e.PurchaseDate).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(50);
@@ -374,6 +375,7 @@ public partial class GiveandtakeContext : DbContext
             entity.HasIndex(e => e.TradeDonationId, "TradeDonationId");
 
             entity.Property(e => e.TradeRequestId).ValueGeneratedNever();
+
             entity.Property(e => e.RequestDate).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(50);
 

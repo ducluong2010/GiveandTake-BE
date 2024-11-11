@@ -17,6 +17,8 @@ public partial class Report
 
     public DateTime? CreatedDate { get; set; }
 
+    public int? SenderId { get; set; }
+
     public virtual Account? Account { get; set; }
 
     public virtual ICollection<ReportMedium> ReportMedia { get; set; } = new List<ReportMedium>();

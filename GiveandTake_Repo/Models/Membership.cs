@@ -17,6 +17,7 @@ public partial class Membership
 
     public int? TransactionId { get; set; }
 
+    public string? Amount { get; set; }
+
     public virtual Account? Account { get; set; }
-    public decimal Amount { get; set; }
 }
