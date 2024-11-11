@@ -12,7 +12,8 @@ namespace Giveandtake_Services.Interfaces
     {
         Task<IGiveandtakeResult> GetAllReports(int page = 1, int pageSize = 8);
         Task<IGiveandtakeResult> GetAllReportsByStaff(int accountId);
-        Task<IGiveandtakeResult> GetReportsBySenderId(int senderId);
+        Task<IGiveandtakeResult> GetReportsByAccountId(int accountId);
+        Task<IGiveandtakeResult> GetReportsByApprovedBy(int approvedBy);
         Task<IGiveandtakeResult> GetReportById(int reportId);
         Task<IGiveandtakeResult> CreateReport(ReportCreateDTO reportCreateDto);
         Task<IGiveandtakeResult> UpdateReport(int reportId, ReportUpdateDTO reportUpdateDto);

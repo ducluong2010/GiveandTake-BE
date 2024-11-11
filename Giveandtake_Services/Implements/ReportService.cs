@@ -22,8 +22,10 @@ namespace Giveandtake_Services.Implements
             => _reportBusiness.GetAllReports(page, pageSize);
         public Task<IGiveandtakeResult> GetAllReportsByStaff(int accountId)
             => _reportBusiness.GetAllReportsByStaff(accountId);
-        public Task<IGiveandtakeResult> GetReportsBySenderId(int senderId)
-           => _reportBusiness.GetReportsBySenderId(senderId);
+        public Task<IGiveandtakeResult> GetReportsByAccountId(int accountId)
+           => _reportBusiness.GetReportsByAccountId(accountId);
+        public Task<IGiveandtakeResult> GetReportsByApprovedBy(int approvedBy)
+           => _reportBusiness.GetReportsByApprovedBy(approvedBy);
         public Task<IGiveandtakeResult> GetReportById(int reportId)
             => _reportBusiness.GetReportById(reportId);
         public Task<IGiveandtakeResult> CreateReport(ReportCreateDTO reportCreateDto) 
