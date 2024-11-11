@@ -21,8 +21,6 @@ public partial class Report
 
     public int? DonationId { get; set; }
 
-    public virtual Account? Account { get; set; }
-
     public virtual ICollection<ReportMedium> ReportMedia { get; set; } = new List<ReportMedium>();
 
     public virtual ReportType? ReportType { get; set; }
