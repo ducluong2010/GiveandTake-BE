@@ -204,6 +204,7 @@ public partial class GiveandtakeContext : DbContext
 
             entity.HasIndex(e => e.AccountId, "AccountId");
 
+            entity.Property(e => e.Amount).HasMaxLength(45);
             entity.Property(e => e.PremiumUntil).HasColumnType("datetime");
             entity.Property(e => e.PurchaseDate).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(50);
@@ -260,10 +261,6 @@ public partial class GiveandtakeContext : DbContext
                 .HasMaxLength(50)
                 .UseCollation("utf8mb3_general_ci")
                 .HasCharSet("utf8mb3");
-
-            entity.HasOne(d => d.Account).WithMany(p => p.Reports)
-                .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("Report_ibfk_1");
 
             entity.HasOne(d => d.ReportType).WithMany(p => p.Reports)
                 .HasForeignKey(d => d.ReportTypeId)
@@ -374,6 +371,7 @@ public partial class GiveandtakeContext : DbContext
             entity.HasIndex(e => e.TradeDonationId, "TradeDonationId");
 
             entity.Property(e => e.TradeRequestId).ValueGeneratedNever();
+
             entity.Property(e => e.RequestDate).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(50);
 

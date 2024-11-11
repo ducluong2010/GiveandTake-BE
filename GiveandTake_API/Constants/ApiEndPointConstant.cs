@@ -139,6 +139,12 @@
             public const string FeedbackWithoutPointsEndPoint = FeedbacksEndPoint + "/without-points";
         }
 
+        public class Membership
+        {
+            public const string MembershipsEndPoint = ApiEndpoint + "/memberships";
+            public const string MembershipEndPoint = MembershipsEndPoint + "/{id}";
+        }
+
         public class Request
         {
             public const string RequestsEndPoint = ApiEndpoint + "/requests";
@@ -154,6 +160,8 @@
         {
             public const string ReportsEndPoint = ApiEndpoint + "/report";
             public const string ReportEndPoint = ReportsEndPoint + "/{id}";
+            public const string ReportStaffEndPoint = ReportsEndPoint + "/staff";
+            public const string ReportSendEndPoint = ReportsEndPoint + "/sender";
             public const string ReportCreateEndPoint = ReportsEndPoint + "/create";
             public const string ReportUpdateEndPoint = ReportsEndPoint + "/update/{id}";
             public const string ReportDeleteEndPoint = ReportsEndPoint + "/delete/{id}";

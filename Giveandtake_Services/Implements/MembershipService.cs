@@ -18,12 +18,14 @@ namespace Giveandtake_Services.Implements
         private readonly IConfiguration _configuration;
         private readonly string _hashSecret;
         private readonly UnitOfWork _unitOfWork;
+        private readonly MemberShipBusiness _membershipBusiness;
         public MembershipService(IConfiguration configuration)
         {
             _configuration = configuration;
             _hashSecret = configuration["Vnpay:HashSecret"] ?? throw new InvalidOperationException("Vnpay:HashSecret configuration is required");
             _unitOfWork ??= new UnitOfWork();
-        }
+            _membershipBusiness = new MemberShipBusiness();
+        } 
         public string CreatePaymentUrlAsync(PaymentInformationModel model, HttpContext context)
         {
             try
@@ -144,7 +146,7 @@ namespace Giveandtake_Services.Implements
                 var purchaseDate = DateTime.UtcNow; 
                 var premiumUntil = purchaseDate.AddMonths(1); 
 
-                var newMemberDto = new MemberDTO
+                var newMemberDto = new MembershipDTO
                 {
                     AccountId = accountId,
                     PurchaseDate = purchaseDate,
@@ -159,5 +161,20 @@ namespace Giveandtake_Services.Implements
             return response;
         }
 
+
+        public Task<IGiveandtakeResult> GetAllMemberships(int page = 1, int pageSize = 8)
+            => _membershipBusiness.GetAllMemberships(page, pageSize);
+
+        public Task<IGiveandtakeResult> GetMembershipById(int accountId)
+            => _membershipBusiness.GetMembershipByAccountId(accountId);
+
+        public Task<IGiveandtakeResult> CreateMembership(CreateMembershipDTO membershipInfo)
+            => _membershipBusiness.CreateMembership(membershipInfo);
+
+        public Task<IGiveandtakeResult> UpdateMembership(int id, UpdateMembershipDTO membershipInfo)
+            => _membershipBusiness.UpdateMembership(id, membershipInfo);
+
+        public Task<IGiveandtakeResult> DeleteMembership(int id)
+            => _membershipBusiness.DeleteMembership(id);
     }
 }
