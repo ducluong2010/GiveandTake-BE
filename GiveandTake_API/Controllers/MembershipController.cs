@@ -3,6 +3,10 @@ using GiveandTake_Repo.Models;
 using Giveandtake_Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Giveandtake_Business;
+using GiveandTake_API.Constants;
+using GiveandTake_Repo.DTOs.Member;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace GiveandTake_API.Controllers
 {
@@ -11,10 +15,12 @@ namespace GiveandTake_API.Controllers
     public class MembershipController : ControllerBase
     {
         private readonly IMembershipService _membershipService;
+        private readonly MemberShipBusiness _memberShipBusiness;
 
         public MembershipController(IMembershipService membershipService)
         {
             _membershipService = membershipService;
+            _memberShipBusiness = new MemberShipBusiness();
         }
 
         [HttpPost("create-payment")]
@@ -117,6 +123,80 @@ namespace GiveandTake_API.Controllers
                     Message = "Có lỗi xảy ra khi xử lý callback thanh toán",
                     Error = ex.Message
                 });
+            }
+        }
+
+        [HttpGet(ApiEndPointConstant.Membership.MembershipsEndPoint)]
+        [SwaggerOperation(Summary = "Get all Memberships with pagination")]
+        public async Task<IActionResult> GetAllMemberships([FromQuery] int page = 1, [FromQuery] int pageSize = 8)
+        {
+            var response = await _memberShipBusiness.GetAllMemberships(page, pageSize);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
+
+        [HttpGet(ApiEndPointConstant.Membership.MembershipEndPoint)]
+        [SwaggerOperation(Summary = "Get Membership by Account Id")]
+        public async Task<IActionResult> GetMembershipById(int id)
+        {
+            var response = await _memberShipBusiness.GetMembershipByAccountId(id);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
+
+        [HttpPost(ApiEndPointConstant.Membership.MembershipsEndPoint)]
+        [SwaggerOperation(Summary = "Create new Membership")]
+        public async Task<IActionResult> CreateMembership([FromBody] CreateMembershipDTO createMembershipDto)
+        {
+            var response = await _memberShipBusiness.CreateMembership(createMembershipDto);
+
+            if (response.Status >= 0)
+            {
+                return Ok(response.Message);
+            }
+            else
+            {
+                return BadRequest(response.Message);
+            }
+        }
+
+        [HttpPut(ApiEndPointConstant.Membership.MembershipEndPoint)]
+        [SwaggerOperation(Summary = "Update Membership")]
+        public async Task<IActionResult> UpdateMembership(int id, [FromBody] UpdateMembershipDTO membershipInfo)
+        {
+            if (membershipInfo == null)
+            {
+                return BadRequest("Membership data is required");
+            }
+
+            var response = await _memberShipBusiness.UpdateMembership(id, membershipInfo);
+            if (response.Status >= 0)
+            {
+                return Ok(response.Message);
+            }
+            else
+            {
+                return BadRequest(response.Message);
+            }
+        }
+
+        [HttpDelete(ApiEndPointConstant.Membership.MembershipEndPoint)]
+        [SwaggerOperation(Summary = "Delete Membership by its id")]
+        public async Task<IActionResult> DeleteMembership(int id)
+        {
+            var response = await _memberShipBusiness.DeleteMembership(id);
+
+            if (response.Status >= 0)
+            {
+                return Ok(response.Message);
+            }
+            else
+            {
+                return BadRequest(response.Message);
             }
         }
     }
