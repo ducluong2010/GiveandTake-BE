@@ -154,6 +154,8 @@
         {
             public const string ReportsEndPoint = ApiEndpoint + "/report";
             public const string ReportEndPoint = ReportsEndPoint + "/{id}";
+            public const string ReportStaffEndPoint = ReportsEndPoint + "/staff";
+            public const string ReportSendEndPoint = ReportsEndPoint + "/sender";
             public const string ReportCreateEndPoint = ReportsEndPoint + "/create";
             public const string ReportUpdateEndPoint = ReportsEndPoint + "/update/{id}";
             public const string ReportDeleteEndPoint = ReportsEndPoint + "/delete/{id}";
