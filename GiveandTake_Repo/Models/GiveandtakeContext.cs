@@ -251,7 +251,7 @@ public partial class GiveandtakeContext : DbContext
 
             entity.ToTable("Report");
 
-            entity.HasIndex(e => e.AccountId, "AccountId");
+            entity.HasIndex(e => e.AccountId, "FK_Report_ibfk_1");
 
             entity.HasIndex(e => e.ReportTypeId, "fk_report_reporttype");
 
@@ -261,6 +261,10 @@ public partial class GiveandtakeContext : DbContext
                 .HasMaxLength(50)
                 .UseCollation("utf8mb3_general_ci")
                 .HasCharSet("utf8mb3");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.Reports)
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK_Report_ibfk_1");
 
             entity.HasOne(d => d.ReportType).WithMany(p => p.Reports)
                 .HasForeignKey(d => d.ReportTypeId)
