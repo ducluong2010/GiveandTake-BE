@@ -1,4 +1,5 @@
 using GiveandTake_API.Extensions;
+using Giveandtake_Business;
 using Giveandtake_Business.Utils;
 using Giveandtake_Services.Implements;
 using Giveandtake_Services.Interfaces;
@@ -21,6 +22,9 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IMembershipService, MembershipService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<DonationService>();
+builder.Services.AddScoped<AccountBusiness>();
+builder.Services.AddHostedService<PremiumExpirationService>();
+builder.Services.AddLogging();
 
 builder.Services.AddCors(o =>
 {
