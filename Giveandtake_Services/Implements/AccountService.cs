@@ -54,5 +54,8 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> Register(UserRegisterDTO registerDto)
             => _accountBusiness.Register(registerDto);
+
+        public Task<IGiveandtakeResult> UpdatePremiumUntilById(int accountId)
+            => _accountBusiness.UpdatePremiumUntilById(accountId);
     }
 }
