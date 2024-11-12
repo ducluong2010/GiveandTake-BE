@@ -18,6 +18,7 @@
             public const string EmailAccountsEndpoint = AccountsEndpoint + "/{email}/info";
             public const string AccountEndpoint = AccountsEndpoint + "/{id}";
             public const string PromoteToPremiumEndPoint = AccountsEndpoint + "/promote/{id}";
+            public const string UpdatePremiumUntilEndPoint = AccountsEndpoint + "/updatepremiumuntil/{id}";
             public const string BanAccountEndPoint = AccountsEndpoint + "/ban/{id}";
             public const string UnbanAccountEndPoint = AccountsEndpoint + "/unban/{id}";
             public const string ChangePasswordEndPoint = AccountsEndpoint + "/{id}/password";

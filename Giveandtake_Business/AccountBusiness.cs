@@ -375,6 +375,45 @@ namespace Giveandtake_Business
             }
             return new GiveandtakeResult("Account was promoted to Premium");
         }
+
+        //Method Update PremiumUnti by account id
+        public async Task<IGiveandtakeResult> UpdatePremiumUntilById(int accountId)
+        {
+            Account account = await _unitOfWork.GetRepository<Account>()
+                .SingleOrDefaultAsync(predicate: a => a.AccountId == accountId);
+            if (account == null) return new GiveandtakeResult();
+            else
+            {
+                account.PremiumUntil = DateTime.Now.AddDays(30);
+
+                _unitOfWork.GetRepository<Account>().UpdateAsync(account);
+                await _unitOfWork.CommitAsync();
+            }
+            return new GiveandtakeResult("PremiumUntil Update Successfully");
+        }
+
+        //Method Check and Update Expired Premium
+        public async Task CheckAndUpdateExpiredPremium()
+        {
+            var expiredAccounts = await _unitOfWork.GetRepository<Account>()
+                .GetListAsync(
+                    predicate: a => a.IsPremium == true &&
+                                   a.PremiumUntil.HasValue &&
+                                   a.PremiumUntil.Value < DateTime.Now
+                );
+
+            if (expiredAccounts.Any())
+            {
+                foreach (var account in expiredAccounts)
+                {
+                    account.IsPremium = false;
+                    account.PremiumUntil = null;
+                    _unitOfWork.GetRepository<Account>().UpdateAsync(account);
+                }
+
+                await _unitOfWork.CommitAsync();
+            }
+        }
     }
 
     public class PaginatedResult<T>
