@@ -11,6 +11,9 @@ namespace Giveandtake_Services.Interfaces
     public interface IReportService
     {
         Task<IGiveandtakeResult> GetAllReports(int page = 1, int pageSize = 8);
+        Task<IGiveandtakeResult> GetReportUser();
+        Task<IGiveandtakeResult> GetReportDonation();
+        Task<IGiveandtakeResult> GetReportTech();
         Task<IGiveandtakeResult> GetAllReportsByStaff(int accountId);
         Task<IGiveandtakeResult> GetReportsByAccountId(int accountId);
         Task<IGiveandtakeResult> GetReportsByApprovedBy(int approvedBy);

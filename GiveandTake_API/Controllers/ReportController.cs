@@ -26,6 +26,36 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response.Message);
         }
+        [HttpGet(ApiEndPointConstant.Report.ReportsUserPoint)]
+        [SwaggerOperation(Summary = "Get all Reports User")]
+        public async Task<IActionResult> GetReportUser()
+        {
+            var response = await _reportService.GetReportUser();
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
+        [HttpGet(ApiEndPointConstant.Report.ReportsDonaPoint)]
+        [SwaggerOperation(Summary = "Get all Reports Donation")]
+        public async Task<IActionResult> GetReportDonation()
+        {
+            var response = await _reportService.GetReportDonation();
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
+        [HttpGet(ApiEndPointConstant.Report.ReportsTechPoint)]
+        [SwaggerOperation(Summary = "Get all Reports Tech")]
+        public async Task<IActionResult> GetReportTech()
+        {
+            var response = await _reportService.GetReportTech();
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
         [HttpGet(ApiEndPointConstant.Report.ReportStaffEndPoint)]
         [SwaggerOperation(Summary = "Get all Reports by Staff")]
         public async Task<IActionResult> GetAllReportsByStaff([FromQuery] int id)
@@ -95,16 +125,6 @@ namespace GiveandTake_API.Controllers
         public async Task<IActionResult> DeleteReport(int id)
         {
             var response = await _reportService.DeleteReport(id);
-            if (response.Status >= 0)
-                return Ok(response.Message);
-            else
-                return BadRequest(response.Message);
-        }
-        [HttpPut(ApiEndPointConstant.Report.ReportChangeEndPoint)]
-        [SwaggerOperation(Summary = "Change report status from Pending to Processing")]
-        public async Task<IActionResult> ChangeStatusToProcessing(int id)
-        {
-            var response = await _reportService.ChangeStatusToProcessing(id);
             if (response.Status >= 0)
                 return Ok(response.Message);
             else
