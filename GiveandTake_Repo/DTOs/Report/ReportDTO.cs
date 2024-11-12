@@ -35,6 +35,77 @@ namespace GiveandTake_Repo.DTOs.Report
         public List<string> ReportMediaUrls { get; set; } = new List<string>(); 
     }
 
+    public class ReportUserDTO
+    {
+        public int ReportId { get; set; }
+
+        public int? SenderId { get; set; }
+
+        public string? SenderName { get; set; }
+
+        public int? AccountId { get; set; }
+
+        public string? AccountName { get; set; }
+
+        public string? Description { get; set; }
+
+        public int? ReportTypeId { get; set; }
+
+        public string? Status { get; set; }
+
+        public DateTime? CreatedDate { get; set; }
+
+        public string? ReportTypeName { get; set; }
+
+        public List<string> ReportMediaUrls { get; set; } = new List<string>();
+    }
+
+    public class ReportDonationDTO
+    {
+        public int ReportId { get; set; }
+
+        public int? AccountId { get; set; }
+
+        public string? AccountName { get; set; }
+
+        public int? DonationId { get; set; }
+
+        public string? DonationName { get; set; }
+
+        public string? Description { get; set; }
+
+        public int? ReportTypeId { get; set; }
+
+        public string? Status { get; set; }
+
+        public DateTime? CreatedDate { get; set; }
+
+        public string? ReportTypeName { get; set; }
+
+        public List<string> ReportMediaUrls { get; set; } = new List<string>();
+    }
+
+    public class ReportTechDTO
+    {
+        public int ReportId { get; set; }
+
+        public int? AccountId { get; set; }
+
+        public string? AccountName { get; set; }
+
+        public string? Description { get; set; }
+
+        public int? ReportTypeId { get; set; }
+
+        public string? Status { get; set; }
+
+        public DateTime? CreatedDate { get; set; }
+
+        public string? ReportTypeName { get; set; }
+
+        public List<string> ReportMediaUrls { get; set; } = new List<string>();
+    }
+
     public class ReportCreateDTO
     {
         public int? AccountId { get; set; }

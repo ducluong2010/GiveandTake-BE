@@ -185,7 +185,7 @@ namespace Giveandtake_Business
                 await UpdateAccountRating(donation.AccountId.Value);
             }
 
-            senderAccount.Point += 5;
+            senderAccount.Point += senderAccount.IsPremium == true ? 10 : 5;
             _unitOfWork.GetRepository<Account>().UpdateAsync(senderAccount);
             await _unitOfWork.CommitAsync();
 

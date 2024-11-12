@@ -159,6 +159,9 @@
         public class Report
         {
             public const string ReportsEndPoint = ApiEndpoint + "/report";
+            public const string ReportsUserPoint = ReportsEndPoint + "/user";
+            public const string ReportsDonaPoint = ReportsEndPoint + "/donation";
+            public const string ReportsTechPoint = ReportsEndPoint + "/tech";
             public const string ReportEndPoint = ReportsEndPoint + "/{id}";
             public const string ReportStaffEndPoint = ReportsEndPoint + "/staff";
             public const string ReportAccEndPoint = ReportsEndPoint + "/account";
