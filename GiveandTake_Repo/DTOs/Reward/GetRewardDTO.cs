@@ -26,6 +26,8 @@ namespace GiveandTake_Repo.DTOs.Reward
 
         public DateTime? UpdatedDate { get; set; }
 
+        public bool? IsPremium { get; set; }
+
         public string? Status { get; set; }
     }
 
@@ -44,6 +46,8 @@ namespace GiveandTake_Repo.DTOs.Reward
         public DateTime? CreatedDate { get; set; }
 
         public DateTime? UpdatedDate { get; set; }
+
+        public bool? IsPremium { get; set; }
 
         public string? Status { get; set; }
     }

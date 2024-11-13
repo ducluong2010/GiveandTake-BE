@@ -21,25 +21,34 @@ namespace Giveandtake_Business
         }
 
         #region Reward
-        // Get all reward
+
+        // Get all rewards with IsPremium sorted first, then by CreatedDate descending
         public async Task<IGiveandtakeResult> GetAllRewards()
         {
             var rewardList = await _unitOfWork.GetRepository<Reward>()
-                .GetListAsync(selector: x => new GetRewardDTO
-                {
-                    RewardId = x.RewardId,
-                    AccountId = x.AccountId,
-                    RewardName = x.RewardName,
-                    Description = x.Description,
-                    ImageUrl = x.ImageUrl,
-                    Point = x.Point,
-                    Quantity = x.Quantity,
-                    CreatedDate = x.CreatedDate,
-                    UpdatedDate = x.UpdatedDate,
-                    Status = x.Status
-                });
+                .GetListAsync(
+                    selector: x => new GetRewardDTO
+                    {
+                        RewardId = x.RewardId,
+                        AccountId = x.AccountId,
+                        RewardName = x.RewardName,
+                        Description = x.Description,
+                        ImageUrl = x.ImageUrl,
+                        Point = x.Point,
+                        Quantity = x.Quantity,
+                        CreatedDate = x.CreatedDate,
+                        UpdatedDate = x.UpdatedDate,
+                        IsPremium = x.IsPremium,
+                        Status = x.Status
+                    },
+                    orderBy: rewards => rewards
+                        .OrderByDescending(r => r.IsPremium)
+                        .ThenByDescending(r => r.CreatedDate)
+                );
+
             return new GiveandtakeResult(rewardList);
         }
+
 
         // Get reward by id
         public async Task<IGiveandtakeResult> GetRewardById(int rewardId)
@@ -57,6 +66,7 @@ namespace Giveandtake_Business
                                           Quantity = x.Quantity,
                                           CreatedDate = x.CreatedDate,
                                           UpdatedDate = x.UpdatedDate,
+                                          IsPremium = x.IsPremium,
                                           Status = x.Status
                                       });
             return new GiveandtakeResult(reward);
@@ -91,6 +101,7 @@ namespace Giveandtake_Business
                 reward.Point = rewardInfo.Point > 0 ? rewardInfo.Point : reward.Point;
                 reward.Quantity = rewardInfo.Quantity >= 0 ? rewardInfo.Quantity : reward.Quantity;
                 reward.UpdatedDate = DateTime.Now;
+                reward.IsPremium = rewardInfo.IsPremium ?? reward.IsPremium;
                 reward.Status = String.IsNullOrEmpty(rewardInfo.Status) ? reward.Status : rewardInfo.Status;
 
                 _unitOfWork.GetRepository<Reward>().UpdateAsync(reward);
@@ -132,6 +143,7 @@ namespace Giveandtake_Business
                 Quantity = rewardInfo.Quantity,
                 CreatedDate = DateTime.Now,
                 UpdatedDate = DateTime.Now,
+                IsPremium = rewardInfo.IsPremium ?? false,
                 Status = rewardInfo.Status
             };
             await _unitOfWork.GetRepository<Reward>().InsertAsync(newReward);
@@ -166,7 +178,7 @@ namespace Giveandtake_Business
         // Change reward status
         public async Task<IGiveandtakeResult> ChangeRewardStatus(int id, string newStatus)
         {
-            if (newStatus.ToLower() != "inactive" && newStatus.ToLower() != "active" && newStatus.ToLower() != "claimed" && newStatus.ToLower() != "premium")
+            if (newStatus.ToLower() != "inactive" && newStatus.ToLower() != "active" && newStatus.ToLower() != "claimed")
             {
                 return new GiveandtakeResult(-4, "Invalid status");
             }
