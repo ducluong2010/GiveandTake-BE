@@ -25,6 +25,8 @@ public partial class Reward
 
     public string? Status { get; set; }
 
+    public bool? IsPremium { get; set; }
+
     public virtual Account? Account { get; set; }
 
     public virtual ICollection<Rewarded> Rewardeds { get; set; } = new List<Rewarded>();
