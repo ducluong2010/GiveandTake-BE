@@ -503,7 +503,7 @@ namespace Giveandtake_Business
                 };
             }
 
-            senderAccount.Point += transaction.TotalPoint;
+            senderAccount.Point += senderAccount.IsPremium == true ? transaction.TotalPoint * 2 : transaction.TotalPoint;
 
             foreach (var detail in transaction.TransactionDetails)
             {
