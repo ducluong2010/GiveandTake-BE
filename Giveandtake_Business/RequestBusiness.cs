@@ -78,7 +78,6 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(sortedRequestList);
         }
 
-
         // Get request by account id
         public async Task<IGiveandtakeResult> GetRequestByAccountId(int accountId)
         {
@@ -105,7 +104,7 @@ namespace Giveandtake_Business
                 predicate: c => c.AccountId == requestDTO.AccountId);
             if (account == null)
             {
-                return new GiveandtakeResult(-1, "Account not found");
+                return new GiveandtakeResult(-1, "Không tìm thấy id của tài khoản.");
             }
 
             // Kiểm tra donation
@@ -113,13 +112,13 @@ namespace Giveandtake_Business
                 predicate: d => d.DonationId == requestDTO.DonationId && d.Status == "Approved");
             if (donation == null)
             {
-                return new GiveandtakeResult(-1, "Donation not found or not available for claim (not approved)");
+                return new GiveandtakeResult(-1, "Không tìm thấy món đồ hoặc nó chưa được staff duyệt qua.");
             }
 
             // Kiểm tra nếu người dùng yêu cầu cho donation của chính họ
             if (donation.AccountId == requestDTO.AccountId)
             {
-                return new GiveandtakeResult(-1, "You cannot request your own donation.");
+                return new GiveandtakeResult(-1, "Bạn không thể request chính món đồ của mình.");
             }
 
             // Kiểm tra xem người dùng đã tạo request cho donation này chưa
@@ -127,7 +126,7 @@ namespace Giveandtake_Business
                 predicate: r => r.DonationId == requestDTO.DonationId && r.AccountId == requestDTO.AccountId);
             if (existingRequest != null)
             {
-                return new GiveandtakeResult(-1, "You have already made a request for this donation.");
+                return new GiveandtakeResult(-1, "Bạn đã request món đồ này rồi.");
             }
 
             // Nếu người dùng không phải Premium, kiểm tra xem có transaction nào completed trong vòng 7 ngày gần nhất không
@@ -140,7 +139,7 @@ namespace Giveandtake_Business
 
                 if (recentTransaction != null)
                 {
-                    return new GiveandtakeResult(-1, "You can only create a request once every 7 days.");
+                    return new GiveandtakeResult(-1, "Bạn phải chờ 7 ngày kể từ giao dịch gần nhất, mới có thể request tiếp được.");
                 }
             }
 
@@ -158,16 +157,15 @@ namespace Giveandtake_Business
 
             if (isSuccessful)
             {
-                result = new GiveandtakeResult(1, "Create Successful");
+                result = new GiveandtakeResult(1, "Tạo request thành công. Xin hãy chờ phản hồi của chủ món đồ.");
             }
             else
             {
                 result.Status = -1;
-                result.Message = "Create Unsuccessfully";
+                result.Message = "Tạo request không thành công, đã có lỗi xảy ra.";
             }
             return result;
         }
-
 
         // Cancel request
         public async Task<IGiveandtakeResult> CancelRequest(int requestId, int receiverId)
@@ -183,7 +181,7 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "Request not found or you are not authorized to change this request"
+                    Message = "Không tìm thấy request để cancel hoặc bạn không có quyền cancel request này."
                 };
             }
 
@@ -192,7 +190,7 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "Request has been cancelled"
+                    Message = "Request đã được cancel trước đó rồi."
                 };
             }
 
@@ -201,7 +199,7 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "Request has been accepted"
+                    Message = "Request đã được chủ món đồ chấp nhận rồi."
                 };
             }
 
@@ -211,12 +209,12 @@ namespace Giveandtake_Business
 
             if (isSuccessful)
             {
-                result = new GiveandtakeResult(1, "Request is cancelled");
+                result = new GiveandtakeResult(1, "Request đã được cancel thành công.");
             }
             else
             {
                 result.Status = -1;
-                result.Message = "Something is wrong. Please debug code.";
+                result.Message = "Đã có lỗi xảy ra.";
             }
             return result;
         }
@@ -234,7 +232,7 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "Request not found"
+                    Message = "Không tìm thấy request để xóa"
                 };
             }
 
@@ -243,7 +241,7 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "Request has been accepted"
+                    Message = "Request đã được chủ món đồ chấp nhận, không thể xóa"
                 };
             }
 
@@ -252,16 +250,15 @@ namespace Giveandtake_Business
 
             if (isSuccessful)
             {
-                result = new GiveandtakeResult(1, "Request is deleted");
+                result = new GiveandtakeResult(1, "Request đã được xóa thành công");
             }
             else
             {
                 result.Status = -1;
-                result.Message = "Something is wrong. Please debug code.";
+                result.Message = "Đã có lỗi xảy ra.";
             }
             return result;
         }
-
 
         // Delete requests with status "rejected" or "cancelled" - Admin
         public async Task<IGiveandtakeResult> DeleteRejectedOrCancelledRequests()
