@@ -39,6 +39,8 @@ public partial class Account
 
     public string? Otp { get; set; }
 
+    public int? CategoryId { get; set; }
+
     public virtual ICollection<Donation> Donations { get; set; } = new List<Donation>();
 
     public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
