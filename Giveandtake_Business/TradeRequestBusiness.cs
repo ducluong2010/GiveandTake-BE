@@ -86,7 +86,7 @@ namespace Giveandtake_Business
                 c => c.AccountId == tradeRequestDTO.AccountId);
             if (account == null)
             {
-                return new GiveandtakeResult(-1, "Account not found");
+                return new GiveandtakeResult(-1, "Không tìm thấy account");
             }
 
             // Check if the donation is valid for trading
@@ -96,14 +96,14 @@ namespace Giveandtake_Business
             if (requestDonation == null)
             {
                 result.Status = -1;
-                result.Message = "Request donation not found or not avaiable for trading";
+                result.Message = "Món đồ được yêu cầu trao đổi không khả dụng";
                 return result;
             }
 
             // Check if the requester is the onwer of the donation
             if (requestDonation.AccountId == tradeRequestDTO.AccountId)
             {
-                return new GiveandtakeResult(-1, "You cannot request your own donation.");
+                return new GiveandtakeResult(-1, "Bạn không thể yêu cầu trao đổi chính món đồ của mình.");
             }
 
             // Check if the trade donation is valid
@@ -115,7 +115,7 @@ namespace Giveandtake_Business
             if (tradeDonation == null)
             {
                 result.Status = -1;
-                result.Message = "Trade donation is not valid. Is it really belong to you?";
+                result.Message = "Món đồ trao đổi không khả dụng. Hãy đăng nhập bằng chủ sở hữu.";
                 return result;
             }
 
@@ -126,7 +126,7 @@ namespace Giveandtake_Business
                                                     x.RequestDonationId == tradeRequestDTO.RequestDonationId);
             if (existingUserTradeRequest != null)
             {
-                return new GiveandtakeResult(-1, "You have already requested this donation.");
+                return new GiveandtakeResult(-1, "Bạn đã yêu cầu trao đổi món đồ này rồi.");
             }
 
             // Check if the donation is already involved in an active trade request
@@ -136,7 +136,7 @@ namespace Giveandtake_Business
 
             if (existingActiveTradeRequest != null)
             {
-                return new GiveandtakeResult(-1, "This trade donation is already involved in an active trade request. Please wait until the current request is resolved.");
+                return new GiveandtakeResult(-1, "Món đồ này hiện đang được trao đổi rồi.");
             }
 
 
@@ -155,12 +155,12 @@ namespace Giveandtake_Business
 
             if (isSuccessful)
             {
-                result = new GiveandtakeResult(1, "Create Successful");
+                result = new GiveandtakeResult(1, "Tạo yêu cầu trao đổi thành công");
             }
             else
             {
                 result.Status = -1;
-                result.Message = "Create Unsuccessfully";
+                result.Message = "Tạo yêu cầu trao đổi thất bại";
             }
             return result;
         }
@@ -174,12 +174,12 @@ namespace Giveandtake_Business
 
             if (tradeRequest == null)
             {
-                return new GiveandtakeResult(-1, "Trade request not found.");
+                return new GiveandtakeResult(-1, "Không thể tìm thấy yêu cầu trao đổi.");
             }
 
             if (tradeRequest.AccountId != accountId)
             {
-                return new GiveandtakeResult(-1, "You can only cancel your own trade requests.");
+                return new GiveandtakeResult(-1, "Bạn chỉ có thể huỷ chính yêu cầu trao đổi của mình.");
             }
 
             var invalidStatuses = new List<string> { "Cancelled", "Accepted" };
@@ -188,7 +188,7 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = $"Request has been {tradeRequest.Status.ToLower()}"
+                    Message = $"Yêu cầu đã được {tradeRequest.Status.ToLower()} rồi!"
                 };
             }
 
@@ -200,12 +200,12 @@ namespace Giveandtake_Business
             if (!isSuccessful)
             {
                 result.Status = -1;
-                result.Message = "Cancel unsuccessfully.";
+                result.Message = "Huỷ yêu cầu trao đổi thất bại.";
             }
             else
             {
                 result.Status = 1;
-                result.Message = "Trade request canceled successfully.";
+                result.Message = "Huỷ yêu cầu trao đổi thành công.";
             }
 
             return result;
@@ -220,7 +220,7 @@ namespace Giveandtake_Business
 
             if (tradeRequest == null)
             {
-                return new GiveandtakeResult(-1, "Trade request not found or not in status 'Rejected' or 'Cancelled'.");
+                return new GiveandtakeResult(-1, "Không tìm thấy yêu cầu trao đổi đã bị huỷ hay bị từ chối.");
             }
 
             _unitOfWork.GetRepository<TradeRequest>().DeleteAsync(tradeRequest);
@@ -228,12 +228,12 @@ namespace Giveandtake_Business
             if (isSuccessful)
             {
                 result.Status = 1;
-                result.Message = "Trade request deleted successfully.";
+                result.Message = "Yêu cầu trao đổi đã được xoá thành công.";
             }
             else
             {
                 result.Status = -1;
-                result.Message = "Delete unsuccessfully.";
+                result.Message = "Xoá thất bại.";
             }
             return result;
         }

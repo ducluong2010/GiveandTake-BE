@@ -82,57 +82,50 @@ namespace Giveandtake_Business
 
 
         // Claim reward
-        // Claim reward
         public async Task<IGiveandtakeResult> ClaimReward(RewardedDTO rewardedInfo)
         {
             GiveandtakeResult result = new GiveandtakeResult();
 
-            // Lấy thông tin phần thưởng
             var reward = await _unitOfWork.GetRepository<Reward>()
                 .SingleOrDefaultAsync(predicate: r => r.RewardId == rewardedInfo.RewardId);
 
             if (reward == null)
             {
                 result.Status = -1;
-                result.Message = "Reward not found";
+                result.Message = "Không tìm thấy phần quà.";
                 return result;
             }
 
-            // Lấy thông tin tài khoản
             var customer = await _unitOfWork.GetRepository<Account>()
                 .SingleOrDefaultAsync(predicate: c => c.AccountId == rewardedInfo.AccountId);
 
             if (customer == null)
             {
                 result.Status = -1;
-                result.Message = "Account not found";
+                result.Message = "Không tìm thấy tài khoản.";
                 return result;
             }
 
-            // Kiểm tra điều kiện IsPremium
             if ((bool)reward.IsPremium && !(bool)customer.IsPremium)
             {
                 result.Status = -1;
-                result.Message = "This reward is available for premium accounts only.";
+                result.Message = "Món quà này chỉ khả dụng với người dùng trả phí/đăng ký membership.";
                 return result;
             }
 
-            // Kiểm tra điểm của tài khoản
             if (customer.Point < reward.Point)
             {
                 result.Status = -1;
-                result.Message = "Insufficient points to claim reward";
+                result.Message = "Không đủ điểm để nhận quà.";
                 return result;
             }
 
-            // Thực hiện trừ điểm và cập nhật số lượng phần thưởng
             customer.Point -= reward.Point;
             _unitOfWork.GetRepository<Account>().UpdateAsync(customer);
 
             reward.Quantity -= 1;
             _unitOfWork.GetRepository<Reward>().UpdateAsync(reward);
 
-            // Tạo thông tin phần thưởng đã nhận
             Rewarded rewarded = new Rewarded
             {
                 RewardId = rewardedInfo.RewardId,
@@ -146,7 +139,6 @@ namespace Giveandtake_Business
 
             if (status)
             {
-                // Trả về thông tin phần thưởng đã nhận
                 var rewardedDto = new RewardedDTO
                 {
                     RewardId = rewarded.RewardId,
@@ -159,12 +151,12 @@ namespace Giveandtake_Business
 
                 result.Data = rewardedDto;
                 result.Status = 1;
-                result.Message = "Claim reward successfully";
+                result.Message = "Đã nhận món quà thành công.";
             }
             else
             {
                 result.Status = -1;
-                result.Message = "Failed to claim reward";
+                result.Message = "Nhận quà thất bại.";
             }
 
             return result;
