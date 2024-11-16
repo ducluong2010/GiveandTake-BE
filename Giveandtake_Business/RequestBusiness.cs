@@ -104,7 +104,7 @@ namespace Giveandtake_Business
                 predicate: c => c.AccountId == requestDTO.AccountId);
             if (account == null)
             {
-                return new GiveandtakeResult(-1, "Không tìm thấy id của tài khoản.");
+                return new GiveandtakeResult(-1, "Không tìm thấy tài khoản.");
             }
 
             // Kiểm tra donation
@@ -112,13 +112,13 @@ namespace Giveandtake_Business
                 predicate: d => d.DonationId == requestDTO.DonationId && d.Status == "Approved");
             if (donation == null)
             {
-                return new GiveandtakeResult(-1, "Không tìm thấy món đồ hoặc nó chưa được staff duyệt qua.");
+                return new GiveandtakeResult(-1, "Không tìm thấy món đồ hoặc nó chưa được quản lý duyệt qua.");
             }
 
             // Kiểm tra nếu người dùng yêu cầu cho donation của chính họ
             if (donation.AccountId == requestDTO.AccountId)
             {
-                return new GiveandtakeResult(-1, "Bạn không thể request chính món đồ của mình.");
+                return new GiveandtakeResult(-1, "Bạn không thể gửi yêu cầu nhận chính món đồ của mình.");
             }
 
             // Kiểm tra xem người dùng đã tạo request cho donation này chưa
@@ -126,7 +126,7 @@ namespace Giveandtake_Business
                 predicate: r => r.DonationId == requestDTO.DonationId && r.AccountId == requestDTO.AccountId);
             if (existingRequest != null)
             {
-                return new GiveandtakeResult(-1, "Bạn đã request món đồ này rồi.");
+                return new GiveandtakeResult(-1, "Bạn đã yêu cầu được nhận món đồ này rồi.");
             }
 
             // Nếu người dùng không phải Premium, kiểm tra xem có transaction nào completed trong vòng 7 ngày gần nhất không
@@ -139,7 +139,7 @@ namespace Giveandtake_Business
 
                 if (recentTransaction != null)
                 {
-                    return new GiveandtakeResult(-1, "Bạn phải chờ 7 ngày kể từ giao dịch gần nhất, mới có thể request tiếp được.");
+                    return new GiveandtakeResult(-1, "Bạn phải chờ 7 ngày kể từ giao dịch gần nhất, mới có thể yêu cầu nhận đồ tiếp được.");
                 }
             }
 
@@ -157,12 +157,12 @@ namespace Giveandtake_Business
 
             if (isSuccessful)
             {
-                result = new GiveandtakeResult(1, "Tạo request thành công. Xin hãy chờ phản hồi của chủ món đồ.");
+                result = new GiveandtakeResult(1, "Tạo yêu cầu nhận đồ thành công. Xin hãy chờ phản hồi của chủ món đồ.");
             }
             else
             {
                 result.Status = -1;
-                result.Message = "Tạo request không thành công, đã có lỗi xảy ra.";
+                result.Message = "Tạo yêu cầu nhận đồ không thành công, đã có lỗi xảy ra.";
             }
             return result;
         }
@@ -181,7 +181,7 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "Không tìm thấy request để cancel hoặc bạn không có quyền cancel request này."
+                    Message = "Không tìm thấy yêu cầu để huỷ hoặc bạn không có quyền huỷ yêu cầu này."
                 };
             }
 
@@ -190,7 +190,7 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "Request đã được cancel trước đó rồi."
+                    Message = "Yêu cầu đã bị huỷ trước đó rồi."
                 };
             }
 
@@ -199,7 +199,7 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "Request đã được chủ món đồ chấp nhận rồi."
+                    Message = "Yêu cầu đã được chủ món đồ chấp nhận rồi."
                 };
             }
 
@@ -209,7 +209,7 @@ namespace Giveandtake_Business
 
             if (isSuccessful)
             {
-                result = new GiveandtakeResult(1, "Request đã được cancel thành công.");
+                result = new GiveandtakeResult(1, "Yêu cầu đã được huỷ thành công.");
             }
             else
             {
@@ -232,7 +232,7 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "Không tìm thấy request để xóa"
+                    Message = "Không tìm thấy yêu cầu thích hợp để xóa."
                 };
             }
 
@@ -241,7 +241,7 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "Request đã được chủ món đồ chấp nhận, không thể xóa"
+                    Message = "Yêu cầu đã được chủ món đồ chấp nhận, không thể xóa."
                 };
             }
 

@@ -79,14 +79,14 @@ namespace Giveandtake_Business
                 .SingleOrDefaultAsync(predicate: c => c.RewardId == id);
             if (reward == null)
             {
-                return new GiveandtakeResult(-1, "Reward not found");
+                return new GiveandtakeResult(-1, "Không tìm thấy món quà.");
             }
             else
             {
                 // Validate point and quantity
                 if (rewardInfo.Point < 0 || rewardInfo.Quantity < 0)
                 {
-                    return new GiveandtakeResult(-1, "Point and Quantity must be greater than 0");
+                    return new GiveandtakeResult(-1, "Điểm để nhận và quà số lượng phải lớn hơn hoặc bằng 0.");
                 }
 
                 // Update status to "Claimed" if quantity is 0
@@ -107,7 +107,7 @@ namespace Giveandtake_Business
                 _unitOfWork.GetRepository<Reward>().UpdateAsync(reward);
                 await _unitOfWork.CommitAsync();
             }
-            return new GiveandtakeResult(1, "Reward updated successfully");
+            return new GiveandtakeResult(1, "Cập nhật món quà thành công.");
         }
 
         // Add new reward
@@ -117,14 +117,14 @@ namespace Giveandtake_Business
             // Validate point and quantity
             if (rewardInfo.Point < 0 || rewardInfo.Quantity < 0)
             {
-                return new GiveandtakeResult(-1, "Point and Quantity must be greater than 0");
+                return new GiveandtakeResult(-1, "Điểm để nhận quà và số lượng phải lớn hơn hoặc bằng 0.");
             }
 
             var account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(predicate:
                 c => c.AccountId == accountId);
             if (account == null)
             {
-                return new GiveandtakeResult(-1, "Account not found");
+                return new GiveandtakeResult(-1, "Không tìm thấy tài khoản");
             }
 
             // Update status to "Claimed" if quantity is 0
@@ -151,12 +151,12 @@ namespace Giveandtake_Business
 
             if (isSuccessful)
             {
-                result = new GiveandtakeResult(1, "Create Successful");
+                result = new GiveandtakeResult(1, "Tạo quà thành công");
             }
             else
             {
                 result.Status = -1;
-                result.Message = "Create Unsuccessfully";
+                result.Message = "Tạo quà thất bại";
             }
             return result;
         }
@@ -168,11 +168,11 @@ namespace Giveandtake_Business
                 .SingleOrDefaultAsync(predicate: c => c.RewardId == id);
             if (reward == null)
             {
-                return new GiveandtakeResult(-1, "Reward not found");
+                return new GiveandtakeResult(-1, "Không tìm thấy món quà");
             }
             _unitOfWork.GetRepository<Reward>().DeleteAsync(reward);
             await _unitOfWork.CommitAsync();
-            return new GiveandtakeResult(1, "Reward deleted successfully");
+            return new GiveandtakeResult(1, "Xoá quà thành công");
         }
 
         // Change reward status
@@ -180,7 +180,7 @@ namespace Giveandtake_Business
         {
             if (newStatus.ToLower() != "inactive" && newStatus.ToLower() != "active" && newStatus.ToLower() != "claimed")
             {
-                return new GiveandtakeResult(-4, "Invalid status");
+                return new GiveandtakeResult(-4, "Trạng thái không khả dụng");
             }
 
 
@@ -188,7 +188,7 @@ namespace Giveandtake_Business
                 .SingleOrDefaultAsync(predicate: c => c.RewardId == id);
             if (reward == null)
             {
-                return new GiveandtakeResult(-1, "Reward not found");
+                return new GiveandtakeResult(-1, "Không tìm thấy món quà");
             }
             else
             {
@@ -199,7 +199,7 @@ namespace Giveandtake_Business
                 await _unitOfWork.CommitAsync();
             }
 
-            return new GiveandtakeResult(1, "Reward status updated successfully");
+            return new GiveandtakeResult(1, "Cập nhật trạng thái của món quà thành công");
         }
 
         #endregion
