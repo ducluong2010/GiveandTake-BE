@@ -69,6 +69,7 @@
             public const string CheckHidingDonationsEndPoint = DonationsEndPoint + "/checkactived";
             public const string SearchDonationsEndPoint = DonationsEndPoint + "/search";
             public const string DonationStaEndPoint = DonationsEndPoint + "/bystaff";
+            public const string DonationCateEndPoint = DonationsEndPoint + "/bycate";
             public const string DonationAccEndPoint = DonationsEndPoint + "/byaccount";
             public const string DonationClaimEndPoint = DonationsEndPoint + "/byclaim";
             public const string DonationTypeEndPoint = DonationsEndPoint + "/bytype";

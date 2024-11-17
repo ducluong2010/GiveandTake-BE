@@ -117,7 +117,8 @@ namespace Giveandtake_Business
                     ChatId = a.AccountId,
                     MessageId = a.AccountId,
                     Rating = a.Rating,
-                    ActiveTime = a.ActiveTime
+                    ActiveTime = a.ActiveTime,
+                    CategoryId = a.CategoryId
                 }
             );
 
@@ -161,7 +162,8 @@ namespace Giveandtake_Business
                         ChatId = a.AccountId,
                         MessageId = a.AccountId,
                         Rating = a.Rating,
-                        ActiveTime = a.ActiveTime
+                        ActiveTime = a.ActiveTime,
+                        CategoryId = a.CategoryId
                     });
 
             return acc != null ? new GiveandtakeResult(acc) : new GiveandtakeResult();
@@ -191,7 +193,8 @@ namespace Giveandtake_Business
                         ChatId = a.AccountId,
                         MessageId = a.AccountId,
                         Rating = a.Rating,
-                        ActiveTime = a.ActiveTime
+                        ActiveTime = a.ActiveTime,
+                        CategoryId = a.CategoryId
                     });
 
             return acc != null ? new GiveandtakeResult(acc) : new GiveandtakeResult();
@@ -229,7 +232,8 @@ namespace Giveandtake_Business
                 IsActive = true,
                 IsPremium = false,
                 PremiumUntil = null,
-                ActiveTime = inputedAccount.ActiveTime
+                ActiveTime = inputedAccount.ActiveTime,
+                CategoryId = inputedAccount.CategoryId
             };
 
             await repo.InsertAsync(newAccount);
@@ -267,6 +271,7 @@ namespace Giveandtake_Business
                 currentAcc.IsPremium = accInfo.IsPremium;
                 currentAcc.PremiumUntil = accInfo.PremiumUnti;
                 currentAcc.ActiveTime = accInfo.ActiveTime;
+                currentAcc.CategoryId = accInfo.CategoryId;
 
                 _unitOfWork.GetRepository<Account>().UpdateAsync(currentAcc);
                 await _unitOfWork.CommitAsync();
