@@ -246,7 +246,7 @@ namespace Giveandtake_Business
 
             var allDonations = await donationRepository.GetListAsync(
                 predicate: d => d.CategoryId == categoryId.Value &&
-                                (!d.ApprovedBy.HasValue || d.ApprovedBy == accountId),
+                                (!d.ApprovedBy.HasValue || d.ApprovedBy == accountId || d.Status == "Pending"),
                 selector: d => new DonationDTO
                 {
                     DonationId = d.DonationId,
