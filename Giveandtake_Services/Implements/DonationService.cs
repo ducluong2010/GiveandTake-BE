@@ -29,6 +29,9 @@ namespace Giveandtake_Services.Implements
         public Task<IGiveandtakeResult> GetAllByStaff(int accountId, int page = 1, int pageSize = 8)
            => _donationBusiness.GetAllByStaff(accountId, page, pageSize);
 
+        public Task<IGiveandtakeResult> GetAllByStaffV2(int accountId, int page = 1, int pageSize = 8)
+          => _donationBusiness.GetAllByStaffV2(accountId, page, pageSize);
+
         public Task<IGiveandtakeResult> GetDonationsByAccountId(int accountId)
           => _donationBusiness.GetDonationsByAccountId(accountId);
 

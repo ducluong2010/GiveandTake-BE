@@ -42,6 +42,8 @@ namespace GiveandTake_Repo.DTOs.Account
 
         public string? Otp {  get; set; }
 
+        public int? CategoryId { get; set; }
+
     }
 
     public class AccountDTO
@@ -79,6 +81,8 @@ namespace GiveandTake_Repo.DTOs.Account
         public int? ActiveTime { get; set; }
 
         public string? Otp { get; set; }
+
+        public int? CategoryId { get; set; }
 
     }
 }
