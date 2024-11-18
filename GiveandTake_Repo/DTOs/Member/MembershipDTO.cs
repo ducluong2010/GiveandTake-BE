@@ -15,6 +15,7 @@ namespace GiveandTake_Repo.DTOs.Member
         public string? Status { get; set; }
 
         public string? Amount { get; set; }
+        public string? FullName { get; set; }
     }
 
     public class CreateMembershipDTO
