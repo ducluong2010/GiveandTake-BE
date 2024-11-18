@@ -65,17 +65,30 @@ namespace Giveandtake_Business
 
         public async Task<IGiveandtakeResult> GetTradeRequestByTradeDonationId(int requestDonationId)
         {
-            var requestDonation = await _unitOfWork.GetRepository<TradeRequest>()
-                .GetListAsync(predicate: x => x.RequestDonationId == requestDonationId, selector: x => new GetTradeRequestDTO
-                {
-                    TradeRequestId = x.TradeRequestId,
-                    AccountId = x.AccountId,
-                    TradeDonationId = x.TradeDonationId,
-                    RequestDonationId = x.RequestDonationId,
-                    RequestDate = x.RequestDate,
-                    Status = x.Status
-                });
-            return new GiveandtakeResult(requestDonation);
+            var tradeRequests = await _unitOfWork.GetRepository<TradeRequest>()
+                .GetListAsync(
+                    predicate: x => x.RequestDonationId == requestDonationId && x.Status == "Pending",
+                    selector: x => new
+                    {
+                        TradeRequest = new GetTradeRequestDTO
+                        {
+                            TradeRequestId = x.TradeRequestId,
+                            AccountId = x.AccountId,
+                            TradeDonationId = x.TradeDonationId,
+                            RequestDonationId = x.RequestDonationId,
+                            RequestDate = x.RequestDate,
+                            Status = x.Status
+                        },
+                        IsPremium = x.Account.IsPremium
+                    });
+
+            var sortedTradeRequests = tradeRequests
+                .OrderByDescending(x => x.IsPremium)
+                .ThenBy(x => x.TradeRequest.RequestDate)
+                .Select(x => x.TradeRequest)
+                .ToList();
+
+            return new GiveandtakeResult(sortedTradeRequests);
         }
 
         public async Task<IGiveandtakeResult> CreateTradeRequest(TradeRequestDTO tradeRequestDTO)
@@ -216,11 +229,20 @@ namespace Giveandtake_Business
             GiveandtakeResult result = new GiveandtakeResult();
 
             var tradeRequest = await _unitOfWork.GetRepository<TradeRequest>()
-                .SingleOrDefaultAsync(predicate: r => r.TradeRequestId == requestId && (r.Status == "Rejected" || r.Status == "Cancelled"));
+                .SingleOrDefaultAsync(predicate: r => r.TradeRequestId == requestId);
 
             if (tradeRequest == null)
             {
-                return new GiveandtakeResult(-1, "Không tìm thấy yêu cầu trao đổi đã bị huỷ hay bị từ chối.");
+                return new GiveandtakeResult(-1, "Không tìm thấy yêu cầu trao đổi.");
+            }
+
+            if (tradeRequest.Status == "Accepted")
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Yêu cầu đã được chủ món đồ chấp nhận, không thể xóa."
+                };
             }
 
             _unitOfWork.GetRepository<TradeRequest>().DeleteAsync(tradeRequest);
