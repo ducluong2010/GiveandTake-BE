@@ -73,18 +73,18 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
-        [HttpPut(ApiEndPointConstant.TradeRequest.CancelTradeRequestEndPoint)]
-        [SwaggerOperation(Summary = "Cancel trade request")]
-        public async Task<IActionResult> CancelTradeRequest(int id)
-        {
-            int accountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
+        //[HttpPut(ApiEndPointConstant.TradeRequest.CancelTradeRequestEndPoint)]
+        //[SwaggerOperation(Summary = "Cancel trade request")]
+        //public async Task<IActionResult> CancelTradeRequest(int id)
+        //{
+        //    int accountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
 
-            var response = await _tradeRequestService.CancelTradeRequest(id, accountId);
-            if (response.Status >= 0)
-                return Ok(response.Data);
-            else
-                return BadRequest(response);
-        }
+        //    var response = await _tradeRequestService.CancelTradeRequest(id, accountId);
+        //    if (response.Status >= 0)
+        //        return Ok(response.Data);
+        //    else
+        //        return BadRequest(response);
+        //}
 
         [HttpDelete(ApiEndPointConstant.TradeRequest.DeleteTradeRequestEndPoint)]
         [SwaggerOperation(Summary = "Delete trade request")]

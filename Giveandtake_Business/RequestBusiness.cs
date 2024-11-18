@@ -55,7 +55,7 @@ namespace Giveandtake_Business
         {
             var requestList = await _unitOfWork.GetRepository<Request>()
                 .GetListAsync(
-                    predicate: c => c.DonationId == donationId,
+                    predicate: c => c.DonationId == donationId && c.Status == "Pending",
                     selector: x => new
                     {
                         Request = new GetRequestDTO
@@ -77,6 +77,7 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(sortedRequestList);
         }
+
 
         // Get request by account id
         public async Task<IGiveandtakeResult> GetRequestByAccountId(int accountId)

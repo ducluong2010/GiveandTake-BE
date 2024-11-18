@@ -59,18 +59,18 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
-        [HttpPut(ApiEndPointConstant.Request.CancelRequestEndPoint)]
-        [SwaggerOperation(Summary = "Cancel request")]
-        public async Task<IActionResult> CancelRequest(int id)
-        {
-            int receiverId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
+        //[HttpPut(ApiEndPointConstant.Request.CancelRequestEndPoint)]
+        //[SwaggerOperation(Summary = "Cancel request")]
+        //public async Task<IActionResult> CancelRequest(int id)
+        //{
+        //    int receiverId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
 
-            var response = await _requestService.CancelRequest(id, receiverId);
-            if (response.Status >= 0)
-                return Ok(response);
-            else
-                return BadRequest(response);
-        }
+        //    var response = await _requestService.CancelRequest(id, receiverId);
+        //    if (response.Status >= 0)
+        //        return Ok(response);
+        //    else
+        //        return BadRequest(response);
+        //}
 
         [HttpPost(ApiEndPointConstant.Request.CreateRequestEndPoint)]
         [SwaggerOperation(Summary = "Create request")]
