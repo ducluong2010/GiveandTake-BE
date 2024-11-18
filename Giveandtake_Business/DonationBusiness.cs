@@ -223,6 +223,107 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(paginatedResult);
         }
 
+        public async Task<IGiveandtakeResult> GetAllByStaffV2(int accountId, int page = 1, int pageSize = 8)
+        {
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+
+            var account = await accountRepository.GetAllAsync(a => a.AccountId == accountId && a.RoleId == 2)
+                                                 .ContinueWith(t => t.Result.FirstOrDefault());
+            if (account == null)
+            {
+                return new GiveandtakeResult(-1, "Account không tồn tại hoặc không phải staff");
+            }
+
+            var categoryId = account.CategoryId;
+            if (!categoryId.HasValue)
+            {
+                return new GiveandtakeResult(-1, "Bạn chưa được phân công công việc.");
+            }
+
+            var allAccounts = await accountRepository.GetAllAsync();
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
+
+            var allDonations = await donationRepository.GetListAsync(
+                predicate: d => d.CategoryId == categoryId.Value &&
+                                (!d.ApprovedBy.HasValue || d.ApprovedBy == accountId || d.Status == "Pending"),
+                selector: d => new DonationDTO
+                {
+                    DonationId = d.DonationId,
+                    AccountId = d.AccountId,
+                    AccountName = d.Account.FullName,
+                    CategoryId = d.CategoryId,
+                    CategoryName = d.Category.CategoryName,
+                    Name = d.Name,
+                    Description = d.Description,
+                    Point = d.Point,
+                    Type = d.Type,
+                    CreatedAt = d.CreatedAt,
+                    UpdatedAt = d.UpdatedAt,
+                    ApprovedBy = d.ApprovedBy,
+                    ApprovedByName = d.ApprovedBy.HasValue && accountDict.ContainsKey(d.ApprovedBy.Value)
+                        ? accountDict[d.ApprovedBy.Value]
+                        : null,
+                    TotalRating = d.TotalRating,
+                    Status = d.Status,
+                    DonationImages = d.DonationImages.Select(di => di.Url).ToList(),
+                    Feedbacks = d.Feedbacks.Select(f => new FeedbackDTO
+                    {
+                        FeedbackId = f.FeedbackId,
+                        SenderId = f.SenderId,
+                        SenderName = f.SenderId.HasValue && accountDict.ContainsKey(f.SenderId.Value)
+                                    ? accountDict[f.SenderId.Value]
+                                    : null,
+                        AccountId = f.AccountId,
+                        AccountName = f.Account.FullName,
+                        DonationId = d.DonationId,
+                        DonationName = d.Name,
+                        Rating = f.Rating,
+                        Content = f.Content,
+                        CreatedDate = f.CreatedDate,
+                        FeedbackMediaUrls = f.FeedbackMedia.Select(fm => fm.MediaUrl).ToList()
+                    }).ToList()
+                },
+                include: source => source
+                    .Include(d => d.Account)
+                    .Include(d => d.Category)
+                    .Include(d => d.Feedbacks)
+            );
+
+            var sortedDonations = allDonations.OrderByDescending(d => d.CreatedAt).ToList();
+
+            int totalItems = sortedDonations.Count();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            if (page > totalPages) page = totalPages;
+            if (totalItems == 0)
+            {
+                return new GiveandtakeResult(new PaginatedResult<DonationDTO>
+                {
+                    Items = new List<DonationDTO>(),
+                    TotalItems = totalItems,
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalPages = totalPages
+                });
+            }
+
+            var paginatedDonations = sortedDonations
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var paginatedResult = new PaginatedResult<DonationDTO>
+            {
+                Items = paginatedDonations,
+                TotalItems = totalItems,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
+
+            return new GiveandtakeResult(paginatedResult);
+        }
+
         public async Task<IGiveandtakeResult> GetDonationsByAccountId(int accountId)
         {
             if (accountId <= 0)

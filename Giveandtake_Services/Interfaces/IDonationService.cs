@@ -14,6 +14,7 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> GetAllDonations(int page = 1, int pageSize = 8);
         Task<IGiveandtakeResult> GetAllApproved(int page = 1, int pageSize = 8);
         Task<IGiveandtakeResult> GetAllByStaff(int accountId, int page = 1, int pageSize = 8);
+        Task<IGiveandtakeResult> GetAllByStaffV2(int accountId, int page = 1, int pageSize = 8);
         Task<IGiveandtakeResult> GetDonationsByAccountId(int accountId);
         Task<IGiveandtakeResult> GetAllByAccountId(int accountId);
         Task<IGiveandtakeResult> GetByAccountIdAndType(int accountId, int type);
