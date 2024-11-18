@@ -36,7 +36,8 @@ namespace Giveandtake_Business
                     PurchaseDate = m.PurchaseDate,
                     PremiumUntil = m.PremiumUntil,
                     Status = m.Status,
-                    Amount = m.Amount
+                    Amount = m.Amount,
+                    FullName = m.Account.FullName
                 },
                 include: source => source
                     .Include(m => m.Account)
@@ -87,7 +88,8 @@ namespace Giveandtake_Business
                     PurchaseDate = m.PurchaseDate,
                     PremiumUntil = m.PremiumUntil,
                     Status = m.Status,
-                    Amount = m.Amount
+                    Amount = m.Amount,
+                    FullName = m.Account.FullName
                 },
                 include: source => source
                     .Include(m => m.Account)
