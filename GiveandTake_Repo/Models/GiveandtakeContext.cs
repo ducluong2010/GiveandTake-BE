@@ -293,6 +293,7 @@ public partial class GiveandtakeContext : DbContext
             entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.ReportTypeName).HasMaxLength(100);
             entity.Property(e => e.Status).HasMaxLength(50);
+            entity.Property(e => e.Type).HasMaxLength(50);
         });
 
         modelBuilder.Entity<Request>(entity =>
