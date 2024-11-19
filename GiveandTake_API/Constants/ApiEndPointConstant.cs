@@ -15,6 +15,7 @@
         public class Account
         {
             public const string AccountsEndpoint = ApiEndpoint + "/accounts";
+            public const string BannedAccountsEndpoint = AccountsEndpoint + "/banned";
             public const string EmailAccountsEndpoint = AccountsEndpoint + "/{email}/info";
             public const string AccountEndpoint = AccountsEndpoint + "/{id}";
             public const string PromoteToPremiumEndPoint = AccountsEndpoint + "/promote/{id}";

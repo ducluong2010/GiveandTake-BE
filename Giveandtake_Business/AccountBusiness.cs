@@ -139,6 +139,52 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(paginatedResult);
         }
 
+        //Method to get all banned accounts
+        public async Task<IGiveandtakeResult> GetAllBannedAccount(int page = 1, int pageSize = 8)
+        {
+            var repo = _unitOfWork.GetRepository<Account>();
+
+            var allAccounts = await repo.GetListAsync(
+                predicate: a => (bool)!a.IsActive,
+                selector: a => new GetAccountDTO
+                {
+                    AccountId = a.AccountId,
+                    Address = a.Address,
+                    AvatarUrl = a.AvatarUrl,
+                    IsActive = a.IsActive,
+                    Email = a.Email,
+                    FullName = a.FullName,
+                    Password = a.Password,
+                    Phone = a.Phone,
+                    Point = a.Point,
+                    RoleId = a.RoleId,
+                    IsPremium = a.IsPremium,
+                    PremiumUnti = a.PremiumUntil,
+                    ChatId = a.AccountId,
+                    MessageId = a.AccountId,
+                    Rating = a.Rating,
+                    Otp = a.Otp,
+                    ActiveTime = a.ActiveTime,
+                    CategoryId = a.CategoryId
+                }
+            );
+
+            int totalItems = allAccounts.Count;
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            page = Math.Min(page, totalPages);
+
+            var paginatedResult = new PaginatedResult<GetAccountDTO>
+            {
+                Items = allAccounts.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
+                TotalItems = totalItems,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
+
+            return new GiveandtakeResult(paginatedResult);
+        }
+
 
         // Method to get account information by account ID
         public async Task<IGiveandtakeResult> GetAccountInfo(int accountId)

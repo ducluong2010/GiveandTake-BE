@@ -57,5 +57,8 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> UpdatePremiumUntilById(int accountId)
             => _accountBusiness.UpdatePremiumUntilById(accountId);
+
+        public Task<IGiveandtakeResult> GetAllBannedAccount(int page = 1, int pageSize = 8)
+            => _accountBusiness.GetAllBannedAccount(page, pageSize);
     }
 }
