@@ -17,10 +17,21 @@ namespace GiveandTake_API.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.Account.AccountsEndpoint)]
-        [SwaggerOperation(Summary = "Get all Accounts with pagination")]
+        [SwaggerOperation(Summary = "Get all Active Accounts with pagination")]
         public async Task<IActionResult> GetAllAccount([FromQuery] int page = 1, [FromQuery] int pageSize = 8)
         {
             var response = await _accountService.GetAllAccount(page, pageSize);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
+
+        [HttpGet(ApiEndPointConstant.Account.BannedAccountsEndpoint)]
+        [SwaggerOperation(Summary = "Get all Banned Accounts with pagination")]
+        public async Task<IActionResult> GetAllBannedAccount([FromQuery] int page = 1, [FromQuery] int pageSize = 8)
+        {
+            var response = await _accountService.GetAllBannedAccount(page, pageSize);
             if (response.Status >= 0)
                 return Ok(response.Data);
             else

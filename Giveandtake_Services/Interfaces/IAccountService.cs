@@ -16,6 +16,8 @@ namespace Giveandtake_Services.Interfaces
 
         Task<IGiveandtakeResult> GetAllAccount(int page = 1, int pageSize = 8);
 
+        Task<IGiveandtakeResult> GetAllBannedAccount(int page = 1, int pageSize = 8);
+
         Task<IGiveandtakeResult> GetAccountInfo(int accountId);
 
         Task<IGiveandtakeResult> GetAccountInfoByEmail(string email);
