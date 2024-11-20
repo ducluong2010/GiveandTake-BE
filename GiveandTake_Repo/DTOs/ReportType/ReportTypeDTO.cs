@@ -16,6 +16,8 @@ namespace GiveandTake_Repo.DTOs.ReportType
 
         public string? Status { get; set; }
 
+        public string? Type { get; set; }
+
     }
 
     public class ReportCreateTypeDTO
@@ -26,6 +28,8 @@ namespace GiveandTake_Repo.DTOs.ReportType
 
         public string? Status { get; set; }
 
+        public string? Type { get; set; }
+
     }
 
     public class ReportUpdateTypeDTO
@@ -35,6 +39,8 @@ namespace GiveandTake_Repo.DTOs.ReportType
         public string? Description { get; set; }
 
         public string? Status { get; set; }
+
+        public string? Type { get; set; }
 
     }
 }
