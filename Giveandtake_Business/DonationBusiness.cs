@@ -779,6 +779,7 @@ namespace Giveandtake_Business
                 Description = donationInfo.Description,
                 Point = category.Point,
                 CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
                 Status = "Pending",
                 Type = donationInfo.Type,
                 DonationImages = donationInfo.DonationImages.Select(imageUrl => new DonationImage
