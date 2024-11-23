@@ -29,7 +29,8 @@ namespace Giveandtake_Business
                     ReportTypeId = rt.ReportTypeId,
                     ReportTypeName = rt.ReportTypeName,
                     Description = rt.Description,
-                    Status = rt.Status
+                    Status = rt.Status,
+                    Type = rt.Type
                 }
             );
 
@@ -54,7 +55,8 @@ namespace Giveandtake_Business
                 ReportTypeId = reportType.ReportTypeId,
                 ReportTypeName = reportType.ReportTypeName,
                 Description = reportType.Description,
-                Status = reportType.Status
+                Status = reportType.Status,
+                Type = reportType.Type
             };
 
             return new GiveandtakeResult(reportTypeDTO);
@@ -81,7 +83,8 @@ namespace Giveandtake_Business
             {
                 ReportTypeName = reportTypeInfo.ReportTypeName,
                 Description = reportTypeInfo.Description,
-                Status = "True"
+                Status = "True",
+                Type = reportTypeInfo.Type
             };
 
             await _unitOfWork.GetRepository<ReportType>().InsertAsync(newReportType);
@@ -126,6 +129,10 @@ namespace Giveandtake_Business
             existingReportType.Status = string.IsNullOrEmpty(reportTypeInfo.Status)
                 ? existingReportType.Status
                 : reportTypeInfo.Status;
+
+            existingReportType.Type = string.IsNullOrEmpty(reportTypeInfo.Type)
+                ? existingReportType.Type
+                : reportTypeInfo.Type;
 
             _unitOfWork.GetRepository<ReportType>().UpdateAsync(existingReportType);
 
