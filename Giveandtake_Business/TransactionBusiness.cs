@@ -32,17 +32,28 @@ namespace Giveandtake_Business
         // Get all transactions
         public async Task<IGiveandtakeResult> GetAllTransactions()
         {
-            var transactionsList = await _unitOfWork.GetRepository<Transaction>().GetListAsync(
-                selector: o => new GetTransaction()
-                {
-                    TransactionId = o.TransactionId,
-                    TotalPoint = o.TotalPoint,
-                    CreatedDate = o.CreatedDate,
-                    UpdatedDate = o.UpdatedDate,
-                    Status = o.Status,
-                    AccountId = o.AccountId,
-                    IsFeedback = o.IsFeedback
-                });
+            var transactionsList = await _unitOfWork.GetRepository<Transaction>()
+                .GetListAsync(
+                    selector: t => new
+                    {
+                        Transaction = new GetTransaction()
+                        {
+                            TransactionId = t.TransactionId,
+                            TotalPoint = t.TotalPoint,
+                            CreatedDate = t.CreatedDate,
+                            UpdatedDate = t.UpdatedDate,
+                            Status = t.Status,
+                            AccountId = t.AccountId,
+                            IsFeedback = t.IsFeedback
+                        },
+                        TransactionDetails = t.TransactionDetails.Select(td => new GetTransactionDetailDTO()
+                        {
+                            TransactionDetailId = td.TransactionDetailId,
+                            TransactionId = td.TransactionId,
+                            DonationId = td.DonationId,
+                            Qrcode = td.Qrcode
+                        }).ToList()
+                    });
             return new GiveandtakeResult(transactionsList);
         }
 
