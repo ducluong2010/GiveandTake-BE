@@ -444,6 +444,36 @@ namespace Giveandtake_Business
             return new GiveandtakeResult("PremiumUntil Update Successfully");
         }
 
+        public async Task<IGiveandtakeResult> Update3MonthsPremiumUntilById(int accountId)
+        {
+            Account account = await _unitOfWork.GetRepository<Account>()
+                .SingleOrDefaultAsync(predicate: a => a.AccountId == accountId);
+            if (account == null) return new GiveandtakeResult();
+            else
+            {
+                account.PremiumUntil = DateTime.Now.AddMonths(3);
+
+                _unitOfWork.GetRepository<Account>().UpdateAsync(account);
+                await _unitOfWork.CommitAsync();
+            }
+            return new GiveandtakeResult("PremiumUntil Update Successfully");
+        }
+
+        public async Task<IGiveandtakeResult> Update6MonthsPremiumUntilById(int accountId)
+        {
+            Account account = await _unitOfWork.GetRepository<Account>()
+                .SingleOrDefaultAsync(predicate: a => a.AccountId == accountId);
+            if (account == null) return new GiveandtakeResult();
+            else
+            {
+                account.PremiumUntil = DateTime.Now.AddMonths(6);
+
+                _unitOfWork.GetRepository<Account>().UpdateAsync(account);
+                await _unitOfWork.CommitAsync();
+            }
+            return new GiveandtakeResult("PremiumUntil Update Successfully");
+        }
+
         //Method Check and Update Expired Premium
         public async Task CheckAndUpdateExpiredPremium()
         {

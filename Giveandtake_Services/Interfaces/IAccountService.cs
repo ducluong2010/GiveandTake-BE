@@ -37,6 +37,8 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> ChangePassword(int accountId, string oldPassword, string newPassword);
 
         Task<IGiveandtakeResult> UpdatePremiumUntilById(int accountId);
+        Task<IGiveandtakeResult> Update3MonthsPremiumUntilById(int accountId);
+        Task<IGiveandtakeResult> Update6MonthsPremiumUntilById(int accountId);
 
     }
 }

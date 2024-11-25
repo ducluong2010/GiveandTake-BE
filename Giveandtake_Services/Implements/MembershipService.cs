@@ -171,6 +171,12 @@ namespace Giveandtake_Services.Implements
         public Task<IGiveandtakeResult> CreateMembership(CreateMembershipDTO membershipInfo)
             => _membershipBusiness.CreateMembership(membershipInfo);
 
+        public Task<IGiveandtakeResult> CreateMembership3Months(CreateMembershipDTO membershipInfo)
+            => _membershipBusiness.CreateMembership3Months(membershipInfo);
+
+        public Task<IGiveandtakeResult> CreateMembership6Months(CreateMembershipDTO membershipInfo)
+            => _membershipBusiness.CreateMembership6Months(membershipInfo);
+
         public Task<IGiveandtakeResult> UpdateMembership(int id, UpdateMembershipDTO membershipInfo)
             => _membershipBusiness.UpdateMembership(id, membershipInfo);
 
