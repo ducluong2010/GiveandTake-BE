@@ -132,6 +132,64 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(1, "Membership created successfully");
         }
 
+        public async Task<IGiveandtakeResult> CreateMembership3Months(CreateMembershipDTO membershipInfo)
+        {
+            var account = await _unitOfWork.GetRepository<Account>()
+                .FirstOrDefaultAsync(a => a.AccountId == membershipInfo.AccountId);
+            if (account == null)
+            {
+                return new GiveandtakeResult(-1, "Account not found");
+            }
+
+            var newMembership = new Membership
+            {
+                AccountId = membershipInfo.AccountId,
+                PurchaseDate = DateTime.UtcNow,
+                PremiumUntil = DateTime.UtcNow.AddMonths(3),
+                Status = membershipInfo.Status,
+                Amount = membershipInfo.Amount
+            };
+
+            await _unitOfWork.GetRepository<Membership>().InsertAsync(newMembership);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+
+            if (!isSuccessful)
+            {
+                return new GiveandtakeResult(-1, "Create membership unsuccessfully");
+            }
+
+            return new GiveandtakeResult(1, "Membership created successfully");
+        }
+
+        public async Task<IGiveandtakeResult> CreateMembership6Months(CreateMembershipDTO membershipInfo)
+        {
+            var account = await _unitOfWork.GetRepository<Account>()
+                .FirstOrDefaultAsync(a => a.AccountId == membershipInfo.AccountId);
+            if (account == null)
+            {
+                return new GiveandtakeResult(-1, "Account not found");
+            }
+
+            var newMembership = new Membership
+            {
+                AccountId = membershipInfo.AccountId,
+                PurchaseDate = DateTime.UtcNow,
+                PremiumUntil = DateTime.UtcNow.AddMonths(6),
+                Status = membershipInfo.Status,
+                Amount = membershipInfo.Amount
+            };
+
+            await _unitOfWork.GetRepository<Membership>().InsertAsync(newMembership);
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+
+            if (!isSuccessful)
+            {
+                return new GiveandtakeResult(-1, "Create membership unsuccessfully");
+            }
+
+            return new GiveandtakeResult(1, "Membership created successfully");
+        }
+
         public async Task<IGiveandtakeResult> UpdateMembership(int id, UpdateMembershipDTO membershipInfo)
         {
             var membershipRepository = _unitOfWork.GetRepository<Membership>();
