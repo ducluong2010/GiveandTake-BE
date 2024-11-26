@@ -499,7 +499,41 @@ namespace Giveandtake_Business
             };
         }
 
+        // Get pending trade transaction contained donation of logged in user
+        public async Task<IGiveandtakeResult> GetTradeTransactionByDonationForSender(int senderAccountId)
+        {
+            var tradeList = await _unitOfWork.GetRepository<TradeTransaction>()
+                .GetListAsync
+                (predicate: t => (t.Status == "Pending") && t.TradeTransactionDetails.Any(td =>
+                        td.RequestDonationId != null && td.RequestDonation.AccountId == senderAccountId),
+                selector: o => new
+                {
+                    TradeTransaction = new GetTradeTransaction()
+                    {
+                        TradeTransactionId = o.TradeTransactionId,
+                        AccountId = o.AccountId,
+                        TradeDonationId = o.TradeDonationId,
+                        CreatedDate = o.CreatedDate,
+                        UpdatedDate = o.UpdatedDate,
+                        Status = o.Status
+                    },
+                    TradeTransactionDetails = o.TradeTransactionDetails.Select(td => new GetTradeTransactionDetailDTO()
+                    {
+                        TradeTransactionDetailId = td.TradeTransactionDetailId,
+                        TradeTransactionId = td.TradeTransactionId,
+                        RequestDonationId = td.RequestDonationId,
+                        Qrcode = td.Qrcode
+                    }).ToList()
+                });
 
-        #endregion
-    }
+            if (tradeList == null || !tradeList.Any())
+            {
+                return new GiveandtakeResult(-1, "Trade transaction not found");
+            }
+
+            return new GiveandtakeResult(tradeList);
+        }
+
+            #endregion
+     }
 }
