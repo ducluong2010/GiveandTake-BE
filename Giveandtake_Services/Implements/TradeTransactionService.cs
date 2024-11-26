@@ -31,9 +31,6 @@ namespace Giveandtake_Services.Implements
         public Task<IGiveandtakeResult> GetTradeTransactionByAccountId(int accountId)
         => _tradeTransactionBusiness.GetTradeTransactionByAccountId(accountId);
 
-        public Task<IGiveandtakeResult> GetTradeTransactionByDonationForSender(int accountId)
-        => _tradeTransactionBusiness.GetTradeTransactionByDonationForSender(accountId);
-
         public Task<IGiveandtakeResult> GetTradeTransactionById(int id)
         => _tradeTransactionBusiness.GetTradeTransactionById(id);
 

@@ -223,9 +223,6 @@
             public const string CompleteTradeTransactionEndPoint = TradeTransactionsEndPoint + "/complete/{tradeTransactionId}/";
             public const string CancelTradeTransactionEndPoint = TradeTransactionsEndPoint + "/cancel/{tradeTransactionId}/";
 
-            public const string TradeTransactionByAccountForCurrentUserEndPoint = TradeTransactionsEndPoint + "/account/current";
-            public const string TradeTransactionByDonationForSenderEndPoint = TradeTransactionsEndPoint + "/donation/sender";
-
         }
     }
 }

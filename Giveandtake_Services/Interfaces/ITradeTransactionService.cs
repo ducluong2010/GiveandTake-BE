@@ -17,6 +17,5 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> RejectTradeRequest(int tradeRequestId, int loggedInAccountId);
         Task<IGiveandtakeResult> CompleteTradeTransaction(int tradeTransactionId, int loggedInAccountId);
         Task<IGiveandtakeResult> CancelTradeTransaction(int tradeTransactionId, int loggedInAccountId);
-        Task<IGiveandtakeResult> GetTradeTransactionByDonationForSender(int accountId); 
     }
 }

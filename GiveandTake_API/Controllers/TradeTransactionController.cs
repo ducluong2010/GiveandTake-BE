@@ -48,7 +48,7 @@ namespace GiveandTake_API.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.TradeTransaction.GetTradeTransactionByAccountIdEndPoint)]
-        [SwaggerOperation(Summary = "Get trade transaction by account id")]
+        [SwaggerOperation(Summary = "Get trade transaction by account id with Pending and Complete Status")]
         public async Task<IActionResult> GetTradeTransactionByAccountId(int accountId)
         {
             var response = await _tradeTransactionService.GetTradeTransactionByAccountId(accountId);
@@ -106,32 +106,6 @@ namespace GiveandTake_API.Controllers
             var response = await _tradeTransactionService.CancelTradeTransaction(tradeTransactionId, loggedInAccountId);
             if (response.Status >= 0)
                 return Ok(response);
-            else
-                return BadRequest(response.Message);
-        }
-
-        [HttpGet(ApiEndPointConstant.TradeTransaction.TradeTransactionByAccountForCurrentUserEndPoint)]
-        [SwaggerOperation(Summary = "Lấy danh sách trade transaction mà thằng đang đăng nhập đã có")]
-        public async Task<IActionResult> GetTradeTransactionByCurrenUser()
-        {
-            int accountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
-
-            var response = await _tradeTransactionService.GetTradeTransactionByAccountId(accountId);
-            if (response.Status >= 0)
-                return Ok(response.Data);
-            else
-                return BadRequest(response.Message);
-        }
-
-        [HttpGet(ApiEndPointConstant.TradeTransaction.TradeTransactionByDonationForSenderEndPoint)]
-        [SwaggerOperation(Summary = "Lấy danh sách trade transaction chứa đồ của thằng đang đăng nhập")]
-        public async Task<IActionResult> GetTradeTransactionByDonationForSender()
-        {
-            int accountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
-
-            var response = await _tradeTransactionService.GetTradeTransactionByDonationForSender(accountId);
-            if (response.Status >= 0)
-                return Ok(response.Data);
             else
                 return BadRequest(response.Message);
         }

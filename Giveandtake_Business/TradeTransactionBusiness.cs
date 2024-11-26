@@ -96,7 +96,7 @@ namespace Giveandtake_Business
         {
             var tradeList = await _unitOfWork.GetRepository<TradeTransaction>()
                 .GetListAsync
-                (predicate: o => o.AccountId == accountId,
+                (predicate: o => o.AccountId == accountId && (o.Status == "Completed" || o.Status == "Pending"),
                 selector: o => new
                 {
                     TradeTransaction = new GetTradeTransaction()
@@ -117,38 +117,6 @@ namespace Giveandtake_Business
                     }).ToList()
                 });
 
-            return new GiveandtakeResult(tradeList);
-        }
-
-        // Get trade transaction containing donation of logged-in user
-        public async Task<IGiveandtakeResult> GetTradeTransactionByDonationForSender(int accountId)
-        {
-            var tradeList = await _unitOfWork.GetRepository<TradeTransaction>()
-                .GetListAsync
-                (predicate: o => o.TradeTransactionDetails.Any(td => td.RequestDonation.AccountId == accountId && td.RequestDonation != null),
-                selector: o => new
-                {
-                    TradeTransaction = new GetTradeTransaction()
-                    {
-                        TradeTransactionId = o.TradeTransactionId,
-                        AccountId = o.AccountId,
-                        TradeDonationId = o.TradeDonationId,
-                        CreatedDate = o.CreatedDate,
-                        UpdatedDate = o.UpdatedDate,
-                        Status = o.Status
-                    },
-                    TradeTransactionDetails = o.TradeTransactionDetails.Select(td => new GetTradeTransactionDetailDTO()
-                    {
-                        TradeTransactionDetailId = td.TradeTransactionDetailId,
-                        TradeTransactionId = td.TradeTransactionId,
-                        RequestDonationId = td.RequestDonationId,
-                        Qrcode = td.Qrcode
-                    }).ToList()
-                });
-            if (tradeList == null)
-            {
-                return new GiveandtakeResult(-1, "No trade transaction found for your donations");
-            }
             return new GiveandtakeResult(tradeList);
         }
 

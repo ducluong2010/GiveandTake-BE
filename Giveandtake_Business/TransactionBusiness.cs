@@ -105,7 +105,7 @@ namespace Giveandtake_Business
         public async Task<IGiveandtakeResult> GetTransactionsByAccount(int id)
         {
             var transactionsList = await _unitOfWork.GetRepository<Transaction>().GetListAsync(
-                 predicate: o => o.AccountId == id,
+                 predicate: o => o.AccountId == id && (o.Status == "Completed" || o.Status == "Pending"),
                  selector: o => new
                  {
                      Transaction = new GetTransaction()
@@ -144,7 +144,7 @@ namespace Giveandtake_Business
         {
             var transactionsList = await _unitOfWork.GetRepository<Transaction>()
                 .GetListAsync(
-                    predicate: t => t.TransactionDetails.Any(td =>
+                    predicate: t => (t.Status == "Pending" || t.Status == "Completed") && t.TransactionDetails.Any(td =>
                         td.Donation != null && td.Donation.AccountId == senderAccountId),
                     selector: t => new
                     {
