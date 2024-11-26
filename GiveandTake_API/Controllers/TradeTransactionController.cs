@@ -96,5 +96,44 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response.Message);
         }
+
+        [HttpPut(ApiEndPointConstant.TradeTransaction.CancelTradeTransactionEndPoint)]
+        [SwaggerOperation(Summary = "Cancel trade transaction")]
+        public async Task<IActionResult> CancelTradeTransaction(int tradeTransactionId)
+        {
+            int loggedInAccountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
+
+            var response = await _tradeTransactionService.CancelTradeTransaction(tradeTransactionId, loggedInAccountId);
+            if (response.Status >= 0)
+                return Ok(response);
+            else
+                return BadRequest(response.Message);
+        }
+
+        [HttpGet(ApiEndPointConstant.TradeTransaction.TradeTransactionByAccountForCurrentUserEndPoint)]
+        [SwaggerOperation(Summary = "Lấy danh sách trade transaction mà thằng đang đăng nhập đã có")]
+        public async Task<IActionResult> GetTradeTransactionByCurrenUser()
+        {
+            int accountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
+
+            var response = await _tradeTransactionService.GetTradeTransactionByAccountId(accountId);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
+
+        [HttpGet(ApiEndPointConstant.TradeTransaction.TradeTransactionByDonationForSenderEndPoint)]
+        [SwaggerOperation(Summary = "Lấy danh sách trade transaction chứa đồ của thằng đang đăng nhập")]
+        public async Task<IActionResult> GetTradeTransactionByDonationForSender()
+        {
+            int accountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
+
+            var response = await _tradeTransactionService.GetTradeTransactionByDonationForSender(accountId);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
     }
 }

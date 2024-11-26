@@ -120,6 +120,37 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(tradeList);
         }
 
+        // Get trade transaction containing donation of logged-in user
+        public async Task<IGiveandtakeResult> GetTradeTransactionByDonationForSender(int accountId)
+        {
+            var tradeList = await _unitOfWork.GetRepository<TradeTransaction>()
+                .GetListAsync
+                (predicate: o => o.TradeTransactionDetails.Any(td => td.RequestDonation.AccountId == accountId && td.RequestDonation != null),
+                selector: o => new
+                {
+                    TradeTransaction = new GetTradeTransaction()
+                    {
+                        TradeTransactionId = o.TradeTransactionId,
+                        AccountId = o.AccountId,
+                        TradeDonationId = o.TradeDonationId,
+                        CreatedDate = o.CreatedDate,
+                        UpdatedDate = o.UpdatedDate,
+                        Status = o.Status
+                    },
+                    TradeTransactionDetails = o.TradeTransactionDetails.Select(td => new GetTradeTransactionDetailDTO()
+                    {
+                        TradeTransactionDetailId = td.TradeTransactionDetailId,
+                        TradeTransactionId = td.TradeTransactionId,
+                        RequestDonationId = td.RequestDonationId,
+                        Qrcode = td.Qrcode
+                    }).ToList()
+                });
+            if (tradeList == null)
+            {
+                return new GiveandtakeResult(-1, "No trade transaction found for your donations");
+            }
+            return new GiveandtakeResult(tradeList);
+        }
 
         // Get trade transaction status
         public async Task<IGiveandtakeResult> GetTradeTransactionStatus(int id)
@@ -144,7 +175,6 @@ namespace Giveandtake_Business
         // Accept request, create transaction
         public async Task<IGiveandtakeResult> AcceptTradeRequest(int tradeRequestId, int loggedInAccountId)
         {
-            // Kiểm tra tài khoản
             var account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: a => a.AccountId == loggedInAccountId);
             if (account == null)
@@ -156,7 +186,6 @@ namespace Giveandtake_Business
                 };
             }
 
-            // Kiểm tra yêu cầu trao đổi
             var tradeRequest = await _unitOfWork.GetRepository<TradeRequest>().SingleOrDefaultAsync(
                 predicate: tr => tr.TradeRequestId == tradeRequestId);
             if (tradeRequest == null || tradeRequest.Status != "Pending")
@@ -168,7 +197,6 @@ namespace Giveandtake_Business
                 };
             }
 
-            // Kiểm tra request donation
             var requestDonation = await _unitOfWork.GetRepository<Donation>().SingleOrDefaultAsync(
                 predicate: d => d.DonationId == tradeRequest.RequestDonationId && d.Status == "Approved" && d.AccountId == loggedInAccountId);
             if (requestDonation == null)
@@ -180,7 +208,6 @@ namespace Giveandtake_Business
                 };
             }
 
-            // Kiểm tra trade donation
             var tradeDonation = await _unitOfWork.GetRepository<Donation>().SingleOrDefaultAsync(
                 predicate: d => d.DonationId == tradeRequest.TradeDonationId && d.Status == "Approved");
             if (tradeDonation == null)
@@ -192,13 +219,11 @@ namespace Giveandtake_Business
                 };
             }
 
-            // Cập nhật trạng thái donations thành "Hiding"
             requestDonation.Status = "Hiding";
             tradeDonation.Status = "Hiding";
             _unitOfWork.GetRepository<Donation>().UpdateAsync(requestDonation);
             _unitOfWork.GetRepository<Donation>().UpdateAsync(tradeDonation);
 
-            // Tạo trade transaction
             var tradeTransaction = new TradeTransaction
             {
                 AccountId = tradeRequest.AccountId,
@@ -208,19 +233,17 @@ namespace Giveandtake_Business
                 Status = "Pending"
             };
             await _unitOfWork.GetRepository<TradeTransaction>().InsertAsync(tradeTransaction);
-            await _unitOfWork.CommitAsync(); // Commit để có TradeTransactionId
+            await _unitOfWork.CommitAsync(); 
 
-            // Tạo trade transaction detail
             var tradeTransactionDetail = new TradeTransactionDetail
             {
                 TradeTransactionId = tradeTransaction.TradeTransactionId,
                 RequestDonationId = requestDonation.DonationId,
-                Qrcode = null // QR code sẽ tạo sau
+                Qrcode = null 
             };
             await _unitOfWork.GetRepository<TradeTransactionDetail>().InsertAsync(tradeTransactionDetail);
-            await _unitOfWork.CommitAsync(); // Commit để có TradeTransactionDetailId
+            await _unitOfWork.CommitAsync(); 
 
-            // Tạo QR code và cập nhật trade transaction detail
             var qrCodeResult = await _tradeTransactionDetailBusiness.GenerateQRCode(
                 tradeTransaction.TradeTransactionId,
                 tradeTransactionDetail.TradeTransactionDetailId,
@@ -238,11 +261,9 @@ namespace Giveandtake_Business
             tradeTransactionDetail.Qrcode = qrCodeResult.Data.ToString();
             _unitOfWork.GetRepository<TradeTransactionDetail>().UpdateAsync(tradeTransactionDetail);
 
-            // Cập nhật trạng thái trade request thành "Accepted"
             tradeRequest.Status = "Accepted";
             _unitOfWork.GetRepository<TradeRequest>().UpdateAsync(tradeRequest);
 
-            // Từ chối các yêu cầu khác cho cùng một requestDonationId
             var otherRequests = await _unitOfWork.GetRepository<TradeRequest>().GetListAsync(
                 predicate: tr => tr.RequestDonationId == requestDonation.DonationId && tr.TradeRequestId != tradeRequest.TradeRequestId);
 
@@ -254,7 +275,6 @@ namespace Giveandtake_Business
 
             await _unitOfWork.CommitAsync();
 
-            // Trả về kết quả thành công
             return new GiveandtakeResult
             {
                 Status = 1,
@@ -272,11 +292,9 @@ namespace Giveandtake_Business
         // Reject request
         public async Task<IGiveandtakeResult> RejectTradeRequest(int tradeRequestId, int loggedInAccountId)
         {
-            // Lấy trade request từ database
             var tradeRequest = await _unitOfWork.GetRepository<TradeRequest>()
                 .SingleOrDefaultAsync(predicate: tr => tr.TradeRequestId == tradeRequestId);
 
-            // Kiểm tra nếu trade request không tồn tại
             if (tradeRequest == null)
             {
                 return new GiveandtakeResult
@@ -286,7 +304,6 @@ namespace Giveandtake_Business
                 };
             }
 
-            // Kiểm tra quyền sở hữu của account đối với request donation
             var requestDonation = await _unitOfWork.GetRepository<Donation>()
                 .SingleOrDefaultAsync(predicate: d => d.DonationId == tradeRequest.RequestDonationId && d.AccountId == loggedInAccountId);
 
@@ -299,7 +316,6 @@ namespace Giveandtake_Business
                 };
             }
 
-            // Kiểm tra nếu trade request đã được chấp nhận thì không thể từ chối
             if (tradeRequest.Status == "Accepted")
             {
                 return new GiveandtakeResult
@@ -309,11 +325,9 @@ namespace Giveandtake_Business
                 };
             }
 
-            // Cập nhật trạng thái trade request thành "Rejected"
             tradeRequest.Status = "Rejected";
             _unitOfWork.GetRepository<TradeRequest>().UpdateAsync(tradeRequest);
 
-            // Commit thay đổi vào database
             bool status = await _unitOfWork.CommitAsync() > 0;
             if (status)
             {
@@ -336,7 +350,6 @@ namespace Giveandtake_Business
         // Complete trade transaction
         public async Task<IGiveandtakeResult> CompleteTradeTransaction(int tradeTransactionId, int loggedInAccountId)
         {
-            // Kiểm tra tồn tại của trade transaction"
             var tradeTransaction = await _unitOfWork.GetRepository<TradeTransaction>().SingleOrDefaultAsync(
                 predicate: tt => tt.TradeTransactionId == tradeTransactionId);
 
@@ -349,11 +362,10 @@ namespace Giveandtake_Business
                 };
             }
 
-            // Kiểm tra quyền sở hữu: người thực hiện phải là người đã accept (sở hữu request donation id)
             var tradeTransactionDetail = await _unitOfWork.GetRepository<TradeTransactionDetail>()
                 .SingleOrDefaultAsync(
                     predicate: ttd => ttd.TradeTransactionId == tradeTransactionId,
-                    include: ttd => ttd.Include(d => d.RequestDonation)); // Include để lấy dữ liệu request donation
+                    include: ttd => ttd.Include(d => d.RequestDonation));
 
             if (tradeTransactionDetail == null || tradeTransactionDetail.RequestDonation == null || tradeTransactionDetail.RequestDonation.AccountId != loggedInAccountId)
             {
@@ -365,7 +377,6 @@ namespace Giveandtake_Business
             }
 
 
-            // Lấy requestDonation và tradeDonation
             var requestDonation = await _unitOfWork.GetRepository<Donation>().SingleOrDefaultAsync(
                 predicate: d => d.DonationId == tradeTransactionDetail.RequestDonationId);
 
@@ -381,7 +392,6 @@ namespace Giveandtake_Business
                 };
             }
 
-            // Đổi chủ sở hữu cho requestDonation và tradeDonation, set type về 1 (nằm trong kho)
             var tempAccountId = requestDonation.AccountId;
             requestDonation.AccountId = tradeDonation.AccountId;
             tradeDonation.AccountId = tempAccountId;
@@ -396,15 +406,12 @@ namespace Giveandtake_Business
             _unitOfWork.GetRepository<Donation>().UpdateAsync(requestDonation);
             _unitOfWork.GetRepository<Donation>().UpdateAsync(tradeDonation);
 
-            // Cập nhật trạng thái trade transaction thành "Completed"
             tradeTransaction.Status = "Completed";
             tradeTransaction.UpdatedDate = DateTime.UtcNow;
             _unitOfWork.GetRepository<TradeTransaction>().UpdateAsync(tradeTransaction);
 
-            // Lưu thay đổi
             await _unitOfWork.CommitAsync();
 
-            // Trả về kết quả thành công
             return new GiveandtakeResult
             {
                 Status = 1,
@@ -416,6 +423,111 @@ namespace Giveandtake_Business
                     RequestDonationOwnerId = requestDonation.AccountId,
                     TradeDonationOwnerId = tradeDonation.AccountId
                 }
+            };
+        }
+
+        // Cancel trade transaction
+        public async Task<IGiveandtakeResult> CancelTradeTransaction(int tradeTransactionId, int loggedInAccountId)
+        {
+            var tradeTransaction = await _unitOfWork.GetRepository<TradeTransaction>().SingleOrDefaultAsync(
+                predicate: tt => tt.TradeTransactionId == tradeTransactionId);
+
+            if (tradeTransaction == null)
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Trade transaction not found."
+                };
+            }
+
+            var tradeTransactionDetail = await _unitOfWork.GetRepository<TradeTransactionDetail>().SingleOrDefaultAsync(
+                predicate: ttd => ttd.TradeTransactionId == tradeTransactionId,
+                include: ttd => ttd.Include(d => d.RequestDonation));
+
+            if (tradeTransactionDetail == null || tradeTransactionDetail.RequestDonation == null)
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Trade transaction detail or request donation not found."
+                };
+            }
+
+            // Kiểm tra quyền sở hữu - chỉ người sở hữu RequestDonation hoặc TradeDonation mới có thể hủy
+            var requestDonation = tradeTransactionDetail.RequestDonation;
+            var tradeDonation = await _unitOfWork.GetRepository<Donation>().SingleOrDefaultAsync(
+                predicate: d => d.DonationId == tradeTransaction.TradeDonationId);
+
+            if (tradeDonation == null)
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Trade donation not found."
+                };
+            }
+
+            // Kiểm tra nếu loggedInAccountId không phải chủ sở hữu của cả hai món đồ
+            if (requestDonation.AccountId != loggedInAccountId && tradeDonation.AccountId != loggedInAccountId)
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "You do not have permission to cancel this trade transaction."
+                };
+            }
+
+
+            if (tradeTransaction.Status == "Completed")
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Trade transaction has already been completed and cannot be canceled."
+                };
+            }
+
+            if (tradeTransaction.Status == "Cancelled")
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Trade transaction has already been canceled."
+                };
+            }
+
+            var daysSinceCreation = (DateTime.UtcNow - tradeTransaction.CreatedDate)?.TotalDays;
+            if (daysSinceCreation.HasValue && daysSinceCreation < 5)
+            {
+                var daysRemaining = Math.Ceiling(5 - daysSinceCreation.Value);
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = $"Trade transaction can only be canceled after 5 days from its creation date. Please wait {daysRemaining} more day(s)."
+                };
+            }
+
+            tradeDonation.Type = 1; 
+            requestDonation.Type = 1; 
+
+
+            tradeDonation.Status = "Approved"; 
+            requestDonation.Status = "Approved";
+
+            _unitOfWork.GetRepository<Donation>().UpdateAsync(requestDonation);
+            _unitOfWork.GetRepository<Donation>().UpdateAsync(tradeDonation);
+
+            tradeTransaction.Status = "Cancelled";
+            tradeTransaction.UpdatedDate = DateTime.UtcNow;
+            _unitOfWork.GetRepository<TradeTransaction>().UpdateAsync(tradeTransaction);
+
+            await _unitOfWork.CommitAsync();
+
+            return new GiveandtakeResult
+            {
+                Status = 1,
+                Message = "Trade transaction canceled successfully.",
             };
         }
 
