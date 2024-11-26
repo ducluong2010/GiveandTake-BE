@@ -109,5 +109,18 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response.Message);
         }
+
+        [HttpGet(ApiEndPointConstant.TradeTransaction.GetTradeTransactionByDonationForSenderEndPoint)]
+        [SwaggerOperation(Summary = "Lấy trade transaction đang pending có chứa đồ request của thằng đang đăng nhập")]
+        public async Task<IActionResult> GetTradeTransactionByDonationForSender()
+        {
+            int senderAccountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
+
+            var response = await _tradeTransactionService.GetTradeTransactionByDonationForSender(senderAccountId);
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response.Message);
+        }
     }
 }
