@@ -33,17 +33,6 @@ namespace Giveandtake_Services.Implements
         public Task<IGiveandtakeResult> GetTransactionStatus(int transactionId)
             => _transactionBusiness.GetTransactionStatus(transactionId);
 
-        // Specifid methods for admin and staff
-
-        public Task<IGiveandtakeResult> ChangeTransactionStatusToPending(int transactionId)
-            => _transactionBusiness.ChangeTransactionStatusToPending(transactionId);
-
-        public Task<IGiveandtakeResult> ChangeTransactionStatusToSuspended(int transactionId)
-            => _transactionBusiness.ChangeTransactionStatusToSuspended(transactionId);
-
-        public Task<IGiveandtakeResult> DeleteSuspendedTransaction(int id)
-            => _transactionBusiness.DeleteSuspendedTransaction(id);
-
         // Specifid methods for user
 
         public Task<IGiveandtakeResult> CreateTransactionWithDetail(TransactionDTO.CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto, int senderAccountId)
@@ -57,5 +46,8 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> ToggleIsFeedbackStatus(int transactionId)
             => _transactionBusiness.ToggleIsFeedbackStatus(transactionId);
+
+        public Task<IGiveandtakeResult> CancelTransaction(int transactionId, int senderAccountId)
+            => _transactionBusiness.CancelTransaction(transactionId, senderAccountId);
     }
 }

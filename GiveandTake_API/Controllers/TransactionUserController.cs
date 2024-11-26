@@ -18,7 +18,7 @@ namespace GiveandTake_API.Controllers
         #region Mainflow Transaction
 
         [HttpPost(ApiEndPointConstant.Transaction.CreateTransactionWithDetailEndPoint)]
-        [SwaggerOperation(Summary = "Create transaction with details - Sender")]
+        [SwaggerOperation(Summary = "Create the Transaction with Detail - Sender")]
         public async Task<IActionResult> CreateTransactionWithDetail([FromBody] CreateTransactionWithDetail transactionInfo)
         {
             int senderAccountId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
@@ -53,6 +53,20 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response.Message);
         }
+
+        [HttpPut(ApiEndPointConstant.Transaction.CancelTransactionEndPoint)]
+        [SwaggerOperation(Summary = "Cancel the Transaction - Sender")]
+        public async Task<IActionResult> CancelTransaction(int id)
+        {
+            int senderId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == "AccountId").Value);
+
+            var response = await _transactionService.CancelTransaction(id, senderId);
+            if (response.Status >= 0)
+                return Ok(response);
+            else
+                return BadRequest(response.Message);
+        }
+
 
         [HttpGet(ApiEndPointConstant.Transaction.TransactionByAccountForCurrentUserEndPoint)]
         [SwaggerOperation(Summary = "Lấy danh sách transaction mà thằng đang đăng nhập đã có")]

@@ -99,11 +99,8 @@
 
 
             public const string CreateTransactionWithDetailEndPoint = TransactionsEndPoint + "/with-detail";
-
-            public const string DeleteSuspendedTransactionEndPoint = TransactionsEndPoint + "/suspended/{id}";
-            public const string ChangeTransactionStatusToSuspendedEndPoint = TransactionsEndPoint + "/{id}/suspend";
-            public const string ChangeTransactionStatusToPendingEndPoint = TransactionsEndPoint + "/{id}/pending";
             public const string CompleteTransactionEndPoint = TransactionsEndPoint + "/{id}/complete";
+            public const string CancelTransactionEndPoint = TransactionsEndPoint + "/{id}/cancel";
         }
 
 
@@ -224,6 +221,11 @@
             public const string GetTradeTransactionByAccountIdEndPoint = TradeTransactionsEndPoint + "/account/{accountId}";
             public const string RejectTradeRequestEndPoint = TradeTransactionsEndPoint + "/reject/{tradeRequestId}/";
             public const string CompleteTradeTransactionEndPoint = TradeTransactionsEndPoint + "/complete/{tradeTransactionId}/";
+            public const string CancelTradeTransactionEndPoint = TradeTransactionsEndPoint + "/cancel/{tradeTransactionId}/";
+
+            public const string TradeTransactionByAccountForCurrentUserEndPoint = TradeTransactionsEndPoint + "/account/current";
+            public const string TradeTransactionByDonationForSenderEndPoint = TradeTransactionsEndPoint + "/donation/sender";
+
         }
     }
 }

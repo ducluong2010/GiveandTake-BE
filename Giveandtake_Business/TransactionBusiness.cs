@@ -101,7 +101,7 @@ namespace Giveandtake_Business
         }
 
 
-        // Get transaction logged in user had received
+        // Get transaction logged in user had received - Important
         public async Task<IGiveandtakeResult> GetTransactionsByAccount(int id)
         {
             var transactionsList = await _unitOfWork.GetRepository<Transaction>().GetListAsync(
@@ -139,7 +139,7 @@ namespace Giveandtake_Business
             return new GiveandtakeResult(transactionsList);
         }
 
-        // Get transaction contained donation of logged in user
+        // Get transaction contained donation of logged in user - Important
         public async Task<IGiveandtakeResult> GetTransactionsByDonationForSender(int senderAccountId)
         {
             var transactionsList = await _unitOfWork.GetRepository<Transaction>()
@@ -244,121 +244,12 @@ namespace Giveandtake_Business
 
         #endregion
 
-        #region Specific Admin Transaction
-
-        // Change transaction status to "Suspended" - Admin/Staff
-        public async Task<IGiveandtakeResult> ChangeTransactionStatusToSuspended(int transactionId)
-        {
-            Transaction transaction = await _unitOfWork.GetRepository<Transaction>().SingleOrDefaultAsync(
-                predicate: o => o.TransactionId == transactionId);
-
-            if(transaction == null)
-            {
-                return new GiveandtakeResult
-                {
-                    Status = -1,
-                    Message = "Transaction not found"
-                };
-            }
-            else
-            {
-                transaction.Status = "Suspended";
-                transaction.UpdatedDate = DateTime.Now;
-                _unitOfWork.GetRepository<Transaction>().UpdateAsync(transaction);
-                await _unitOfWork.CommitAsync();
-            }
-            return new GiveandtakeResult
-            {
-                Status = 1,
-                Message = "Transaction status changed to Suspended"
-            };
-        }
-
-        // Revert transaction status to "Pending" - Admin/Staff
-        public async Task<IGiveandtakeResult> ChangeTransactionStatusToPending(int transactionId)
-        {
-            Transaction transaction = await _unitOfWork.GetRepository<Transaction>().SingleOrDefaultAsync(
-                predicate: o => o.TransactionId == transactionId);
-
-            if (transaction == null)
-            {
-                return new GiveandtakeResult
-                {
-                    Status = -1,
-                    Message = "Transaction not found"
-                };
-            }
-
-            if (transaction.Status == "Suspended")
-            {
-                transaction.Status = "Pending";
-                transaction.UpdatedDate = DateTime.Now;
-                _unitOfWork.GetRepository<Transaction>().UpdateAsync(transaction);
-                await _unitOfWork.CommitAsync();
-
-                return new GiveandtakeResult
-                {
-                    Status = 1,
-                    Message = "Transaction status changed to Pending"
-                };
-            }
-            else
-            {
-                throw new InvalidOperationException("Transaction is not suspended and cannot be reverted to pending.");
-            }
-        }
-
-        // Delete suspended transaction and its details - Admin/Staff
-        public async Task<IGiveandtakeResult> DeleteSuspendedTransaction(int id)
-        {
-            var transaction = await _unitOfWork.GetRepository<Transaction>().SingleOrDefaultAsync(
-                predicate: o => o.TransactionId == id);
-
-            if (transaction == null)
-            {
-                return new GiveandtakeResult
-                {
-                    Status = -1,
-                    Message = "Transaction not found"
-                };
-            }
-
-            if (transaction.Status != "Suspended")
-            {
-                return new GiveandtakeResult
-                {
-                    Status = -1,
-                    Message = "Only suspended transactions can be deleted"
-                };
-            }
-
-            var transactionDetails = await _unitOfWork.GetRepository<TransactionDetail>().FindAllAsync(
-                predicate: td => td.TransactionId == id);
-
-            foreach (var detail in transactionDetails)
-            {
-                _unitOfWork.GetRepository<TransactionDetail>().DeleteAsync(detail);
-            }
-
-            _unitOfWork.GetRepository<Transaction>().DeleteAsync(transaction);
-            await _unitOfWork.CommitAsync();
-
-            return new GiveandtakeResult
-            {
-                Status = 1,
-                Message = "Transaction and its details deleted successfully"
-            };
-        }
-
-        #endregion
-
         #region Specific User Transaction
 
-        //// Create transaction and transaction detail at the same time - Sender
+        // Create transaction and transaction detail at the same time - Sender
         public async Task<IGiveandtakeResult> CreateTransactionWithDetail(CreateTransaction createTransaction,
             TransactionDetailDTO transactionDetailDto, int senderAccountId)
         {
-            // Kiểm tra tài khoản
             var account = await _unitOfWork.GetRepository<Account>().SingleOrDefaultAsync(
                 predicate: a => a.AccountId == createTransaction.AccountId);
 
@@ -371,7 +262,6 @@ namespace Giveandtake_Business
                 };
             }
 
-            // Kiểm tra donation
             var donation = await _unitOfWork.GetRepository<Donation>().SingleOrDefaultAsync(
                 predicate: d => d.DonationId == transactionDetailDto.DonationId && d.AccountId == senderAccountId);
 
@@ -393,11 +283,9 @@ namespace Giveandtake_Business
                 };
             }
 
-            // Cập nhật trạng thái donation
             donation.Status = "Hiding";
             _unitOfWork.GetRepository<Donation>().UpdateAsync(donation);
 
-            // Kiểm tra yêu cầu
             var request = await _unitOfWork.GetRepository<Request>().SingleOrDefaultAsync(
                 predicate: r => r.DonationId == donation.DonationId && r.AccountId == createTransaction.AccountId);
 
@@ -410,7 +298,6 @@ namespace Giveandtake_Business
                 };
             }
 
-            // Tạo transaction
             Transaction transaction = new Transaction
             {
                 TotalPoint = donation.Point,
@@ -421,21 +308,19 @@ namespace Giveandtake_Business
             };
 
             await _unitOfWork.GetRepository<Transaction>().InsertAsync(transaction);
-            await _unitOfWork.CommitAsync(); // Commit để có TransactionId
+            await _unitOfWork.CommitAsync();
 
-            // Tạo transaction detail
             transactionDetailDto.TransactionId = transaction.TransactionId;
             TransactionDetail transactionDetail = new TransactionDetail
             {
                 TransactionId = transaction.TransactionId,
                 DonationId = transactionDetailDto.DonationId,
-                Qrcode = null // QRCode sẽ được tạo sau
+                Qrcode = null 
             };
 
             await _unitOfWork.GetRepository<TransactionDetail>().InsertAsync(transactionDetail);
-            await _unitOfWork.CommitAsync(); // Commit để có TransactionDetailId
+            await _unitOfWork.CommitAsync(); 
 
-            // Tạo QRCode và cập nhật TransactionDetail
             var qrCodeResult = await _transactionDetailBusiness.GenerateQRCode(transaction.TransactionId, transactionDetail.TransactionDetailId, (int)transactionDetailDto.DonationId);
 
             if (qrCodeResult.Status < 0)
@@ -447,15 +332,12 @@ namespace Giveandtake_Business
                 };
             }
 
-            // Gán QR code URL từ qrCodeResult.Data
             transactionDetail.Qrcode = qrCodeResult.Data.ToString();
             _unitOfWork.GetRepository<TransactionDetail>().UpdateAsync(transactionDetail);
 
-            // Cập nhật trạng thái request
             request.Status = "Accepted";
             _unitOfWork.GetRepository<Request>().UpdateAsync(request);
 
-            // Từ chối các yêu cầu khác
             var otherRequests = await _unitOfWork.GetRepository<Request>().GetListAsync(
                 predicate: r => r.DonationId == donation.DonationId && r.RequestId != request.RequestId);
 
@@ -467,7 +349,6 @@ namespace Giveandtake_Business
 
             await _unitOfWork.CommitAsync();
 
-            // Trả về kết quả thành công cùng với TransactionId và Qrcode
             return new GiveandtakeResult
             {
                 Status = 1,
@@ -477,7 +358,7 @@ namespace Giveandtake_Business
                     TransactionId = transaction.TransactionId,
                     AccountId = transaction.AccountId,
                     DonationId = transactionDetail.DonationId,
-                    Qrcode = transactionDetail.Qrcode // Trả về URL QRCode
+                    Qrcode = transactionDetail.Qrcode 
                 }
             };
         }
@@ -540,6 +421,107 @@ namespace Giveandtake_Business
             };
         }
 
+        // Cancel the transaction - Sender
+        public async Task<IGiveandtakeResult> CancelTransaction(int transactionId, int senderAccountId)
+        {
+            // Lấy thông tin transaction
+            var transaction = await _unitOfWork.GetRepository<Transaction>().SingleOrDefaultAsync(
+                predicate: t => t.TransactionId == transactionId);
+
+            if (transaction == null)
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Transaction not found."
+                };
+            }
+
+            var daysSinceCreation = (DateTime.UtcNow - transaction.CreatedDate)?.TotalDays;
+            if (daysSinceCreation.HasValue && daysSinceCreation < 5)
+            {
+                var daysRemaining = Math.Ceiling(5 - daysSinceCreation.Value);
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = $"Transaction can only be canceled after 5 days from its creation date. Please wait {daysRemaining} more day(s)."
+                };
+            }
+
+
+            // Lấy thông tin donation liên quan
+            var transactionDetail = await _unitOfWork.GetRepository<TransactionDetail>().SingleOrDefaultAsync(
+                predicate: td => td.TransactionId == transaction.TransactionId);
+
+            if (transactionDetail == null)
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Transaction detail not found."
+                };
+            }
+
+            var donation = await _unitOfWork.GetRepository<Donation>().SingleOrDefaultAsync(
+                predicate: d => d.DonationId == transactionDetail.DonationId && d.AccountId == senderAccountId);
+
+            if (donation == null)
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Donation not found or it does not belong to you."
+                };
+            }
+
+            if (transaction.Status == "Completed")
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Transaction cannot be cancelled after it has been completed."
+                };
+            }
+
+            if (transaction.Status == "Cancelled")
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Transaction has already been cancelled."
+                };
+            }
+
+            // Cập nhật trạng thái transaction
+            transaction.Status = "Cancelled";
+            _unitOfWork.GetRepository<Transaction>().UpdateAsync(transaction);
+
+            // Cập nhật trạng thái donation
+            donation.Status = "Approved";
+            donation.Type = 1; // Quay lại kho
+            _unitOfWork.GetRepository<Donation>().UpdateAsync(donation);
+
+            // Cập nhật trạng thái request liên quan
+            var request = await _unitOfWork.GetRepository<Request>().SingleOrDefaultAsync(
+                predicate: r => r.DonationId == donation.DonationId && r.Status == "Accepted");
+
+            if (request != null)
+            {
+                request.Status = "Cancelled";
+                _unitOfWork.GetRepository<Request>().UpdateAsync(request);
+            }
+
+            // Commit các thay đổi
+            await _unitOfWork.CommitAsync();
+
+            return new GiveandtakeResult
+            {
+                Status = 1,
+                Message = "Transaction cancelled successfully, and donation status updated to 'Approved'."
+            };
+        }
+
+        // Toggle feedback status of a transaction
         public async Task<IGiveandtakeResult> ToggleIsFeedbackStatus(int transactionId)
         {
             var existingTransaction = await _unitOfWork.GetRepository<Transaction>()

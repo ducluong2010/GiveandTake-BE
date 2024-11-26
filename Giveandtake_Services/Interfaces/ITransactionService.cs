@@ -18,14 +18,10 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> GetCompletedTransactionsByAccountId(int senderAccountId);
         Task<IGiveandtakeResult> GetTransactionStatus(int transactionId);
 
-        // Specifid methods for admin and staff
-        Task<IGiveandtakeResult> DeleteSuspendedTransaction(int id);
-        Task<IGiveandtakeResult> ChangeTransactionStatusToSuspended(int transactionId);
-        Task<IGiveandtakeResult> ChangeTransactionStatusToPending(int transactionId);
-
         // Specifid methods for user
         Task<IGiveandtakeResult> CreateTransactionWithDetail(CreateTransaction createTransaction, TransactionDetailDTO transactionDetailDto, int senderAccountId);
         Task<IGiveandtakeResult> CompleteTransaction(int transactionId, int senderAccountId);
         Task<IGiveandtakeResult> ToggleIsFeedbackStatus(int transactionId);
+        Task<IGiveandtakeResult> CancelTransaction(int transactionId, int senderAccountId);
     }
 }
