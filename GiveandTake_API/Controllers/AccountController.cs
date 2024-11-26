@@ -104,6 +104,28 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response);
         }
 
+        [HttpPut(ApiEndPointConstant.Account.Update3MonthsPremiumUntilEndPoint)]
+        [SwaggerOperation(Summary = "Update 3 Months PremiumUntil By Id")]
+        public async Task<IActionResult> Update3MonthsPremiumUntilById(int id)
+        {
+            var response = await _accountService.Update3MonthsPremiumUntilById(id);
+            if (response.Status >= 0)
+                return Ok(response);
+            else
+                return BadRequest(response);
+        }
+
+        [HttpPut(ApiEndPointConstant.Account.Update6MonthsPremiumUntilEndPoint)]
+        [SwaggerOperation(Summary = "Update 6 Months PremiumUntil By Id")]
+        public async Task<IActionResult> Update6MonthsPremiumUntilById(int id)
+        {
+            var response = await _accountService.Update6MonthsPremiumUntilById(id);
+            if (response.Status >= 0)
+                return Ok(response);
+            else
+                return BadRequest(response);
+        }
+
 
         [HttpDelete(ApiEndPointConstant.Account.AccountEndpoint)]
         [SwaggerOperation(Summary = "Delete Account")]

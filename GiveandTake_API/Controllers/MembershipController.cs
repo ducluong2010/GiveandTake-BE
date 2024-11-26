@@ -164,6 +164,38 @@ namespace GiveandTake_API.Controllers
             }
         }
 
+        [HttpPost("3-months")]
+        [SwaggerOperation(Summary = "Create 3 Months Membership")]
+        public async Task<IActionResult> CreateMembership3Months([FromBody] CreateMembershipDTO createMembershipDto)
+        {
+            var response = await _memberShipBusiness.CreateMembership3Months(createMembershipDto);
+
+            if (response.Status >= 0)
+            {
+                return Ok(response.Message);
+            }
+            else
+            {
+                return BadRequest(response.Message);
+            }
+        }
+
+        [HttpPost("6-months")]
+        [SwaggerOperation(Summary = "Create 6 Months Membership")]
+        public async Task<IActionResult> CreateMembership6Months([FromBody] CreateMembershipDTO createMembershipDto)
+        {
+            var response = await _memberShipBusiness.CreateMembership6Months(createMembershipDto);
+
+            if (response.Status >= 0)
+            {
+                return Ok(response.Message);
+            }
+            else
+            {
+                return BadRequest(response.Message);
+            }
+        }
+
         [HttpPut(ApiEndPointConstant.Membership.MembershipEndPoint)]
         [SwaggerOperation(Summary = "Update Membership")]
         public async Task<IActionResult> UpdateMembership(int id, [FromBody] UpdateMembershipDTO membershipInfo)
