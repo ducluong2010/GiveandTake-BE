@@ -209,6 +209,7 @@ namespace Giveandtake_Business
                         ChatId = a.AccountId,
                         MessageId = a.AccountId,
                         Rating = a.Rating,
+                        Otp = a.Otp,
                         ActiveTime = a.ActiveTime,
                         CategoryId = a.CategoryId
                     });
@@ -240,6 +241,7 @@ namespace Giveandtake_Business
                         ChatId = a.AccountId,
                         MessageId = a.AccountId,
                         Rating = a.Rating,
+                        Otp = a.Otp,
                         ActiveTime = a.ActiveTime,
                         CategoryId = a.CategoryId
                     });
