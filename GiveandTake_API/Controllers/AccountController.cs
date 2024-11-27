@@ -54,10 +54,11 @@ namespace GiveandTake_API.Controllers
         public async Task<IActionResult> GetAccountByEmail(string email)
         {
             var response = await _accountService.GetAccountInfoByEmail(email);
-            if (response.Status >= 0)
+
+            if (response.Status >= 0 && response.Data != null)
                 return Ok(response.Data);
             else
-                return BadRequest(response);
+                return Ok(new { Message = "Account not found", Status = 1 });
         }
 
         [HttpPost(ApiEndPointConstant.Account.AccountsEndpoint)]
