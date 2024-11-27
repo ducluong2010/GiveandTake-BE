@@ -182,5 +182,8 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> DeleteMembership(int id)
             => _membershipBusiness.DeleteMembership(id);
+        public Task<IGiveandtakeResult> CheckMembershipExpiry(int accountId)
+            => _membershipBusiness.CheckMembershipExpiry(accountId);
+
     }
 }

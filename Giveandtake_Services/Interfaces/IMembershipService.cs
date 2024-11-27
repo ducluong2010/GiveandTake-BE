@@ -24,5 +24,6 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> CreateMembership6Months(CreateMembershipDTO membershipInfo);
         Task<IGiveandtakeResult> UpdateMembership(int id, UpdateMembershipDTO membershipInfo);
         Task<IGiveandtakeResult> DeleteMembership(int id);
+        Task<IGiveandtakeResult> CheckMembershipExpiry(int accountId);
     }
 }
