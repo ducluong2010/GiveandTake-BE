@@ -267,5 +267,43 @@ namespace Giveandtake_Business
 
             await _unitOfWork.CommitAsync();
         }
+
+        public async Task<IGiveandtakeResult> CheckMembershipExpiry(int accountId)
+        {
+            var membershipRepository = _unitOfWork.GetRepository<Membership>();
+
+            var membership = await membershipRepository.SingleOrDefaultAsync(
+                predicate: m => m.AccountId == accountId
+            );
+
+            if (membership == null)
+            {
+                return new GiveandtakeResult(-1, "Không tìm thấy thông tin thành viên.");
+            }
+
+            if (!membership.PremiumUntil.HasValue)
+            {
+                return new GiveandtakeResult(-1, "Thành viên chưa có thời gian hết hạn Premium.");
+            }
+
+            var currentDate = DateTime.UtcNow;
+            var premiumUntil = membership.PremiumUntil.Value;
+            var remainingDays = (premiumUntil - currentDate).TotalDays;
+
+            if (remainingDays <= 0)
+            {
+                return new GiveandtakeResult(-1, "Thời gian Premium đã hết hạn. Vui lòng gia hạn ngay để tiếp tục trải nghiệm.");
+            }
+            else if (remainingDays <= 3)
+            {
+                int daysRemaining = (int)Math.Ceiling(remainingDays);
+                return new GiveandtakeResult(1, $"Còn {daysRemaining} ngày nữa là hết hạn Premium. Hãy gia hạn để tiếp tục duy trì trải nghiệm.");
+            }
+            else
+            {
+                return new GiveandtakeResult(1, "Thời hạn Premium của bạn vẫn còn dài. Hãy tận hưởng trải nghiệm.");
+            }
+        }
+
     }
 }

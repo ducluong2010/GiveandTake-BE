@@ -231,5 +231,30 @@ namespace GiveandTake_API.Controllers
                 return BadRequest(response.Message);
             }
         }
+
+        [HttpGet("check-expiry")]
+        [SwaggerOperation(Summary = "Check membership expiration date")]
+        public async Task<IActionResult> CheckMembershipExpiry()
+        {
+            var accountIdClaim = HttpContext.User.FindFirst("accountId");
+
+            if (accountIdClaim == null)
+            {
+                return BadRequest(new { message = "Không tìm thấy thông tin Account ID trong token." });
+            }
+
+            if (!int.TryParse(accountIdClaim.Value, out var accountId))
+            {
+                return BadRequest(new { message = "Account ID không hợp lệ." });
+            }
+
+            var result = await _membershipService.CheckMembershipExpiry(accountId);
+
+            if (result.Message == "Success")
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
     }
 }
