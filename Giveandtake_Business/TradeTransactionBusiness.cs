@@ -405,7 +405,7 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "Trade transaction not found."
+                    Message = "Không tìm thấy giao dịch trao đổi."
                 };
             }
 
@@ -418,7 +418,7 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "Trade transaction detail or request donation not found."
+                    Message = "Không tìm thấy chi tiết của giao dịch trao đổi."
                 };
             }
 
@@ -432,7 +432,7 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "Trade donation not found."
+                    Message = "Không tìm thấy món đồ."
                 };
             }
 
@@ -442,7 +442,7 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "You do not have permission to cancel this trade transaction."
+                    Message = "Bạn không có quyền huỷ giao dịch trao đổi này."
                 };
             }
 
@@ -452,7 +452,7 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "Trade transaction has already been completed and cannot be canceled."
+                    Message = "Giao dịch trao đổi đã hoàn thành rồi thì không huỷ được."
                 };
             }
 
@@ -461,7 +461,7 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = "Trade transaction has already been canceled."
+                    Message = "Giao dịch trao đổi này đã bị huỷ rồi."
                 };
             }
 
@@ -472,7 +472,7 @@ namespace Giveandtake_Business
                 return new GiveandtakeResult
                 {
                     Status = -1,
-                    Message = $"Trade transaction can only be canceled after 5 days from its creation date. Please wait {daysRemaining} more day(s)."
+                    Message = $"Giao dịch trao đổi chỉ có thể bị huỷ sau 5 ngày kể từ ngày tạo. Xin hãy chờ thêm {daysRemaining} ngày nữa."
                 };
             }
 
@@ -495,7 +495,7 @@ namespace Giveandtake_Business
             return new GiveandtakeResult
             {
                 Status = 1,
-                Message = "Trade transaction canceled successfully.",
+                Message = "Giao dịch trao đổi đã được huỷ thành công. 2 món đồ đã được gửi về kho mỗi người.",
             };
         }
 
