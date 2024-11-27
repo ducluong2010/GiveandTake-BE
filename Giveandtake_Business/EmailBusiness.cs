@@ -87,6 +87,7 @@ namespace Giveandtake_Business
             if (hashedOtp == currentAcc.Otp)
             {
                 currentAcc.IsActive = true;
+                currentAcc.Otp = null;
                 _unitOfWork.GetRepository<Account>().UpdateAsync(currentAcc);
                 await _unitOfWork.CommitAsync();
                 return "Kích hoạt tài khoản thành công";
