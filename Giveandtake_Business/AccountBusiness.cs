@@ -257,16 +257,16 @@ namespace Giveandtake_Business
 
             var existingAccountByEmail = await repo.SingleOrDefaultAsync(predicate: a => a.Email.Equals(inputedAccount.Email));
             var existingAccountByPhone = await repo.SingleOrDefaultAsync(predicate: a => a.Phone != null && a.Phone.Equals(inputedAccount.Phone));
-            var existingTimeExists = await repo.SingleOrDefaultAsync(predicate: a => a.ActiveTime == inputedAccount.ActiveTime);
+            var existingCategoryExists = await repo.SingleOrDefaultAsync(predicate: a => a.CategoryId == inputedAccount.CategoryId);
 
             if (existingAccountByEmail != null)
-                return new GiveandtakeResult { Status = -1, Message = "Email has already used" };
+                return new GiveandtakeResult { Status = -1, Message = "Email này đã được sử dụng" };
 
             if (existingAccountByPhone != null)
-                return new GiveandtakeResult { Status = -1, Message = "Phone number has already been used" };
+                return new GiveandtakeResult { Status = -1, Message = "Số điện thoại này đã được sử dụng" };
 
-            if (existingTimeExists != null)
-                return new GiveandtakeResult { Status = -1, Message = "Active time already assigned to another staff member" };
+            if (existingCategoryExists != null)
+                return new GiveandtakeResult { Status = -1, Message = "Danh mục này đã được staff khác đảm nhận" };
 
             var newAccount = new Account
             {
