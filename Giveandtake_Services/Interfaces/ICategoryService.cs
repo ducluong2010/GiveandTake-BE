@@ -15,5 +15,6 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> UpdateCategory(int id, CategoryDTO categoryInfo);
         Task<IGiveandtakeResult> CreateCategory(CategoryDTO categoryInfo);
         Task<IGiveandtakeResult> DeleteCategory(int id);
+        Task<IGiveandtakeResult> GetCategoryManagers();
     }
 }

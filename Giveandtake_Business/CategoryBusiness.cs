@@ -111,5 +111,29 @@ namespace Giveandtake_Business
             await _unitOfWork.CommitAsync();
             return new GiveandtakeResult(1, "Category deleted successfully");
         }
+
+        // for admin by chinh
+        public async Task<IGiveandtakeResult> GetCategoryManagers()
+        {
+            var categories = await _unitOfWork.GetRepository<Category>().GetListAsync();
+            var accounts = await _unitOfWork.GetRepository<Account>().GetListAsync();
+
+            var result = categories.Select(category =>
+            {
+                var account = accounts.FirstOrDefault(acc => acc.CategoryId == category.CategoryId);
+
+                return new CategoryManagerDTO
+                {
+                    CategoryId = category.CategoryId,
+                    CategoryName = category.CategoryName,
+                    AccountId = account?.AccountId ?? 0,
+                    AccountName = account?.FullName ?? "Hiện tại chưa có người đảm nhận phần quản lý danh mục này",
+                    Status = category.Status
+                };
+            }).ToList();
+
+            return new GiveandtakeResult(result);
+        }
+
     }
 }

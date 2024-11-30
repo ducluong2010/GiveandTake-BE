@@ -20,4 +20,18 @@ namespace GiveandTake_Repo.DTOs.Category
 
         public int Point { get; set; }
     }
+
+    public class CategoryManagerDTO
+    {
+        public int CategoryId { get; set; }
+
+        public string? CategoryName { get; set; }
+
+        public int AccountId { get; set; }
+
+        public string? AccountName { get; set; }
+
+        public string? Status { get; set; }
+
+    }
 }
