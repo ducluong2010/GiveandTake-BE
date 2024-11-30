@@ -31,6 +31,7 @@
         {
             public const string CategoriesEndPoint = ApiEndpoint + "/categories";
             public const string CategoryEndPoint = CategoriesEndPoint + "/{id}";
+            public const string CategoryManaEndPoint = CategoriesEndPoint + "/manager";
         }
 
         public class Reward
