@@ -76,5 +76,17 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response);
         }
+
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "1")]
+        [HttpPost(ApiEndPointConstant.Category.CategoryManaEndPoint)]
+        [SwaggerOperation(Summary = "Manager category")]
+        public async Task<IActionResult> GetCategoryManagers()
+        {
+            var response = await _categoryService.GetCategoryManagers();
+            if (response.Status >= 0)
+                return Ok(response.Data);
+            else
+                return BadRequest(response);
+        }
     }
 }

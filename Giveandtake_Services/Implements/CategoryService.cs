@@ -32,5 +32,8 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> UpdateCategory(int id, CategoryDTO categoryInfo)
             => _categoryBusiness.UpdateCategory(id, categoryInfo);
+
+        public Task<IGiveandtakeResult> GetCategoryManagers()
+            => _categoryBusiness.GetCategoryManagers();
     }
 }
