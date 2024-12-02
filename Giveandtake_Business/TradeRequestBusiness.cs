@@ -67,7 +67,7 @@ namespace Giveandtake_Business
         {
             var tradeRequests = await _unitOfWork.GetRepository<TradeRequest>()
                 .GetListAsync(
-                    predicate: x => x.RequestDonationId == requestDonationId && x.Status == "Pending",
+                    predicate: x => x.RequestDonationId == requestDonationId ,
                     selector: x => new
                     {
                         TradeRequest = new GetTradeRequestDTO
