@@ -17,6 +17,7 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> CreateRequest(RequestDTO requestDTO);
         Task<IGiveandtakeResult> CancelRequest(int requestId, int receiverId);
         Task<IGiveandtakeResult> DeleteRequest(int requestId);
+        Task<IGiveandtakeResult> CancelRequestsByDonationId(int donationId);
 
     }
 }
