@@ -55,7 +55,7 @@ namespace Giveandtake_Business
         {
             var requestList = await _unitOfWork.GetRepository<Request>()
                 .GetListAsync(
-                    predicate: c => c.DonationId == donationId && c.Status == "Pending",
+                    predicate: c => c.DonationId == donationId,
                     selector: x => new
                     {
                         Request = new GetRequestDTO
@@ -300,6 +300,59 @@ namespace Giveandtake_Business
             return result;
         }
         #endregion
+        //bychinh
+
+        public async Task<IGiveandtakeResult> CancelRequestsByDonationId(int donationId)
+        {
+            GiveandtakeResult result = new GiveandtakeResult();
+
+            // Tìm các request trong bảng Request với trạng thái Pending
+            var pendingRequests = await _unitOfWork.GetRepository<Request>()
+                .GetListAsync(predicate: r => r.DonationId == donationId && r.Status == "Pending");
+
+            // Tìm các request trong bảng TradeRequest với trạng thái Pending
+            var pendingTradeRequests = await _unitOfWork.GetRepository<TradeRequest>()
+                .GetListAsync(predicate: tr => tr.TradeDonationId == donationId && tr.Status == "Pending");
+
+            // Kiểm tra nếu không có request nào để hủy
+            if (!pendingRequests.Any() && !pendingTradeRequests.Any())
+            {
+                return new GiveandtakeResult
+                {
+                    Status = -1,
+                    Message = "Không tìm thấy yêu cầu nào với trạng thái Pending để hủy."
+                };
+            }
+
+            // Cập nhật trạng thái của các request trong bảng Request
+            foreach (var request in pendingRequests)
+            {
+                request.Status = "Cancelled";
+                _unitOfWork.GetRepository<Request>().UpdateAsync(request);
+            }
+
+            // Cập nhật trạng thái của các request trong bảng TradeRequest
+            foreach (var tradeRequest in pendingTradeRequests)
+            {
+                tradeRequest.Status = "Cancelled";
+                _unitOfWork.GetRepository<TradeRequest>().UpdateAsync(tradeRequest);
+            }
+
+            // Lưu các thay đổi
+            bool isSuccessful = await _unitOfWork.CommitAsync() > 0;
+
+            if (isSuccessful)
+            {
+                result = new GiveandtakeResult(1, "Đã hủy thành công tất cả các yêu cầu đang chờ xử lý.");
+            }
+            else
+            {
+                result.Status = -1;
+                result.Message = "Đã có lỗi xảy ra khi hủy các yêu cầu.";
+            }
+
+            return result;
+        }
 
     }
 }

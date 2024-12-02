@@ -61,6 +61,19 @@ namespace Giveandtake_Business
             {
                 return new GiveandtakeResult(-1, "Category not found");
             }
+
+            var duplicateCategory = await _unitOfWork.GetRepository<Category>()
+                .SingleOrDefaultAsync(
+                    predicate: c => c.CategoryName == categoryInfo.CategoryName && c.CategoryId != id,
+                    orderBy: null,
+                    include: null);
+
+
+            if (duplicateCategory != null)
+            {
+                return new GiveandtakeResult(-1, "Tên của danh mục này đã tồn tại , xin thử lại tên khác");
+            }
+
             category.CategoryName = String.IsNullOrEmpty(categoryInfo.CategoryName) ? category.CategoryName : categoryInfo.CategoryName;
             category.Description = String.IsNullOrEmpty(categoryInfo.Description) ? category.Description : categoryInfo.Description;
             category.ImageUrl = String.IsNullOrEmpty(categoryInfo.ImageUrl) ? category.ImageUrl : categoryInfo.ImageUrl;

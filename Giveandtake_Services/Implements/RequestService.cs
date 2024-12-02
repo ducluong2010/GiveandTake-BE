@@ -37,5 +37,8 @@ namespace Giveandtake_Services.Implements
 
         public Task<IGiveandtakeResult> GetRequestById(int requestId)
             => _requestBusiness.GetRequestById(requestId);
+
+        public Task<IGiveandtakeResult> CancelRequestsByDonationId(int donationId)
+            => _requestBusiness.CancelRequestsByDonationId(donationId);
     }
 }

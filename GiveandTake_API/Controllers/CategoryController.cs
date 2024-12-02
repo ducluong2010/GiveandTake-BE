@@ -50,7 +50,7 @@ namespace GiveandTake_API.Controllers
             if (response.Status >= 0)
                 return Ok(response);
             else
-                return BadRequest(response);
+                return BadRequest(response.Message);
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "1")]
