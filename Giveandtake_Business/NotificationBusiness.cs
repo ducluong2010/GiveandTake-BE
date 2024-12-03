@@ -633,7 +633,7 @@ namespace Giveandtake_Business
             var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
 
             var allNotifications = await notificationRepository.GetListAsync(
-                predicate: n => n.AccountId == id && n.Type == "Cancel",
+                predicate: n => n.AccountId == id && n.Type == "Cancelled",
                 selector: n => new NotificationDTO
                 {
                     NotificationId = n.NotificationId,
