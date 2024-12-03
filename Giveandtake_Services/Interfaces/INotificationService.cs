@@ -23,6 +23,7 @@ namespace Giveandtake_Services.Interfaces
         Task<IGiveandtakeResult> GetNotiPointAccount(int id, int page = 1, int pageSize = 8);
         Task<IGiveandtakeResult> GetNotiRejectAccount(int id, int page = 1, int pageSize = 8);
         Task<IGiveandtakeResult> GetNotiAcceptAccount(int id, int page = 1, int pageSize = 8);
+        Task<IGiveandtakeResult> GetNotiCancelAccount(int id, int page = 1, int pageSize = 8);
     }
 }
 
