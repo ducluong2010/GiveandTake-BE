@@ -620,5 +620,57 @@ namespace Giveandtake_Business
 
             return new GiveandtakeResult(paginatedResult);
         }
+
+        public async Task<IGiveandtakeResult> GetNotiCancelAccount(int id, int page = 1, int pageSize = 8)
+        {
+            var accountRepository = _unitOfWork.GetRepository<Account>();
+            var allAccounts = await accountRepository.GetAllAsync();
+            var notificationRepository = _unitOfWork.GetRepository<Notification>();
+            var donationRepository = _unitOfWork.GetRepository<Donation>();
+
+            var allDonations = await donationRepository.GetAllAsync();
+            var donationDict = allDonations.ToDictionary(d => d.DonationId, d => d.Name);
+            var accountDict = allAccounts.ToDictionary(a => a.AccountId, a => a.FullName);
+
+            var allNotifications = await notificationRepository.GetListAsync(
+                predicate: n => n.AccountId == id && n.Type == "Cancel",
+                selector: n => new NotificationDTO
+                {
+                    NotificationId = n.NotificationId,
+                    DonationId = n.DonationId,
+                    DonationName = n.DonationId != null && donationDict.ContainsKey(n.DonationId.Value)
+                        ? donationDict[n.DonationId.Value]
+                        : null,
+                    AccountId = n.AccountId,
+                    AccountName = accountDict.GetValueOrDefault(n.AccountId ?? 0),
+                    StaffId = n.StaffId,
+                    StaffName = accountDict.GetValueOrDefault(n.StaffId ?? 0),
+                    Note = n.Note,
+                    Type = n.Type,
+                    CreatedAt = n.CreatedAt,
+                    IsRead = n.IsRead
+                }
+            );
+
+            var paginatedNotifications = allNotifications
+                .OrderByDescending(n => n.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var totalItems = allNotifications.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var paginatedResult = new PaginatedResult<NotificationDTO>
+            {
+                Items = paginatedNotifications,
+                TotalItems = totalItems,
+                Page = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
+
+            return new GiveandtakeResult(paginatedResult);
+        }
     }
 }

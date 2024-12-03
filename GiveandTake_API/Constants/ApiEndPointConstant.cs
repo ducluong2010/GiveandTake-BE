@@ -200,6 +200,7 @@
             public const string NotiPointEndPoint = NotisEndPoint + "/getpoint/{id}";
             public const string NotiRejectEndPoint = NotisEndPoint + "/getreject/{id}";
             public const string NotiAcceptEndPoint = NotisEndPoint + "/getaccept/{id}";
+            public const string NotiCancelEndPoint = NotisEndPoint + "/getcancel/{id}";
         }
 
         public class TradeRequest
