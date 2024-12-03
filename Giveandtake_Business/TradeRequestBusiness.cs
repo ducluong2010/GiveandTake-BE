@@ -136,7 +136,8 @@ namespace Giveandtake_Business
             var existingUserTradeRequest = await _unitOfWork.GetRepository<TradeRequest>()
                 .SingleOrDefaultAsync(predicate: x => x.AccountId == tradeRequestDTO.AccountId &&
                                                     x.TradeDonationId == tradeRequestDTO.TradeDonationId &&
-                                                    x.RequestDonationId == tradeRequestDTO.RequestDonationId);
+                                                    x.RequestDonationId == tradeRequestDTO.RequestDonationId &&
+                                                    x.Status == "Pending");
             if (existingUserTradeRequest != null)
             {
                 return new GiveandtakeResult(-1, "Bạn đã yêu cầu trao đổi món đồ này rồi.");
