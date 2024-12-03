@@ -312,7 +312,7 @@ namespace Giveandtake_Business
 
             // Tìm các request trong bảng TradeRequest với trạng thái Pending
             var pendingTradeRequests = await _unitOfWork.GetRepository<TradeRequest>()
-                .GetListAsync(predicate: tr => tr.TradeDonationId == donationId && tr.Status == "Pending");
+                .GetListAsync(predicate: tr => tr.RequestDonationId == donationId && tr.Status == "Pending");
 
             // Kiểm tra nếu không có request nào để hủy
             if (!pendingRequests.Any() && !pendingTradeRequests.Any())
