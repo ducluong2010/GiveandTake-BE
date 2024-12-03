@@ -97,5 +97,16 @@ namespace GiveandTake_API.Controllers
             else
                 return BadRequest(response);
         }
+
+        [HttpPut(ApiEndPointConstant.Request.CancelRequestEndPoint)]
+        [SwaggerOperation(Summary = "Cancel all request by donation id")]
+        public async Task<IActionResult> CancelRequestsByDonationId(int id)
+        {
+            var response = await _requestService.CancelRequestsByDonationId(id);
+            if (response.Status >= 0)
+                return Ok(response);
+            else
+                return BadRequest(response);
+        }
     }
 }
