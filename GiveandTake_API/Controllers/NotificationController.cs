@@ -111,7 +111,7 @@ namespace GiveandTake_API.Controllers
         }
 
         [HttpGet(ApiEndPointConstant.Notification.NotiCancelEndPoint)]
-        [SwaggerOperation(Summary = "Get all Notifications Cancel")]
+        [SwaggerOperation(Summary = "Get all Notifications Cancelled")]
         public async Task<IActionResult> GetNotiCancelAccount([FromRoute] int id, [FromQuery] int page = 1, [FromQuery] int pageSize = 8)
         {
             var response = await _notificationService.GetNotiCancelAccount(id, page, pageSize);
