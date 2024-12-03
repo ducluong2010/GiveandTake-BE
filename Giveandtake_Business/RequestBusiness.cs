@@ -124,7 +124,7 @@ namespace Giveandtake_Business
 
             // Kiểm tra xem người dùng đã tạo request cho donation này chưa
             var existingRequest = await _unitOfWork.GetRepository<Request>().SingleOrDefaultAsync(
-                predicate: r => r.DonationId == requestDTO.DonationId && r.AccountId == requestDTO.AccountId);
+                predicate: r => r.DonationId == requestDTO.DonationId && r.AccountId == requestDTO.AccountId && r.Status == "Pending");
             if (existingRequest != null)
             {
                 return new GiveandtakeResult(-1, "Bạn đã yêu cầu được nhận món đồ này rồi.");
