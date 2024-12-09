@@ -146,7 +146,7 @@ namespace Giveandtake_Business
             // Check if the donation is already involved in an active trade request
             var existingActiveTradeRequest = await _unitOfWork.GetRepository<TradeRequest>()
                 .SingleOrDefaultAsync(predicate: x => x.TradeDonationId == tradeRequestDTO.TradeDonationId
-                                                       && (x.Status == "Pending" || x.Status == "Accepted"));
+                                                       && (x.Status == "Pending"));
 
             if (existingActiveTradeRequest != null)
             {
